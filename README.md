@@ -17,6 +17,9 @@ Licence Statement: TODO
 
 # Abstract
 
+**did:btc1** is a censorship resistant DID Method using the Bitcoin blockchain as a Verifiable Data Registry to announce changes to the DID document.
+It improves on prior work by allowing: zero-cost off-chain DID creation; aggregated updates for scalable on-chain update costs; long-term identifiers that can support frequent updates; private communication of the DID document; private DID resolution; and non-repudiation appropriate for serious contracts.
+
 # Table of Contents
 
 1. [Introduction](#1-introduction)
@@ -27,26 +30,41 @@ Licence Statement: TODO
 6. [Security Considerations](#6-security-considerations)
 7. [Privacy Considerations](#7-privacy-considerations)
 
-# 1. Introduction
+# 1. Introduction and Motivation
 
-**did:btc1** is a DID Method using the Bitcoin blockchain as a Verifiable Data Registry to announce changes to the DID document.
+Public digital identity was introduced to the Internet through PGP's foundational legal work in the 1990's.
+Since the late 2010's, with Decentralized Identifiers, digital identity can be preserved through a rotation of key material, without relying on a centralized party.
+The first DID Method anchoring on the Bitcoin blockchain, did:btcr, focused on censorship resistance.
+However, self-sovereign identity is not complete without options for privacy as well, and the initial promise of privacy in the DID ecosystem was dubious, with heavy reliance on public DID documents.
 
-### Motivation
+There is a mitigation available even where some knowledge is public.
+Application designers can focus on mitigating correlation using "Pairwise DIDs", which are DIDs created for every different special purpose that may occur.
+This includes not only a new DID created for every new person one starts a conversation with, but also every business that one transacts with, every group that one joins, and every online task that requires managing identity or key material.
 
-Public digital identity was introduced to the Internet through PGP's foundational legal work in the 1990's.  Since the late 2010's, with Decentralized Identifiers, digital identity can be preserved through a rotation of key material, without relying on a centralized party.  However, identity is not complete without options for privacy as well, and the initial promise of privacy in the DID ecosystem was dubious.  In particular, DIDs that are shared with a relying party can be seen by not only that party but also by any third party resolver that the relying party contracts with.  Over time, leakage will occur and surveillance-capitalism entities will collect most of the long-lived DIDs in use, as they have with all of our identities.
+In order to tackle reliance on public DID documents head-on, this DID Method introduces private DID Documents.
+However, if "private" or "pairwise" DID documents leak every time the DID is used then these DIDs do not accomplish much, either.
+DIDs that are shared with a relying party can be seen by not only that party but also by any third party resolver that the relying party contracts with.
+The next step in trust-minimization is a DID document transferred directly from the DID controller to the relying party.
+We call this transfer "Sidecar" delivery.
+When a relying party *who is willing to cooperate with privacy concerns* has the capacity to act as their own resolver, then privacy has a chance.
 
-There is a mitigation available: "Pairwise DIDs", which are DIDs created for every different special purpose that may occur.  This includes not only a new DID created for every new person one starts a conversation with, but also every business that one transacts with, every group that one joins, and every online task that requires managing identity or key material.
+Lastly, many DID Methods do not anchor DID documents temporally, to create a chain-of-custody.
+Instead, they leave them on media that can be used to rewrite history.
+Bitcoin's blockchain is the premiere global database for immutably anchoring information to a specific time.
+This DID Method takes care to only allow resolution to succeed when the resovler can clearly state that all data is available to present only one canonical history for a DID.
+This is a necessary feature when key material is used to sign serious contracts.
+We call this feature "Non-Repudiation", and point out how an anti-feature called "Late Publishing" affects some other DID Methods.
 
-However, if the DID document is leaked every time the DID is used, this parwise DID doeesn't accomplish much, either.  The next step is a private DID document, transferred directly from the DID controller to the relying party.  We call this transfer "Sidecar" delivery.  When a relying party who is willing to cooperate with privacy concerns has the capacity to act as their own resolver, then privacy has a chance.
 
 **did:btc1** is created for those who wish to have it all:
 * resistance to censorship;
 * non-correlation through pairwise DIDs;
 * private communication of the DID document;
 * a closed loop on private DID resolution;
-* long-term identifiers that can support frequent updates; 
-* non-repudiation appropriate for serious contracts; and
-* efficiency (in cost and energy usage), via offline DID creation and aggregatable updates.
+* efficiency (in cost and energy usage), via offline DID creation and aggregatable updates;
+* long-term identifiers that can support frequent updates; and
+* non-repudiation appropriate for serious contracts.
+
 
 ### Comparison with other DID Methods that rely on Bitcoin's blockchain for anchoring
 
@@ -107,15 +125,9 @@ This DID Method is like did:btco in that it also uses inscriptions.  It adds a b
 
 A Beacon is the mechanism by which updates to DID documents are announced and discovered. Beacons are identified by a Bitcoin address which is included as a service endpoint in a DID document along with a specific Beacon type. By spending from a Beacon address, DID controllers announce that an update to their DID has occurred (in the case of a SingleUpdate Beacon) or may have occurred (in the case of a CIDAggregator or SMTAggregator Beacons).
 
-    [rgrant 20240920 02:47 UTC] Singleton Beacons is a better name for SingleUpdate Beacon
-      ...because the beacon stays declared and can manage a second update, and so on.
-
 **Singleton Beacons**
 
-Singleton Beacons enable a single entity (possibly controlling multiple DIDs and possibly posting multiple updates) to independently post a DID Update Payload in a Beacon Signal.
-
-    [rgrant 20240920 02:50 UTC] they would have to be extended to post
-      a set of DID Update payloads
+Singleton Beacons enable a single entity to independently post a DID Update Payload in a Beacon Signal.
 
 Since Beacon singletons do not rely on collaborators the way Aggregate Beacons do, making sure every DID document has at least one singleton Beacon guarantees updatability even if all aggregators fail.
 
