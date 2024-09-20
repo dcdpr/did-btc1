@@ -97,7 +97,7 @@ This DID Method is like did:btco in that it also uses inscriptions.  It adds a b
 
 ### Future Directions
 
-* zCaps delegation of the right to update only part of a DID Document;
+* ZCAPs delegation of the right to update only part of a DID Document;
 * more scalable Aggregator Beacons will be possible with a "transaction introspection" upgrade to Bitcoin, such as OP\_CTV or OP\_CAT; and
 * Beacons do not have to reuse their addresses if, in the controller's DID document, a descriptor is used instead of an address.
 
@@ -372,7 +372,7 @@ This algorithm takes in an initial DID document and either returns either the la
 
 The initial DID document should have been resolved and verified against a **did:btc1** identifier through either the algorithm defined in Section 4.2.1 Deterministic Resolution, or Section 4.2.2 External Resolution. The Beacon service endpoints within the initial DID document are retrieved and all Bitcoin spends from the Beacon addresses are fetched and ordered using block height. Bitcoin spends that are of the format of a Beacon Signal are then processed in order starting from the earliest included in the Bitcoin blockchain. Processing a Beacon Signal retrieves the DID Update payload announced to by the Beacon Signal, verifies it is an authorized update, checks it is the next update in the chain and applies the `patch` in the DID Update payload to the DID document. As Beacon Signals are processed and DID Update payloads applied, the set of Beacon Signals to process MUST be updated whenever the set of Beacons in the DID document changes. The algorithm MUST construct a single canonical history of DID updates after processing all relevant Beacon Signals from Beacons identified by the DID document throughout its history.
 
-Each Beacon signal is a Bitcoin transaction of a particular format spent from a specific address identified as a Beacon service of a particular type in the DID document (See Section 5. Update Beacons). At the point in history determined by the block time of the beacon signal being processed, the Beacon that broadcast this signal MUST be in the DID document otherwise the signal can be discarded. The type of the Beacon, defines how a Beacon signal should be formatted and how to retrieve the DID update payload committed to by this Beacon signal. DID update payloads are ZCap-LD invocations containng a JSON patch that mutates the DID document (See [Section 4.3 Update](#43-update)). Resolvers MUST verify that the proof on the DID update payload is a valid invocation against a root capability generated from the `did:btc1` identifier following the algorithm in [Section 4.3.1.1 Root Capability](#4311-root-capability). The `patch` value in the DID update payload MUST increment the `versionId` property of the DID document. If a DID update payload sets the version of the DID document to more than one greater than the version of the current DID document at the time of processing, the DID MUST be considered invalid and an `incompleteHistory` error raised. If a DID update payload sets the version to less than or equal to the current DID document then the DID update payload MUST be the same hash as the previously applied update otherwise a `latePublishingError` MUST be raised.
+Each Beacon signal is a Bitcoin transaction of a particular format spent from a specific address identified as a Beacon service of a particular type in the DID document (See Section 5. Update Beacons). At the point in history determined by the block time of the beacon signal being processed, the Beacon that broadcast this signal MUST be in the DID document otherwise the signal can be discarded. The type of the Beacon, defines how a Beacon signal should be formatted and how to retrieve the DID update payload committed to by this Beacon signal. DID update payloads are ZCAP-LD invocations containng a JSON patch that mutates the DID document (See [Section 4.3 Update](#43-update)). Resolvers MUST verify that the proof on the DID update payload is a valid invocation against a root capability generated from the `did:btc1` identifier following the algorithm in [Section 4.3.1.1 Root Capability](#4311-root-capability). The `patch` value in the DID update payload MUST increment the `versionId` property of the DID document. If a DID update payload sets the version of the DID document to more than one greater than the version of the current DID document at the time of processing, the DID MUST be considered invalid and an `incompleteHistory` error raised. If a DID update payload sets the version to less than or equal to the current DID document then the DID update payload MUST be the same hash as the previously applied update otherwise a `latePublishingError` MUST be raised.
 
 This algorithm takes in a DID document, identifies its current active Beacons, and then fetches all signals from each Beacon. Beacon signals are Bitcoin transactions published by a Bitcoin address identified by beacon services in the DID document being resolved. These signals are then aggregated and ordered using the transaction's inclusion time within the Bitcoin network. Once complete, signals are processed in order. Processing signals retrieves DID update data, containing a set of deltas that mutate the DID document and the canonical order that this mutation should be applied to the DID document. Updates MUST be applied in the order they are defined and updates with the same order MUST be the equivalent. As each signal is processed, the set of aggregated beacon signals MUST be recalculated if the beacon services identified in the DID document changes. Once all signals from all active beacons have been processed the latest DID document is returned. 
 
@@ -502,14 +502,14 @@ sequenceDiagram
 
 ## 4.3 Update
 
-An update is an invoked capability using the ZCap-LD data format, signed by the key that has the authority to make the update as specified in previous DID document. Capability invocations for updates MUST be authorized using data integrity following the schnorr-secp256k1-2024 cryptosuite and a proofPurpose of `capabilityInvocation`.
+An update is an invoked capability using the ZCAP-LD data format, signed by the key that has the authority to make the update as specified in previous DID document. Capability invocations for updates MUST be authorized using data integrity following the schnorr-secp256k1-2024 cryptosuite and a proofPurpose of `capabilityInvocation`.
 
 1. Construct a `documentPatch` object containing the set of JSON Patch transformations to the DID document.
 2. Initialize a `didUpdatePayload` variable to an empty object.
 3. Set `didUpdatePayload.@context` to the following list `["https://w3id.org/zcap/v1", "https://w3id.org/security/data-integrity/v2", "https://w3id.org/json-ld-patch/v1"]`
 3. Set `didUpdatePayload.patch` to `documentPatch`.
 4. Set `didUpdatePayload.version` to the version of the update. (Previous version plus one)
-5. Invoke the `didUpdatePayload` by creating a valid capability invocation `proof` attribute as defined in the ZCap-LD specificaiton. The proof should be created with Data Integrity using the `schnorr-secp256k1-2024` cryptosuite and a verificationMethod with the `capabilityInvocation` verificationRelationship in the current DID document.
+5. Invoke the `didUpdatePayload` by creating a valid capability invocation `proof` attribute as defined in the ZCAP-LD specificaiton. The proof should be created with Data Integrity using the `schnorr-secp256k1-2024` cryptosuite and a verificationMethod with the `capabilityInvocation` verificationRelationship in the current DID document.
 6. Identify a Beacon(s) from the set of Beacon services in the current DID document being updated.
 7. Pass the `didUpdatePayload` and `beacon` to the Broadcast DID Update Attestation algorithm defined for the type of Beacon selected. (See [Section 5. Beacons](#5-update-beacons))
 
@@ -557,10 +557,10 @@ Below is an example root capability for updating the DID document for **did:btc1
 
 #### 4.3.1.2 An Invocation of the Root Capability to Update a DID document
 
-An update invocation for a **did:btc1** is an invocation per the [ZCap-LD specification](https://w3c-ccg.github.io/zcap-spec/). The invocation contains a `patch`, which is a JSON patch object following [RFC6902](https://datatracker.ietf.org/doc/html/rfc6902) defining how the DID document should be mutated.
+An update invocation for a **did:btc1** is an invocation per the [ZCAP-LD specification](https://w3c-ccg.github.io/zcap-spec/). The invocation contains a `patch`, which is a JSON patch object following [RFC6902](https://datatracker.ietf.org/doc/html/rfc6902) defining how the DID document should be mutated.
 
 
-Below is an example of a `didUpdatePayload`. An invoked ZCap-LD capability containing a `patch` defining how the DID document for **did:btc1:k1t5rm7vud58tyspensq9weyxc49cyxyvyh72w0n5hc7g5t859aq7sz45d5a** should be mutated.
+Below is an example of a `didUpdatePayload`. An invoked ZCAP-LD capability containing a `patch` defining how the DID document for **did:btc1:k1t5rm7vud58tyspensq9weyxc49cyxyvyh72w0n5hc7g5t859aq7sz45d5a** should be mutated.
 
 ```jsonld
 {'@context': [
