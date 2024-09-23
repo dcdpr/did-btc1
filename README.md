@@ -8,6 +8,7 @@
 - Kevin Dean <kevin@legreq.com> [Legendary Requirements](legreq.com)
 - Dan Pape <dpape@contract.design> [Digital Contract Design](https://contract.design/)
 - Jennie Meier <jennie@contract.design> [Digital Contract Design](https://contract.design/)
+- Kate Sills <katelynsills@gmail.com> 
 
 Publication Date: 20th September 2024
 
@@ -399,7 +400,7 @@ The algorithm is as follows:
 6.  Identify all Beacons in the `document.service` array and store in a `beaconServices` array.
 7.  For each `beaconService` in `beaconServices`:
   - If `beaconService.id` NOT IN  `activeBeaconIDs`:
-      -  Set `beaconSignals` to the result of passing `beaconService` into the [4.2.4.1 Fetch Beacon Signals](#4241-fetch-beacon-signals-algorithm) algorithm. 
+      -  Set `beaconSignals` to the result of passing `beaconService` and `network` into the [4.2.4.1 Fetch Beacon Signals](#4241-fetch-beacon-signals-algorithm) algorithm. 
       - Push `beaconSignals` to the `orderedSignals` array.
       - Push `beaconService.id` to `activeBeaconIDs`
 8. If `activeBeaconIDs.length !== beaconServices.length`:
@@ -478,11 +479,8 @@ This algorithm takes in a Bitcoin `network` from the `identifier` and single `be
 2. Set `beaconAddressURI` to `beaconService.serviceEndpoint`
 3. Set `beaconAddress` to the conversion of `beaconAddressURI` to a Bitcoin address following BIP21.
 4. Set `spendTxs` to the spends on the Bitcoin blockchain `network` from the `beaconAddress`. 
-2. Set `beaconAddressURI` to `beaconService.serviceEndpoint`.
-3. Set `beaconAddress` to the conversion of `beaconAddressURI` to a Bitcoin address following BIP21.
-4. Set `spendTxs` to the spends on the Bitcoin blockchain `network` from the `beaconAddress`. 
-5. For each `tx` in `spendTx`:
-  - Find the `blockHeight` the `tx` was included in the ledger
+5. For each `tx` in `spendTxs`:
+  - Find the `blockHeight` that the `tx` was included in the ledger
   - Initialize a `beaconSignal` variable to the value:
 ```json
 {
@@ -551,11 +549,12 @@ sequenceDiagram
 
 Given any **did:btc1** identifier, this specification defines a deterministic algorithm to generate a root capability from this identifier. This root capability is defined as the capability that controls authorization to update the DID's document. The algorithm is as follows:
 
-1. Define `rootCapability` as an empty JSON.
+1. Define `rootCapability` as an empty JSON object.
 2. Set `rootCapability['@context']` to 'https://w3id.org/zcap/v1'.
-3. Set `rootCapability.id` to `urn:zcap:root:${encodeURIComponent(DID)}`,
-4. Set `rootCapability.controller` to DID.
-5. Set `rootCapability.invocationTarget` to DID.
+3. Set `encodedIdentifier` to result of `encodeURIComponent(identifier)`
+3. Set `rootCapability.id` to `urn:zcap:root:${encodedIdentifier}`,
+4. Set `rootCapability.controller` to `identifier`.
+5. Set `rootCapability.invocationTarget` to `identifier`.
 
 Below is an example root capability for updating the DID document for **did:btc1:k1t5rm7vud58tyspensq9weyxc49cyxyvyh72w0n5hc7g5t859aq7sz45d5a**:
 
