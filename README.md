@@ -2,19 +2,24 @@
 
 # did:btc1 DID Method Specification
 
+### Authors:
+
 - Ryan Grant <rgrant@contract.design> [Digital Contract Design](https://contract.design/)
 - Will Abramson <will@legreq.com> [Legendary Requirements](legreq.com)
 - Joe Andrieu <joe@legreq.com> [Legendary Requirements](legreq.com)
 - Kevin Dean <kevin@legreq.com> [Legendary Requirements](legreq.com)
 - Dan Pape <dpape@contract.design> [Digital Contract Design](https://contract.design/)
 - Jennie Meier <jennie@contract.design> [Digital Contract Design](https://contract.design/)
+
+### Contributors:
+
 - Kate Sills <katelynsills@gmail.com> 
 
-Publication Date: 20th September 2024
+### Publication Date: 20th September 2024
 
-Copyright &copy; 2024 Digital Contract Design
+### Copyright &copy; 2024 Digital Contract Design
 
-Licence Statement: TODO
+### Licence Statement: TODO
 
 # Abstract
 
