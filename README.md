@@ -348,7 +348,7 @@ The external resolution algorithm takes in `identifier`, `network` and `cid_byte
 5. Copy `intermediateDocumentRepresentation` to a `initialDocument` variable.
 6. Set `initialDocument.id` to equal the `identifer`.
 7. For each verification method in `initialDocument.verificationMethod` set the `controller` property to equal the `identifier`.
-8. Run through the [4.2.4 Process Beacon Updates](#process_beacon_updates) algorithm passing in the `initialDocument`.
+8. Run through the [4.2.4 Process Beacon Updates](#424-process-beacon-updates-algorithm) algorithm passing in the `initialDocument`.
 9. Return `document`.
 
 ### 4.2.3 Deterministically Generate Beacon Services
