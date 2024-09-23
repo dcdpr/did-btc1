@@ -645,7 +645,7 @@ The algorithm is as follows:
 5. Initialize `beaconService` to:
 ```json
 {
-    "id": "#singletonBeacon", //What should this be. Is it arbitrary?
+    "id": "#singletonBeacon", 
     "type": "SingletonBeacon", 
     "serviceEndpoint": beaconUri,
     "casType": "IPFS" // Optional hint at the CAS storage used 
