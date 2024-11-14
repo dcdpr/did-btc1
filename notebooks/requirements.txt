@@ -1,0 +1,14 @@
+# Fixed commit hash. Waiting for release.
+buidl @ git+https://github.com/buidl-bitcoin/buidl-python@c0b7d57
+jupyter
+ipfs-cid 
+termcolor
+ipfshttpclient
+sparse-merkle-tree
+termcolor
+nbconvert
+jcs
+py_rdfc10 @ git+https://github.com/amagioss/py_rdfc10
+base58
+jsonpatch
+multiformats 0.3.1.post4
