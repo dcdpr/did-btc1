@@ -5,9 +5,9 @@
 ### Authors:
 
 - Ryan Grant <rgrant@contract.design> [Digital Contract Design](https://contract.design/)
-- Will Abramson <will@legreq.com> [Legendary Requirements](legreq.com)
-- Joe Andrieu <joe@legreq.com> [Legendary Requirements](legreq.com)
-- Kevin Dean <kevin@legreq.com> [Legendary Requirements](legreq.com)
+- Will Abramson <will@legreq.com> [Legendary Requirements](https://legreq.com/)
+- Joe Andrieu <joe@legreq.com> [Legendary Requirements](https://legreq.com/)
+- Kevin Dean <kevin@legreq.com> [Legendary Requirements](https://legreq.com/)
 - Dan Pape <dpape@contract.design> [Digital Contract Design](https://contract.design/)
 - Jennie Meier <jennie@contract.design> [Digital Contract Design](https://contract.design/)
 
