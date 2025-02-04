@@ -1,0 +1,22 @@
+name: Push to main
+
+on:
+  push:
+    branches:
+      # TODO Switch back to main before pull request.
+      - pandoc-refactor
+
+permissions:
+  id-token: write
+  pages: write
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pandoc specification builder
+        uses: legreq/pandoc-spec@main
+        with:
+          include-repository: true
+          include-pages: true

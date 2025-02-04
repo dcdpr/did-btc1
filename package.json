@@ -1,0 +1,16 @@
+{
+  "name": "dcd-did-btc1",
+  "version": "1.0.0-beta",
+  "private": true,
+  "description": "did:btc1 DID Method Specification",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcdpr/did-btc1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dcdpr/did-btc1/issues"
+  },
+  "devDependencies": {
+    "@legreq/pandoc-spec": "beta"
+  }
+}

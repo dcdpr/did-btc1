@@ -1,0 +1,20 @@
+{
+  "debug": true,
+  "verbose": true,
+  "autoDate": true,
+  "inputFile": [
+    "README.md",
+    "chapters/Introduction-and-Motivation.md",
+    "chapters/Terminology.md",
+    "chapters/Syntax.md",
+    "chapters/CRUD-Operations.md",
+    "chapters/Update-Beacons.md",
+    "chapters/Security-Considerations.md",
+    "chapters/Privacy-Considerations.md",
+    "chapters/References.md",
+    "chapters/Appendix.md"
+  ],
+  "outputDirectory": "_site",
+  "cleanOutput": true,
+  "outputFile": "index.html"
+}
