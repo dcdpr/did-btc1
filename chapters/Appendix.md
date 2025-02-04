@@ -39,7 +39,7 @@ input, `keyBytes`.
 
 1. Initialize `hrp` to `"k"`.
 1. Initialize `dataPart` to `keyBytes`.
-1. Return the result of the [`bech32-encode`](#911-bech32-encode) algorithm,
+1. Return the result of the [`bech32-encode`](#bech32-encode) algorithm,
    passing `hrp` and `dataPart`.
 
 #### Bech32 Encoding a hash-value
@@ -50,7 +50,7 @@ input, `hashBytes`.
 
 1. Initialize `hrp` to `"x"`.
 1. Initialize `dataPart` to `hashBytes`.
-1. Return the result of the [`bech32-encode`](#911-bech32-encode) algorithm,
+1. Return the result of the [`bech32-encode`](#bech32-encode) algorithm,
    passing `hrp` and `dataPart`.
 
 ### JSON Canonicalization and Hash

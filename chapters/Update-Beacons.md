@@ -9,7 +9,7 @@ in the form of Content Addressable Identifiers (CIDs) or Sparse Merkle Tree (SMT
 roots. Beacons are included as a service in DID documents, with the Service Endpoint
 identifying a Bitcoin address to watch for Beacon Signals. All Beacon Signals
 broadcast from this Beacon MUST be processed as part of resolution
-(see [4.2 Read](#42-read)). The type of the Beacon service in the DID document
+(see [Read]. The type of the Beacon service in the DID document
 defines how Beacon Signals SHOULD be processed.
 
 **did:btc1** supports different Beacon Types, with each type defining a set of
@@ -65,11 +65,11 @@ The algorithm is as follows:
 }
 ```
 5. Add `beaconService` to the DID document through an update following the algorithm
-   defined in [4.3 Update](#43-update).
+   defined in [Update].
 
 #### Broadcast DID Update Attestation
 
-This algorithm is called from [Section 4.3 Update](#43-update), step 8, if the
+This algorithm is called from [Update], step 8, if the
 Beacon being used is of the type SingletonBeacon. A Content Identifier, `cid`,
 for the DID Update Payload the DID controller wishes to broadcast and a `beacon`
 object are passed into the algorithm. The Beacon constructs a Bitcoin transaction
@@ -296,7 +296,7 @@ in a signal, then they MUST provide a proof of non-inclusion for that signal.
 #### Establish Beacon
 
 This algorithm is essentially the same as for the CIDAggregator Beacon in
-[Section 5.2.1](#521-establish-cidaggregatorbeacon). A cohort of DID controllers
+[Establish CIDAggregatorBeacon]. A cohort of DID controllers
 need to coordinate to produce a Bitcoin address that will act as the Beacon.
 It is RECOMMENDED this is an n-of-n P2TR address, with n being the set of DID
 controllers in the cohort. Once the address has been created, and all parties in
