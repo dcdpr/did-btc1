@@ -9,7 +9,7 @@ in the form of Content Addressable Identifiers (CIDs) or Sparse Merkle Tree (SMT
 roots. Beacons are included as a service in DID documents, with the Service Endpoint
 identifying a Bitcoin address to watch for Beacon Signals. All Beacon Signals
 broadcast from this Beacon MUST be processed as part of resolution
-(see [Read]. The type of the Beacon service in the DID document
+(see [Read]). The type of the Beacon service in the DID document
 defines how Beacon Signals SHOULD be processed.
 
 **did:btc1** supports different Beacon Types, with each type defining a set of

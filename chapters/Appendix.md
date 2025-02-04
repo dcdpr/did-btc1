@@ -12,9 +12,8 @@ For this specification we define two functions: `bech32-encode` and `bech32-deco
 
 #### bech32-encode
 
-This algorithm takes two REQUIRED inputs: a string, `hrp` which is the human
-readable part of the encoding and a array of bytes to be encoded called the
-`dataPart`.
+This algorithm takes two REQUIRED inputs: a string, `hrp` which is the human-readable
+part of the encoding and an array of bytes to be encoded called the `dataPart`.
 
 1. Initialize `result` to the output of Bech32 encoding the `hrp` and the
    `dataPart` as described in
@@ -59,7 +58,7 @@ A macro function that takes in a JSON document, `document`, and canonicalizes it
 following the [JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785).
 The function returns the `canonicalizedBytes`.
 
-1. Set `canonicalBytes` to the result of applying the JSON Canonicalziation Scheme
+1. Set `canonicalBytes` to the result of applying the JSON Canonicalization Scheme
    to the `document`.
 1. Set `hashBytes` to the result of applying the SHA256 cryptographic hashing
    algorithm to the `canonicalBytes`.

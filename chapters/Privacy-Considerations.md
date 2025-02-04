@@ -45,7 +45,7 @@ DID, any consensus forks in which DID updates to apply can be used to permanentl
 diverge the history for a DID, and thus the key material, creating alternate
 attestation histories.  As a concrete example, a seemingly small difference
 between two clients in interpretation of the specification could be used
-fraudently to sign a loan in one history and claim that it was never signed in
+fraudulently to sign a loan in one history and claim that it was never signed in
 another history.
 
 In order to prevent consensus splits, **did:btc1** needs a particularly good

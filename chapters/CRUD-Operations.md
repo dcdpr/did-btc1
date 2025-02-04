@@ -580,7 +580,7 @@ The algorithm returns the invoked DID Update Payload.
 1. Set `cryptosuite` to the result of executing the Cryptosuite Instantiation
    algorithm from the Schnorr secp256k1 Data Integrity specification passing in
    `proofOptions`.
-1. // TODO: need to setup a the proof instantiation such that it can resolve
+1. // TODO: need to set up the proof instantiation such that it can resolve
    / dereference the root capability. This is deterministic from the DID.
 1. Set `didUpdateInvocation` to the result of executing the
    [Add Proof](https://www.w3.org/TR/vc-data-integrity/#add-proof)
@@ -594,7 +594,7 @@ Note: Not sure if these algorithms should go here or in the appendix?
 
 ##### Derive Root Capability from **did:btc1** Identifier
 
-This algorithm deterministically generates a ZCAP-LD root capabilitiy from a
+This algorithm deterministically generates a ZCAP-LD root capability from a
 given **did:btc1** identifier. Each root capability is unique to the identifier.
 This root capability is defined and understood by the **did:btc1** specification
 as the root capability to authorize updates to the specific **did:btc1** identifiers
@@ -724,7 +724,7 @@ merkleProofs.
 
 To deactivate a **did:btc1**, the DID controller MUST add the property `deactivated`
 with the value `true` on the DID document. To do this, the DID controller constructs
-a valid DID Update payload with a JSON patch that adds this propery and announces
+a valid DID Update payload with a JSON patch that adds this property and announces
 the payload through a Beacon in their current DID document following the algorithm
 in [Update]. Once a **did:btc1** has been deactivated this
 state is considered permanent and resolution MUST terminate.
