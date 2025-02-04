@@ -3,8 +3,7 @@ name: Push to main
 on:
   push:
     branches:
-      # TODO Switch back to main before pull request.
-      - pandoc-refactor
+      - main
 
 permissions:
   id-token: write
