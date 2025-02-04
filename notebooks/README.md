@@ -19,6 +19,6 @@ This set of jupyter notebooks act as a proof of concept implementation for the B
 4. Run a jupyter instance
 `jupyter-lab .`
 5. Walk through the notebooks at the URL provided in the terminal after running step 4. E.g. http://localhost:8888/lab?token=<sometoken>.
-    - Notebooks currently under the Aggregation folder. Start with step A1. in Alexis and Satoshi notebooks.
+    - Notebooks currently under the Aggregation folder. Start with step A1. in Ryan and Satoshi notebooks.
 
 
