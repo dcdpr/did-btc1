@@ -53,7 +53,7 @@ input, `hashBytes`.
 1. Return the result of the [`bech32-encode`](#911-bech32-encode) algorithm,
    passing `hrp` and `dataPart`.
 
-#### JSON Canonicalization and Hash
+### JSON Canonicalization and Hash
 
 A macro function that takes in a JSON document, `document`, and canonicalizes it
 following the [JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785).
