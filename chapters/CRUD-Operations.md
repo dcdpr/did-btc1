@@ -403,23 +403,23 @@ containing `beaconId`, `beaconType`, and `tx` properties.
    check to see if any transaction inputs are spends from one of the Beacon addresses.
    If they are, create a `signal` object containing the following fields and push
    `signal` to `beaconSignals`:
-```json
-{
-    "beaconId": `beaconService.id`,
-    "beaconType": `beaconService.type`,
-    "tx": `tx`
-}
-```
-4. If no `beaconSignals`, set `nextSignals` to the result of algorithm
+   ```json
+   {
+       "beaconId": `beaconService.id`,
+       "beaconType": `beaconService.type`,
+       "tx": `tx`
+   }
+   ```
+1. If no `beaconSignals`, set `nextSignals` to the result of algorithm
    [Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
-5. Else initialize a `nextSignals` object to the following:
-```json
-{
-  "blockheight": `block.blockheight`,
-  "signals": `beaconSignals`
-}
-```
-6. Return `nextSignals`.
+1. Else initialize a `nextSignals` object to the following:
+   ```json
+   {
+     "blockheight": `block.blockheight`,
+     "signals": `beaconSignals`
+   }
+   ```
+1. Return `nextSignals`.
 
 ##### Process Beacon Signals
 

@@ -56,15 +56,15 @@ The algorithm is as follows:
     1. Before the Beacon can be used to publish an update it MUST be funded.
 1. Set `beaconUri` to the URI for the address following BIP21.
 1. Initialize `beaconService` to the JSON string (interpolating values as needed):
-```json
-{
-    "id": "#singletonBeacon", 
-    "type": "SingletonBeacon", 
-    "serviceEndpoint": "${beaconUri}",
-    "casType": "IPFS" // Optional hint at the CAS storage used 
-}
-```
-5. Add `beaconService` to the DID document through an update following the algorithm
+   ```json
+   {
+       "id": "#singletonBeacon", 
+       "type": "SingletonBeacon", 
+       "serviceEndpoint": "${beaconUri}",
+       "casType": "IPFS" // Optional hint at the CAS storage used 
+   }
+   ```
+1. Add `beaconService` to the DID document through an update following the algorithm
    defined in [Update].
 
 #### Broadcast DID Update Attestation
