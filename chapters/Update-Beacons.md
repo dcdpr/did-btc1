@@ -9,7 +9,7 @@ in the form of Content Addressable Identifiers (CIDs) or Sparse Merkle Tree (SMT
 roots. Beacons are included as a service in DID documents, with the Service Endpoint
 identifying a Bitcoin address to watch for Beacon Signals. All Beacon Signals
 broadcast from this Beacon MUST be processed as part of resolution
-(see [Read]. The type of the Beacon service in the DID document
+(see [Read]). The type of the Beacon service in the DID document
 defines how Beacon Signals SHOULD be processed.
 
 **did:btc1** supports different Beacon Types, with each type defining a set of
@@ -56,15 +56,15 @@ The algorithm is as follows:
     1. Before the Beacon can be used to publish an update it MUST be funded.
 1. Set `beaconUri` to the URI for the address following BIP21.
 1. Initialize `beaconService` to the JSON string (interpolating values as needed):
-```json
-{
-    "id": "#singletonBeacon", 
-    "type": "SingletonBeacon", 
-    "serviceEndpoint": "${beaconUri}",
-    "casType": "IPFS" // Optional hint at the CAS storage used 
-}
-```
-5. Add `beaconService` to the DID document through an update following the algorithm
+   ```json
+   {
+       "id": "#singletonBeacon", 
+       "type": "SingletonBeacon", 
+       "serviceEndpoint": "${beaconUri}",
+       "casType": "IPFS" // Optional hint at the CAS storage used 
+   }
+   ```
+1. Add `beaconService` to the DID document through an update following the algorithm
    defined in [Update].
 
 #### Broadcast DID Update Attestation

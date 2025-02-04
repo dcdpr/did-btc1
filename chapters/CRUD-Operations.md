@@ -403,23 +403,23 @@ containing `beaconId`, `beaconType`, and `tx` properties.
    check to see if any transaction inputs are spends from one of the Beacon addresses.
    If they are, create a `signal` object containing the following fields and push
    `signal` to `beaconSignals`:
-```
-{
-    "beaconId": `beaconService.id`,
-    "beaconType": `beaconService.type`,
-    "tx": `tx`
-}
-```
-4. If no `beaconSignals`, set `nextSignals` to the result of algorithm
+   ```json
+   {
+       "beaconId": `beaconService.id`,
+       "beaconType": `beaconService.type`,
+       "tx": `tx`
+   }
+   ```
+1. If no `beaconSignals`, set `nextSignals` to the result of algorithm
    [Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
-5. Else initialize a `nextSignals` object to the following:
-```
-{
-  "blockheight": `block.blockheight`,
-  "signals": `beaconSignals`
-}
-```
-6. Return `nextSignals`.
+1. Else initialize a `nextSignals` object to the following:
+   ```json
+   {
+     "blockheight": `block.blockheight`,
+     "signals": `beaconSignals`
+   }
+   ```
+1. Return `nextSignals`.
 
 ##### Process Beacon Signals
 
@@ -580,7 +580,7 @@ The algorithm returns the invoked DID Update Payload.
 1. Set `cryptosuite` to the result of executing the Cryptosuite Instantiation
    algorithm from the Schnorr secp256k1 Data Integrity specification passing in
    `proofOptions`.
-1. // TODO: need to setup a the proof instantiation such that it can resolve
+1. // TODO: need to set up the proof instantiation such that it can resolve
    / dereference the root capability. This is deterministic from the DID.
 1. Set `didUpdateInvocation` to the result of executing the
    [Add Proof](https://www.w3.org/TR/vc-data-integrity/#add-proof)
@@ -594,7 +594,7 @@ Note: Not sure if these algorithms should go here or in the appendix?
 
 ##### Derive Root Capability from **did:btc1** Identifier
 
-This algorithm deterministically generates a ZCAP-LD root capabilitiy from a
+This algorithm deterministically generates a ZCAP-LD root capability from a
 given **did:btc1** identifier. Each root capability is unique to the identifier.
 This root capability is defined and understood by the **did:btc1** specification
 as the root capability to authorize updates to the specific **did:btc1** identifiers
@@ -648,31 +648,34 @@ containing a `patch` defining how the DID document for
 **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
 be mutated.
 
-```jsonld
-{'@context': [
-  'https://w3id.org/zcap/v1',
-  'https://w3id.org/security/data-integrity/v2',
-  'https://w3id.org/json-ld-patch/v1'
-  ],
- 'patch': [
-  {'op': 'add',
-   'path': '/service/4',
-   'value': {
-    'id': '#linked-domain',
-    'type': 'LinkedDomains',
-    'serviceEndpoint': 'https://contact-me.com'
-    }}
-  ],
- 'proof': {
-  'type': 'DataIntegrityProof',
-  'cryptosuite': 'secp-schnorr-2024',
-  'verificationMethod':'did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey',
-  'invocationTarget':'did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u',
-  'capability': 'urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u',
-  'capabilityAction': 'Write',
-  'proofPurpose': 'assertionMethod',
-  'proofValue':'z381yXYmxU8NudZ4HXY56DfMN6zfD8syvWcRXzT9xD9uYoQToo8QsXD7ahM3gXTzuay5WJbqTswt2BKaGWYn2hHhVFKJLXaDz'
-  }
+```json
+{
+   "@context": [
+      "https://w3id.org/zcap/v1",
+      "https://w3id.org/security/data-integrity/v2",
+      "https://w3id.org/json-ld-patch/v1"
+   ],
+   "patch": [
+      {
+         "op": "add",
+         "path": "/service/4",
+         "value": {
+            "id": "#linked-domain",
+            "type": "LinkedDomains",
+            "serviceEndpoint": "https://contact-me.com"
+         }
+      }
+   ],
+   "proof": {
+      "type": "DataIntegrityProof",
+      "cryptosuite": "secp-schnorr-2024",
+      "verificationMethod": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey",
+      "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
+      "capability": "urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
+      "capabilityAction": "Write",
+      "proofPurpose": "assertionMethod",
+      "proofValue": "z381yXYmxU8NudZ4HXY56DfMN6zfD8syvWcRXzT9xD9uYoQToo8QsXD7ahM3gXTzuay5WJbqTswt2BKaGWYn2hHhVFKJLXaDz"
+   }
 }
 ```
 
@@ -721,7 +724,7 @@ merkleProofs.
 
 To deactivate a **did:btc1**, the DID controller MUST add the property `deactivated`
 with the value `true` on the DID document. To do this, the DID controller constructs
-a valid DID Update payload with a JSON patch that adds this propery and announces
+a valid DID Update payload with a JSON patch that adds this property and announces
 the payload through a Beacon in their current DID document following the algorithm
 in [Update]. Once a **did:btc1** has been deactivated this
 state is considered permanent and resolution MUST terminate.

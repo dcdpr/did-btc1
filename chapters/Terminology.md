@@ -165,5 +165,5 @@ resolution time.
 Contemporary Blockheight
 
 : The blockheight of consideration when walking the provenance of a series of DID
-updates. A DID documents contemporary time is the Signal Time of the Beacon Signal
+updates. A DID document's contemporary time is the Signal Time of the Beacon Signal
 that announced the last DID Update Payload applied to the DID document.
