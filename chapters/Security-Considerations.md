@@ -20,7 +20,6 @@ be authorized by all cohort participants using an n-of-n multi-signature. That
 way DID controllers can verify the updates announced within a Beacon Signal
 before authorizing it.
 
-
 ### Considerations Deploying did:btc1
 
 #### Data Retention
@@ -44,7 +43,6 @@ controllers participating in aggregation cohorts SHOULD verify the Beacon addres
 is an n-of-n and that one of the n keys is the cohort key provided to the Beacon
 coordinator. This can be achieved only by constructing the address for themselves
 from the set of cohort keys which the coordinator SHOULD provide.
-
 
 #### Aggregator Beacon Signal Verification
 

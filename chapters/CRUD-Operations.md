@@ -20,7 +20,6 @@ The algorithm takes in `pubKeyBytes`, a compressed SEC encoded secp256k1
 public key and optional `version` and `network` values. The algorithm returns a
 **did:btc1** identifier and corresponding initial DID document.
 
-
 1. Set `genesisBytes` to `pubKeyBytes`.
 1. Set `idType` to "key".
 1. Set `did` to the result of
@@ -77,7 +76,6 @@ intermediate DID document.
 1. Else, MUST raise "InvalidDID" exception.
 1. Return `result`.
 
-
 ### Read
 
 The read operation is executed by a resolver after a resolution request identifying
@@ -88,7 +86,6 @@ of the `identifier` at a specific Target Time. The Target Time is either provide
 in `resolutionOptions` or is set to the Resolution Time of the request.
 
 To do so it executes the following algorithm:
-
 
 1. Let `identifierComponents` be the result of running the algorithm in
    [Section 4.2.1 Parse **did:btc1** identifier](#421-parse-didbtc1-identifier),
@@ -239,7 +236,6 @@ The algorithm takes in a `serviceId`, a Beacon Type, `beaconType`, and a
 1. Set `beacon.serviceEndpoint` to the result of converting `bitcoinAddress` to
    a URI as per **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**
 1. Return `beacon`.
-
 
 ##### External Resolution
 
@@ -398,7 +394,6 @@ The algorithm returns a DID document.
    and `sidecarData`.
 1. Return `targetDocument`.
 
-
 ##### Find Next Signals
 
 This algorithm takes in a `contemporaryBlockheight` and a set of `beacons` and
@@ -411,7 +406,6 @@ This algorithm takes as inputs a Bitcoin blockheight specified by
 This algorithm returns a `nextSignals` struct, containing a `blockheight`
 the signals were found in and an array of `signals`. Each `signal` is a struct
 containing `beaconId`, `beaconType`, and `tx` properties.
-
 
 1. Get Bitcoin `block` at `contemporaryBlockheight`.
 1. Set `beaconSignals` to an empty array.
@@ -460,8 +454,6 @@ to process the Beacon Signals.
     1. If `didUpdatePayload` is not null, push `didUpdatePayload` to `updates`.
 1. Return `updates`.
 
-
-
 ##### Confirm Duplicate Update
 
 This algorithm takes in a DID Update Payload and verifies that the update is a
@@ -505,7 +497,6 @@ DID document before returning it. This algorithm takes inputs
 1. Check that `targetHash` equals `update.targetHash`, else raise InvalidDIDUpdate
    error.
 1. Return `targetDIDDocument`.
-
 
 ### Update
 
@@ -611,7 +602,6 @@ The algorithm returns the invoked DID Update Payload.
    `cryptosuite`, and the set of `proofOptions`.
 1. Return `didUpdateInvocation`.
 
-
 #### Root did:btc1 Update Capabilities
 
 Note: Not sure if these algorithms should go here or in the appendix?
@@ -666,7 +656,6 @@ This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
 1. Set `rootCapability.controller` to `btc1Identifier`.
 1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
 1. Return `rootCapability`.
-
 
 Below is an example of a `didUpdatePayload`. An invoked ZCAP-LD capability
 containing a `patch` defining how the DID document for

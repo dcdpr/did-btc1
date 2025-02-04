@@ -35,7 +35,6 @@ by the `didUpdatePayload`.
 All resolvers of **did:btc1** DIDs MUST support the core Beacon Types defined in
 this specification.
 
-
 ### Singleton Beacon
 
 #### Establish Beacon
@@ -67,7 +66,6 @@ The algorithm is as follows:
 ```
 5. Add `beaconService` to the DID document through an update following the algorithm
    defined in [4.3 Update](#43-update).
-
 
 #### Broadcast DID Update Attestation
 
@@ -139,7 +137,6 @@ of control over that key. The other is the Beacon coordinator, they advertise
 and curate Beacon cohorts by combining Beacon participants into cohorts, verifying
 proofs of control, and producing Beacon addresses.
 
-
 ##### Create CIDAggregatorBeacon Advertisement
 
 Any entity MAY act in the role of Beacon coordinator, creating a Beacon advertisement
@@ -149,7 +146,6 @@ Beacon Type, cohort size, update frequency, and response latency. Once the
 advertisement has been created and broadcast, the coordinator waits for enough
 participants to opt in before establishing the Beacon.
 
-
 ##### CIDAggregatorBeacon Opt-in
 
 DID controllers who wish to participate in a Beacon cohort first find potential
@@ -157,14 +153,12 @@ Beacon advertisements that meet their needs. This includes checking the Beacon
 terms and update frequency, etc. If satisfied, they create a secp256k1 cohort
 keypair and send an Opt-In request to the endpoint specified in the advertisement.
 
-
 ##### Cohort Set
 
 Once a Beacon Aggregator has received enough opt-in responses from participants
 to satisfy the Beacon properties, they generate the n-of-n P2TR Bitcoin address
 for the Beacon. The address and all the cohort public keys the address is constructed
 from are then sent to all participants in a CohortSet message.
-
 
 ##### Add Beacon Service Endpoint to DID Document
 
@@ -286,7 +280,6 @@ Beacon Signal is ignored.
 1. Return `didUpdatePayload`.
 
 ![](https://hackmd.io/_uploads/HkZe90lkp.jpg)
-
 
 ### SMTAggregator Beacon
 
