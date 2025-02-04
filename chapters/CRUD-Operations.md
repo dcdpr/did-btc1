@@ -649,30 +649,33 @@ containing a `patch` defining how the DID document for
 be mutated.
 
 ```json
-{'@context': [
-  'https://w3id.org/zcap/v1',
-  'https://w3id.org/security/data-integrity/v2',
-  'https://w3id.org/json-ld-patch/v1'
-  ],
- 'patch': [
-  {'op': 'add',
-   'path': '/service/4',
-   'value': {
-    'id': '#linked-domain',
-    'type': 'LinkedDomains',
-    'serviceEndpoint': 'https://contact-me.com'
-    }}
-  ],
- 'proof': {
-  'type': 'DataIntegrityProof',
-  'cryptosuite': 'secp-schnorr-2024',
-  'verificationMethod':'did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey',
-  'invocationTarget':'did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u',
-  'capability': 'urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u',
-  'capabilityAction': 'Write',
-  'proofPurpose': 'assertionMethod',
-  'proofValue':'z381yXYmxU8NudZ4HXY56DfMN6zfD8syvWcRXzT9xD9uYoQToo8QsXD7ahM3gXTzuay5WJbqTswt2BKaGWYn2hHhVFKJLXaDz'
-  }
+{
+   "@context": [
+      "https://w3id.org/zcap/v1",
+      "https://w3id.org/security/data-integrity/v2",
+      "https://w3id.org/json-ld-patch/v1"
+   ],
+   "patch": [
+      {
+         "op": "add",
+         "path": "/service/4",
+         "value": {
+            "id": "#linked-domain",
+            "type": "LinkedDomains",
+            "serviceEndpoint": "https://contact-me.com"
+         }
+      }
+   ],
+   "proof": {
+      "type": "DataIntegrityProof",
+      "cryptosuite": "secp-schnorr-2024",
+      "verificationMethod": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey",
+      "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
+      "capability": "urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
+      "capabilityAction": "Write",
+      "proofPurpose": "assertionMethod",
+      "proofValue": "z381yXYmxU8NudZ4HXY56DfMN6zfD8syvWcRXzT9xD9uYoQToo8QsXD7ahM3gXTzuay5WJbqTswt2BKaGWYn2hHhVFKJLXaDz"
+   }
 }
 ```
 
