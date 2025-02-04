@@ -403,7 +403,7 @@ containing `beaconId`, `beaconType`, and `tx` properties.
    check to see if any transaction inputs are spends from one of the Beacon addresses.
    If they are, create a `signal` object containing the following fields and push
    `signal` to `beaconSignals`:
-```
+```json
 {
     "beaconId": `beaconService.id`,
     "beaconType": `beaconService.type`,
@@ -413,7 +413,7 @@ containing `beaconId`, `beaconType`, and `tx` properties.
 4. If no `beaconSignals`, set `nextSignals` to the result of algorithm
    [Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
 5. Else initialize a `nextSignals` object to the following:
-```
+```json
 {
   "blockheight": `block.blockheight`,
   "signals": `beaconSignals`
@@ -648,7 +648,7 @@ containing a `patch` defining how the DID document for
 **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
 be mutated.
 
-```jsonld
+```json
 {'@context': [
   'https://w3id.org/zcap/v1',
   'https://w3id.org/security/data-integrity/v2',
