@@ -4,7 +4,7 @@
   "autoDate": true,
   "inputDirectory": "chapters",
   "inputFile": [
-    "../README.md",
+    "Index.md",
     "Introduction-and-Motivation.md",
     "Terminology.md",
     "Syntax.md",
