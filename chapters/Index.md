@@ -4,7 +4,7 @@ lang: en
 
 # did:btc1 DID Method Specification
 
-## did:btc1 DID Method Specification
+## did:btc1 DID Method Specification {.unnumbered .unlisted}
 
 ### Authors: {.unnumbered .unlisted}
 
