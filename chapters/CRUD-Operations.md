@@ -49,7 +49,7 @@ the type SingletonBeacon.
 1. Set `initialDocument` to a copy of the `intermediateDocument`.
 1. Replace all `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
    values in the `initialDocument` with the `did`.
-1.  Optionally store `canonicalBytes` on a Content Addressable Storage (CAS)
+1.  Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
     system like IPFS. If doing so, implementations MUST use CIDs generated following
     the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
@@ -76,7 +76,7 @@ intermediate DID document.
 ### Read
 
 The read operation is executed by a resolver after a resolution request identifying
-a specific **did:btc1** `identifier` is received from a client at Resolution Time.
+a specific **did:btc1** `identifier` is received from a client at ::Resolution Time::.
 The request MAY contain a `resolutionOptions` object containing additional information
 to be used in resolution. The resolver then attempts to resolve the DID document
 of the `identifier` at a specific Target Time. The Target Time is either provided
@@ -222,7 +222,7 @@ Each Beacon is of the type SingletonBeacon. The algorithm returns a `services` a
 
 This algorithm creates a Beacon service that can be included into the services
 array of a DID document.
-The algorithm takes in a `serviceId`, a Beacon Type, `beaconType`, and a
+The algorithm takes in a `serviceId`, a ::Beacon Type:: `beaconType`, and a
 `bitcoinAddress`. It returns a `service` object.
 
 1. Initialize a `beacon` variable to an empty object.
@@ -235,9 +235,9 @@ The algorithm takes in a `serviceId`, a Beacon Type, `beaconType`, and a
 ##### External Resolution
 
 This algorithm externally retrieves an `intermediateDocumentRepresentation`,
-either by retrieving it from Content Addressable Storage (CAS) or from the Sidecar
-data provided as part of the resolution request. The algorithm takes in a
-**did:btc1** `identifier`, a `identifierComponents` object and a
+either by retrieving it from ::Content Addressable Storage:: (CAS) or from the
+::Sidecar:: data provided as part of the resolution request. The algorithm
+takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
 `resolutionOptions` object.
 It returns an `initialDocument`, which is a conformant DID document validated
 against the `identifier`.
@@ -273,13 +273,13 @@ otherwise it throws an error.
 
 This algorithm attempts to retrieve an `initialDocument` from a Content
 Addressable Storage (CAS) system by converting the bytes in the `identifier`
-into a Content Identifier (CID). The algorithm takes in an `identifier` and an
+into a ::Content Identifier:: (CID). The algorithm takes in an `identifier` and an
 `identifierComponents` object and returns an `initialDocument`.
 
 1. Set `hashBytes` to `identifierComponents.genesisBytes`.
 1. Set `cid` to the result of converting `hashBytes` to a IPFS v1 CID.
 1. Set `intermediateDocumentRepresentation` to the result of fetching the `cid`
-   against a Content Addressable Storage (CAS) system such as IPFS.
+   against a ::Content Addressable Storage:: (CAS) system such as IPFS.
 1. Set `initialDocument` to the copy of the `intermediateDocumentRepresentation`.
 1. Replace the string
    (`did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) with
@@ -289,7 +289,7 @@ into a Content Identifier (CID). The algorithm takes in an `identifier` and an
 #### Resolve Target Document
 
 This algorithm resolves a DID document from an initial document by walking the
-Bitcoin blockchain to identify Beacon Signals that announce DID Update Payloads
+Bitcoin blockchain to identify ::Beacon Signals:: that announce ::DID Update Payloads::
 applicable to the **did:btc1** identifier being resolved. The algorithm takes
 in an `initialDocument` and a set of `resolutionOptions`. The algorithm returns
 a valid `targetDocument` or throws an error.
@@ -387,7 +387,7 @@ The algorithm returns a DID document.
 ##### Find Next Signals
 
 This algorithm takes in a `contemporaryBlockheight` and a set of `beacons` and
-finds the next Bitcoin block containing Beacon Signals from one or more of the
+finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
 `beacons`.
 
 This algorithm takes as inputs a Bitcoin blockheight specified by
@@ -439,13 +439,13 @@ to process the Beacon Signals.
        structure of sidecarData
     1. Set `didUpdatePayload` to the result of passing `signalTx` and
        `signalSidecarData` to the Process Beacon Signal algorithm defined by the
-       corresponding Beacon `type`. See [Update Beacons].
+       corresponding ::Beacon Type::. See [Update Beacons].
     1. If `didUpdatePayload` is not null, push `didUpdatePayload` to `updates`.
 1. Return `updates`.
 
 ##### Confirm Duplicate Update
 
-This algorithm takes in a DID Update Payload and verifies that the update is a
+This algorithm takes in a ::DID Update Payload:: and verifies that the update is a
 duplicate against the hash history of previously applied updates.
 The algorithm takes in an `update` and an array of hashes, `updateHashHistory`.
 It throws an error if the `update` is not a duplicate, otherwise it returns.
@@ -530,7 +530,7 @@ three Beacon Types: `SingletonBeacon`, `CIDAggregateBeacon`, and
 This algorithm takes in a `btc1Identifier`, `sourceDocument`, `sourceVersionId`,
 and `documentPatch` objects. It applies the `documentPatch` to the `sourceDocument`
 and verifies the resulting `targetDocument` is a conformant DID document. Then
-it constructs and returns an unsigned DID Update Payload.
+it constructs and returns an unsigned ::DID Update Payload::.
 
 1. Check that `sourceDocument.id` equals `btc1Identifier` else MUST raise
    `invalidDIDUpdate` error.
@@ -562,7 +562,7 @@ This algorithm takes in a `btc1Identifier`, an unsigned `didUpdatePayload`, and 
 Integrity proof following the Authorization Capabilities (ZCAP-LD) and
 VC Data Integrity specifications.
 
-The algorithm returns the invoked DID Update Payload.
+The algorithm returns the invoked ::DID Update Payload::.
 
 1. Set `privateKeyBytes` to the result of retrieving the private key bytes
    associated with the `verificationMethod` value. How this is achieved is left to
@@ -685,7 +685,7 @@ This algorithm takes in a `sourceDocument`, an array of `beaconIds`, and a
 `didUpdateInvocation`. It retrieves `beaconServices` from the `sourceDocument`
 and calls the [Broadcast DID Update Attestation] algorithm corresponding the type of
 the Beacon. The algorithm returns an array of `signalsMetadata`, containing the
-necessary data to validate the Beacon Signal against the `didUpdateInvocation`.
+necessary data to validate the ::Beacon Signal:: against the `didUpdateInvocation`.
 
 1. Set `beaconServices` to an empty array.
 1. Set `signalMetadata` to an empty array.

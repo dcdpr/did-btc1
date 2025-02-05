@@ -2,17 +2,17 @@
 
 Beacons are the mechanism by which a DID controller announces an update to their
 DID document by broadcasting an attestation to this update onto the public Bitcoin
-network. Beacons are identified by a Bitcoin address and emit Beacon Signals by
+network. Beacons are identified by a Bitcoin address and emit ::Beacon Signals:: by
 broadcasting a valid Bitcoin transaction that spends from this Beacon address.
 These transactions include attestations to a set of `didUpdatePayload`s, either
-in the form of Content Addressable Identifiers (CIDs) or Sparse Merkle Tree (SMT)
+in the form of Content Addressable Identifiers (CIDs) or ::Sparse Merkle Tree:: (SMT)
 roots. Beacons are included as a service in DID documents, with the Service Endpoint
 identifying a Bitcoin address to watch for Beacon Signals. All Beacon Signals
 broadcast from this Beacon MUST be processed as part of resolution
 (see [Read]). The type of the Beacon service in the DID document
 defines how Beacon Signals SHOULD be processed.
 
-**did:btc1** supports different Beacon Types, with each type defining a set of
+**did:btc1** supports different ::Beacon Types::, with each type defining a set of
 algorithms for:
 
 1. How a Beacon can be established and added as a service to a DID document.
@@ -40,7 +40,7 @@ this specification.
 #### Establish Beacon
 
 A Singleton Beacon is a Beacon that can be used to publish a single DID Update
-Payload targeting a single DID document. The serviceEndpoint for this Beacon Type
+Payload targeting a single DID document. The serviceEndpoint for this ::Beacon Type::
 is a Bitcoin address represented as a URI following the
 [BIP21 scheme](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki).
 It is RECOMMENDED that this Bitcoin address be under the sole control of the
@@ -70,8 +70,8 @@ The algorithm is as follows:
 #### Broadcast DID Update Attestation
 
 This algorithm is called from [Update], step 8, if the
-Beacon being used is of the type SingletonBeacon. A Content Identifier, `cid`,
-for the DID Update Payload the DID controller wishes to broadcast and a `beacon`
+Beacon being used is of the type SingletonBeacon. A ::Content Identifier::, `cid`,
+for the ::DID Update Payload:: the DID controller wishes to broadcast and a `beacon`
 object are passed into the algorithm. The Beacon constructs a Bitcoin transaction
 that spends from the Beacon address to a transaction output of the format
 `[OP_RETURN, OP_PUSH32, cid]` and broadcasts this to the Bitcoin network.
@@ -95,19 +95,19 @@ Updates) with `tx` passed in.
    then return. Bitcoin transaction is not a Beacon signal.
 1. Set `cid` to the 32 bytes in `txOut`.
 1. Set `didUpdatePayload` to the result of retrieving `cid` from Content Addressable
-   Storage (CAS) or Sidecar data. If not found MUST raise a `latePublishError`.
+   Storage (CAS) or ::Sidecar:: data. If not found MUST raise a `latePublishError`.
 1. Return `didUpdatePayload`.
 
 ### CIDAggregator Beacon
 
 A Beacon of the type CIDAggregatorBeacon is a Beacon that publishes Bitcoin
-transactions containing a Content Identifier (CID) announcing an Aggregated
+transactions containing a ::Content Identifier:: (CID) announcing an Aggregated
 DID Update Bundle. An Aggregated DID Update Bundle is a JSON object that maps
-**did:btc1** identifiers to CID values for the individual DID Update Payloads.
-The aggregated DID Update Bundle CID (bundleCID) SHOULD be resolvable against a
-Content Addressable Storage (CAS) system such as IPFS, while the CID for the DID
+**did:btc1** identifiers to CID values for the individual ::DID Update Payloads::.
+The Aggregated DID Update Bundle CID (bundleCID) SHOULD be resolvable against a
+::Content Addressable Storage:: (CAS) system such as IPFS, while the CID for the DID
 Update payload (payloadCID) MAY be resolvable against a CAS or provided through
-a Sidecar mechanism. It is RECOMMENDED that this type of Beacon is only included
+a ::Sidecar:: mechanism. It is RECOMMENDED that this type of Beacon is only included
 in a DID document if the DID controller is REQUIRED to participate in authorizing
 Bitcoin transactions from this Beacon. In other words, this Beacon SHOULD identify
 an n-of-n P2TR Bitcoin address where n is the number of unique DID controllers
@@ -142,7 +142,7 @@ proofs of control, and producing Beacon addresses.
 Any entity MAY act in the role of Beacon coordinator, creating a Beacon advertisement
 that they can broadcast across any medium. A Beacon advertisement specifies the
 properties of the Beacon that the coordinator intends to establish, including the
-Beacon Type, cohort size, update frequency, and response latency. Once the
+::Beacon Type::, cohort size, update frequency, and response latency. Once the
 advertisement has been created and broadcast, the coordinator waits for enough
 participants to opt in before establishing the Beacon.
 
@@ -181,9 +181,9 @@ BIP21:
 #### Broadcast DID Update Attestation
 
 This is an algorithm involving two roles: a set of cohort participants and a
-Beacon coordinator. The Beacon coordinator collects individual DID Update Payload
-Content Identifiers (CIDs) for specific **did:btc1**s and aggregates them into a
-DID Update Bundle, which is then published to a Content Addressable Storage (CAS).
+Beacon coordinator. The Beacon coordinator collects individual ::DID Update Payload::
+::Content Identifiers:: (CIDs) for specific **did:btc1**s and aggregates them into a
+::DID Update Bundle::, which is then published to a ::Content Addressable Storage:: (CAS).
 The CID for the DID Update Bundle is included in a Partially Signed Bitcoin
 Transaction (PSBT) transaction output spent from the Beacon's `n-of-n` address.
 Each of the `n` cohort participants in the Beacon MUST sign the transaction before
@@ -227,7 +227,7 @@ sequenceDiagram
 
 ##### Submit DID Update
 
-A cohort participant submits a CID for a DID Update Payload along with the DID
+A cohort participant submits a CID for a ::DID Update Payload:: along with the DID
 the update is for to the Beacon coordinator for a Beacon identified in their
 DID document.
 
@@ -240,27 +240,27 @@ Beacon cohort participants for authorization.
 
 ##### Authorize Beacon Signal
 
-On receiving an Authorize Beacon Signal request, DID controllers MUST verify
-that the DID Update Bundle either includes the CID for the DID Update Payload
+On receiving an ::Authorized Beacon Signal:: request, DID controllers MUST verify
+that the ::DID Update Bundle:: either includes the CID for the ::DID Update Payload::
 they submitted, or includes no entry for their DID. Once satisfied, the
 DID controller signs the PSBT following the MuSig2 protocol using the key they
 generated when establishing the Beacon.
 
 ##### Broadcast Beacon Signal
 
-Once all Beacon cohort participants have authorized the Beacon Signal by
+Once all Beacon cohort participants have authorized the ::Beacon Signal:: by
 signing the PSBT, a valid, spendable Bitcoin transaction can be created by
 aggregating the signatures following Schnorr. This Bitcoin transaction can then
 be broadcast to the network.
 
 #### Process Beacon Signal
 
-A Beacon Signal from a CIDAggregator Beacon is a Bitcoin transaction that contains
-a `bundleCID` referencing a DID Update Bundle in its first transaction output.
+A ::Beacon Signal:: from a CIDAggregator Beacon is a Bitcoin transaction that contains
+a `bundleCID` referencing a ::DID Update Bundle:: in its first transaction output.
 The bundle MUST be retrieved and then the relevant `payloadCID` for the DID Update
 payload of the specific DID being resolved MUST be identified and the content
 is retrieved. If the content identified by either CID cannot be retrieved, either
-from the CAS or through Sidecar at any point, a LatePublishing error MUST be
+from the CAS or through ::Sidecar:: at any point, a LatePublishing error MUST be
 raised. If the DID Update Bundle contains no CID for the relevant DID, then the
 Beacon Signal is ignored.
 
@@ -283,10 +283,10 @@ Beacon Signal is ignored.
 
 ### SMTAggregator Beacon
 
-A SMTAggregator Beacon is a Beacon whose Beacon Signals are Bitcoin transactions
-containing the root of a Sparse Merkle Tree (SMT). The SMT root attests to a
-set of DID Update Payloads, however, the updates themselves MUST be provided
-along with a proof of inclusion against the SMT root through a Sidecar mechanism
+A SMTAggregator Beacon is a Beacon whose ::Beacon Signals:: are Bitcoin transactions
+containing the root of a ::Sparse Merkle Tree:: (SMT). The SMT root attests to a
+set of ::DID Update Payloads::, however, the updates themselves MUST be provided
+along with a proof of inclusion against the SMT root through a ::Sidecar:: mechanism
 during resolution. Using the SMT root a resolver can then verify the inclusion
 proof for the given DID Update Payload. If a DID document includes a SMTAggregator
 Beacon in their set of Beacon services, then they MUST provide proofs for each
@@ -310,8 +310,8 @@ for each DID.
 
 #### Broadcast DID Update Attestation
 
-To publish a DID Update Payload, the DID controller MUST get a hash of the DID
-Update Payload included at the leaf of the Sparse Merkle Tree (SMT) identified by
+To publish a ::DID Update Payload::, the DID controller MUST get a hash of the DID
+Update Payload included at the leaf of the ::Sparse Merkle Tree:: (SMT) identified by
 their **did:btc1** identifier and receive an inclusion proof for this data. If
 a member of the Beacon cohort does not wish to announce an update in a Beacon
 Signal, they MUST receive and verify a proof of non-inclusion for their DID.
@@ -320,7 +320,7 @@ Beacon signal, they SHOULD accept and authorize the signal following the MuSig2
 protocol. Once all members of the cohort have authorized the signal, it can be
 broadcast as a transaction to the Bitcoin network. DID controllers are responsible
 for persisting their DID updates and proofs, these will need to be provided through
-a Sidecar mechanism during a resolution process.
+a ::Sidecar:: mechanism during a resolution process.
 
 ```mermaid
 sequenceDiagram
@@ -348,11 +348,11 @@ sequenceDiagram
 
 #### Process Beacon Signal
 
-Beacon Signals broadcast from SMTAggregator Beacons are expected to be a Bitcoin
+::Beacon Signals:: broadcast from SMTAggregator Beacons are expected to be a Bitcoin
 transaction with the first transaction output of the format
 `[OP_RETURN, OP_PUSH32, 32Bytes]`, where the 32 bytes are interpreted as a root
-to a Sparse Merkle Tree (SMT) that aggregates a set of hashes of DID Update
-Payloads. To retrieve and validate a DID Update Payload for a specific DID, the
+to a ::Sparse Merkle Tree:: (SMT) that aggregates a set of hashes of DID Update
+Payloads. To retrieve and validate a ::DID Update Payload:: for a specific DID, the
 resolver MUST receive (out of band) the SMT proof and DID Update Payload for a
 specific DID. This is typically provided by the DID controller. Using the SMT
 root from the Beacon Signal, the resolver can check the proof, gaining confidence
