@@ -13,8 +13,8 @@ Beacon
 
 Singleton Beacon
 
-: A Singleton Beacon enables a single entity to independently post a DID Update
-  Payload in a ::Beacon Signal::.
+: A Singleton Beacon enables a single entity to independently post a ::DID Update
+  Payload:: in a ::Beacon Signal::.
 
 Aggregate Beacon
 
@@ -22,8 +22,8 @@ Aggregate Beacon
   DIDs and possibly posting multiple updates) to collectively announce a set of
   ::DID Update Payloads:: in a ::Beacon Signal::.
 
-  There can only ever be one DID Update Payload per **did:btc1** in a Beacon
-  Signal from an Aggregate Beacon.
+  There can only ever be one ::DID Update Payload:: per **did:btc1** in a ::Beacon
+  Signal:: from an Aggregate Beacon.
 
 Beacon Type
 
@@ -35,13 +35,13 @@ Beacon Types
 
 Beacon Signal
 
-: Beacon Signals are Bitcoin transactions that spend from a Beacon address and
+: Beacon Signals are Bitcoin transactions that spend from a ::Beacon:: address and
   include a transaction output of the format `[OP_RETURN, <32_bytes>]`. Beacon
   Signals announce one or more ::DID Update Payloads:: and provide a means for these
   payloads to be verified as part of the Beacon Signal.
 
-  The type of the Beacon  determines how these Beacon Signals SHOULD be
-  constructed and processed to validate a set of DID Update Payloads against the
+  The type of the ::Beacon::  determines how these Beacon Signals SHOULD be
+  constructed and processed to validate a set of ::DID Update Payloads:: against the
   32 bytes contained within the Beacon Signal.
 
 Beacon Signals
@@ -50,7 +50,7 @@ Beacon Signals
 
 Authorized Beacon Signal
 
-: An Authorized Beacon Signal is a ::Beacon Signal:: from a ::Beacon:: with a Beacon
+: An Authorized Beacon Signal is a ::Beacon Signal:: from a ::Beacon:: with a ::Beacon::
   address in a then-current DID document.
 
 DID Update Payload
@@ -110,7 +110,7 @@ Schnorr Signatures
 Taproot
 
 : Taproot is an upgrade to the Bitcoin blockchain implemented in November 2021.
-  This upgrade enabled Bitcoin transactions to be secured using Schnorr signatures
+  This upgrade enabled Bitcoin transactions to be secured using ::Schnorr Signatures::
   through the introduction of a new address, a Taproot address.
 
 Unspent Transaction Output
@@ -143,7 +143,7 @@ CID
 Content Addressable Storage
 
 : Content Addressable Storage (CAS) is a data storage system where content is
-  addressable using Content Identifiers (CIDs). The Interplanetary File System
+  addressable using ::Content Identifiers:: (CIDs). The Interplanetary File System
   (IPFS) is an example of CAS.
 
 CAS
@@ -192,7 +192,7 @@ Sidecar Data
 
 Signal Blockheight
 
-: The blockheight of the Bitcoin block that included a specific Beacon Signal.
+: The blockheight of the Bitcoin block that included a specific ::Beacon Signal::.
   Blockheight is used as the internal time of the resolution algorithm.
 
 Resolution Time
@@ -203,10 +203,10 @@ Target Time
 
 : A UTC timestamp that specifies a target time provided by a client in a resolution
   request to the resolver. If none is provided the target time is set to the
-  resolution time.
+  ::Resolution Time::.
 
 Contemporary Blockheight
 
 : The blockheight of consideration when walking the provenance of a series of DID
-  updates. A DID document's contemporary time is the Signal Time of the Beacon Signal
+  updates. A DID document's contemporary time is the Signal Time of the ::Beacon Signal::
   that announced the last ::DID Update Payload:: applied to the DID document.
