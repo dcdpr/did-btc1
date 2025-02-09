@@ -19,7 +19,7 @@ joins, and every online task that requires managing identity or key material.
 In order to tackle reliance on public DID documents head-on, this DID Method
 introduces private DID Documents. However, if "private" or "pairwise" DID
 documents leak every time the DID is used then these DIDs do not accomplish
-much, either.DIDs that are shared with a relying party can be seen by not only
+much, either. DIDs that are shared with a relying party can be seen by not only
 that party but also by any third party resolver that the relying party contracts
 with. The next step in trust-minimization is a DID document transferred directly
 from the DID controller to the relying party.We call this transfer "::Sidecar::"
@@ -44,7 +44,7 @@ affects some other DID Methods.
 * efficiency (in cost and energy usage), via offline DID creation and aggregatable
   updates;
 * long-term identifiers that can support frequent updates; and
-* non-repudiation appropriate for serious contracts.
+* ::Non-Repudiation:: appropriate for serious contracts.
 
 ### Comparison with Other DID Methods that Rely on Bitcoin's Blockchain for Anchoring
 
@@ -62,9 +62,9 @@ resistance. It has the following limitations:
   which might block updates (although this is currently highly unlikely since no
   valid transaction has ever been successfully censored from the blockchain by
   miners).
-* When all the prior updates were kept online, BTCR provided non-repudiation,
+* When all the prior updates were kept online, BTCR provided ::Non-Repudiation::,
   however it is possible to take prior updates offline and still resolve the
-  current BTCR update as a valid DID Document, so it cannot guarantee non-repudiation.
+  current BTCR update as a valid DID Document, so it cannot guarantee ::Non-Repudiation::.
 
 #### did:ion
 
@@ -100,7 +100,7 @@ provide. In summary its main limitations are:
 ### Features
 
 * There is no proprietary blockchain, only the Bitcoin blockchain.
-* Offline creation allows creating DIDs without any on-chain transactions.
+* ::Offline Creation:: allows creating DIDs without any on-chain transactions.
 * Aggregator Beacons can aggregate any number of updates from any number of DID
   controllers in one Bitcoin transaction.
 * ::Non-repudiation:: is provided by - and *"::Late Publishing::"* is avoided by - ensuring
@@ -117,18 +117,18 @@ provide. In summary its main limitations are:
 ### Limitations
 * Resolvers require read-only view of all blocks arriving at the Bitcoin blockchain.
 * DID controllers are responsible for providing the data referenced in their
-  Beacons' updates (although many Beacons are expected to provide an archival
+  ::Beacons::' updates (although many ::Beacons:: are expected to provide an archival
   service making Bundles publicly available).  If this data is not available, the
   DID will not verify.
 * Because of the data availability responsibility, and the threat of a rogue
-  Beacon publishing an invalid reference, the most secure Beacons will choose
+  Beacon publishing an invalid reference, the most secure ::Beacons:: will choose
   Bitcoin scripts that allow every DID controller a veto, although given current
-  UTXO-sharing technology, this impedes availability.
+  ::UTXO::-sharing technology, this impedes availability.
 
 ### Future Directions
 
 * ZCAPs delegation of the right to update only part of a DID Document;
 * More scalable Aggregator Beacons will be possible with a "transaction introspection"
   upgrade to Bitcoin, such as OP_CTV or OP_CAT; and
-* Beacons do not have to reuse their addresses if, in the controller's DID document,
+* ::Beacons:: do not have to reuse their addresses if, in the controller's DID document,
   a descriptor is used instead of an address.
