@@ -103,7 +103,7 @@ provide. In summary its main limitations are:
 * ::Offline Creation:: allows creating DIDs without any on-chain transactions.
 * Aggregator Beacons can aggregate any number of updates from any number of DID
   controllers in one Bitcoin transaction.
-* ::Non-repudiation:: is provided by - and *"::Late Publishing::"* is avoided by - ensuring
+* ::Non-Repudiation:: is provided by - and *"::Late Publishing::"* is avoided by - ensuring
   100% valid coverage of the entire update history without gaps or ambiguity.
 * Public disclosure of DID documents can be avoided by using ::Sidecar:: delivery
   of the necessary DID history along with the DID itself.
