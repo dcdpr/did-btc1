@@ -11,6 +11,14 @@ Beacon
   occurred (in the case of a SingletonBeacon) or may have occurred (in the case
   of a CIDAggregator or SMTAggregator Beacons).
 
+Beacons
+
+: ::Beacon::
+
+Beacon's
+
+: ::Beacon::
+
 Singleton Beacon
 
 : A Singleton Beacon enables a single entity to independently post a ::DID Update
@@ -63,6 +71,10 @@ DID Update Payloads
 
 : ::DID Update Payload::
 
+DID's Update Payload
+
+: ::DID Update Payload::
+
 DID Update Bundle
 
 : A JSON object that maps **did:btc1** identifiers to ::Content Identifiers:: (CIDs)
@@ -90,6 +102,9 @@ Sparse Merkle Tree
   attested to at the leaves of the tree is the ::DID Update Payload:: for that
   **did:btc1** identifier that indexed to the leaf.
 
+SMT
+: ::Sparse Merkle Tree:
+
 Invocation
 
 : See https://w3c-ccg.github.io/zcap-spec/#terminology
@@ -106,6 +121,9 @@ Schnorr Signature
 Schnorr Signatures
 
 : ::Schnorr Signature::
+
+Schnorr
+: ::Scnhorr Signature::
 
 Taproot
 
@@ -137,6 +155,10 @@ Content Identifiers
 : ::Content Identifier::
 
 CID
+
+: ::Content Identifier::
+
+CIDs
 
 : ::Content Identifier::
 
