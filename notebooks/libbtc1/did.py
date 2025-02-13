@@ -5,7 +5,7 @@ from buidl.ecc import S256Point
 MAINNET="mainnet"
 SIGNET="signet"
 TESTNET="testnet"
-REGNET="regnet"
+REGNET="regtest"
 
 NETWORKS = [MAINNET,SIGNET,TESTNET, REGNET]
 

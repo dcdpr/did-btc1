@@ -12,3 +12,4 @@ py_rdfc10 @ git+https://github.com/amagioss/py_rdfc10
 base58
 jsonpatch
 multiformats
+di-schnorr-secp256k1 @ git+https://github.com/LegReq/di-schnorr-secp256k1-python
