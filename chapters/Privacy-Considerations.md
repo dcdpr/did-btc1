@@ -7,7 +7,7 @@
 **did:btc1** was designed such that updates to DID documents are NOT REQUIRED
 to be public. Bitcoin is used to publicly announce and anchor updates to DID
 documents, however the updates themselves can be kept private by DID controllers
-and provided through a ::Sidecar: mechanism at resolution time.
+and provided through a ::Sidecar: mechanism at ::Resolution Time::.
 
 #### DID Documents Need not be Public
 
@@ -17,7 +17,7 @@ plus a series of updates to that DID document. To keep the DID document fully
 private, the DID controller can choose to use an externally resolved initial
 **did:btc1** and not place the initial DID document on a ::Content Addressable
 Storage:: (CAS) system such as IPFS. The initial DID document can be provided
-at resolution time through a ::Sidecar:: mechanism along with the collection of
+at ::Resolution Time:: through a ::Sidecar:: mechanism along with the collection of
 updates that can be verified against the relevant ::Beacon Signals:: for the DID
 being resolved.
 
