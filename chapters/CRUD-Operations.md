@@ -79,7 +79,7 @@ The read operation is executed by a resolver after a resolution request identify
 a specific **did:btc1** `identifier` is received from a client at ::Resolution Time::.
 The request MAY contain a `resolutionOptions` object containing additional information
 to be used in resolution. The resolver then attempts to resolve the DID document
-of the `identifier` at a specific ::Target Time:. The ::Target Time:: is either provided
+of the `identifier` at a specific ::Target Time::. The ::Target Time:: is either provided
 in `resolutionOptions` or is set to the ::Resolution Time:: of the request.
 
 To do so it executes the following algorithm:
@@ -209,7 +209,7 @@ Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `service
    `beaconAddress` to [Create Beacon Service].
 1. Push `p2wpkhBeacon` to `services`.
 1. Set `serviceId` to `#initialP2TR`.
-1. Set `beaconAddress` to the result of generating a Pay-to-::Taproot:: Bitcoin address
+1. Set `beaconAddress` to the result of generating a Pay-to-Taproot Bitcoin address
    from the `keyBytes` for the appropriate `network`.
 1. Set `p2trBeacon` to the result of passing `serviceId`, `beaconType`, and
    `beaconAddress` to [Create Beacon Service].
@@ -236,7 +236,7 @@ The algorithm takes in a `serviceId`, a ::Beacon Type:: `beaconType`, and a
 
 This algorithm externally retrieves an `intermediateDocumentRepresentation`,
 either by retrieving it from ::Content Addressable Storage:: (CAS) or from the
-::Sidecar:: data provided as part of the resolution request. The algorithm
+::Sidecar Data:: provided as part of the resolution request. The algorithm
 takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
 `resolutionOptions` object.
 It returns an `initialDocument`, which is a conformant DID document validated

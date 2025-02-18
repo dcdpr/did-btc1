@@ -210,7 +210,7 @@ Sidecar
 
 Sidecar Data
 
-: Data transmitted via Sidecar.
+: Data transmitted via ::Sidecar::.
 
 Signal Blockheight
 

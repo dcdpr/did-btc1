@@ -37,7 +37,7 @@ a key.
 
 #### Aggregator Beacon Address Verification
 
-An Aggregator ::Beacon:: Address SHOULD be an n-of-n Pay-to-::Taproot:: (P2TR) address,
+An Aggregator ::Beacon:: Address SHOULD be an n-of-n Pay-to-Taproot (P2TR) address,
 with a cohort key contributed to the n by each of the cohort participants. DID
 controllers participating in aggregation cohorts SHOULD verify the ::Beacon:: address
 is an n-of-n and that one of the n keys is the cohort key provided to the ::Beacon::
@@ -62,7 +62,7 @@ would be possible for an adversary to take control of a DID by submitting a ::DI
 Update Payload:: to a ::Beacon:: that replaces key material and ::Beacons:: in the DID
 document for ones under the adversary's control. Such an attack would be detectable
 by the DID controller, as they would see a valid spend from a ::Beacon:: that they
-did not authorize. Additionally, if the DID relied on ::Sidecar:: data, without access
+did not authorize. Additionally, if the DID relied on ::Sidecar data::, without access
 to this data the DID would be useless to the adversary as they would be unable
 to demonstrate a valid complete history of the DID during resolution.
 

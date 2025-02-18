@@ -22,7 +22,7 @@ documents leak every time the DID is used then these DIDs do not accomplish
 much, either. DIDs that are shared with a relying party can be seen by not only
 that party but also by any third party resolver that the relying party contracts
 with. The next step in trust-minimization is a DID document transferred directly
-from the DID controller to the relying party.We call this transfer "::Sidecar::"
+from the DID controller to the relying party. We call this transfer "::Sidecar::"
 delivery.When a relying party *who is willing to cooperate with privacy concerns*
 has the capacity to act as their own resolver, then privacy has a chance.
 
