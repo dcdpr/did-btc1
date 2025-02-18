@@ -190,7 +190,7 @@ This algorithm deterministically generates three ::Beacons:: from the single
 `keyBytes` value used to generate the deterministic **did:btc1**, one for each
 of the following three Bitcoin address types for the Bitcoin `network` specified
 by the DID: Pay-to-Public-Key-Hash (P2PKH), Pay-to-Witness-Public-Key-Hash (P2WPKH),
-and Pay-to-::Taproot:: (P2TR). Spends from these three addresses can be produced only
+and Pay-to-Taproot (P2TR). Spends from these three addresses can be produced only
 through signatures from the `keyBytes`'s associated private key.
 Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `services` array.
 
