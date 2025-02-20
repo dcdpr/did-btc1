@@ -42,7 +42,7 @@ def decode_bech32_identifier(value):
     #     raise ValueError(f"bytes out of range: {num_bytes}")
     identifier = bytes(convertbits(data, 5, 8, False))
 
-    return [type, identifier]
+    return [hrp, identifier]
     
 
 
