@@ -8,6 +8,7 @@
     "url": "git+https://github.com/dcdpr/did-btc1.git"
   },
   "scripts": {
+    "pandoc-spec": "pandoc-spec",
     "pandoc-spec-local": "pandoc-spec"
   },
   "bugs": {
