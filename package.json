@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/dcdpr/did-btc1.git"
   },
+  "scripts": {
+    "pandoc-spec": "pandoc-spec"
+  },
   "bugs": {
     "url": "https://github.com/dcdpr/did-btc1/issues"
   },
