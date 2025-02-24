@@ -56,14 +56,9 @@ The algorithm is as follows:
     1. Before the ::Beacon:: can be used to publish an update it MUST be funded.
 1. Set `beaconUri` to the URI for the address following BIP21.
 1. Initialize `beaconService` to the JSON string (interpolating values as needed):
-   ```json
-   {
-       "id": "#singletonBeacon", 
-       "type": "SingletonBeacon", 
-       "serviceEndpoint": "${beaconUri}",
-       "casType": "IPFS" // Optional hint at the CAS storage used 
-   }
+   ```{.json include="json/Update-Beacons/Singleton-initialize-beacon-service.json"}
    ```
+   Note that the `casType` is optional and provides a hint at the CAS storage being used.
 1. Add `beaconService` to the DID document through an update following the algorithm
    defined in [Update].
 
@@ -170,12 +165,7 @@ The following is an example of the ::Beacon:: service endpoint the DID controlle
 adds into their DID document, the ::Beacon:: address is converted into a URI following
 BIP21:
 
-```json
-{
-    "id": "#cidAggregateBeacon",
-    "type": "CIDAggregateBeacon",
-    "serviceEndpoint": "bitcoin:tb1pfdnyc8vxeca2zpsg365sn308dmrpka4e0n9c5axmp2nptdf7j6ts7eqhr8"
-}
+```{.json include="json/Update-Beacons/CIDAggregator-add-beacon-service.json"}
 ```
 
 #### Broadcast DID Update Attestation
