@@ -348,16 +348,17 @@ The algorithm returns a DID document.
        `documentHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
         1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
-            raise LatePublishing error.
+            raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
         1.  Increment `currentVersionId`
         1.  If `currentVersionId` equals `targetVersionId` return
             `contemporaryDIDDocument`.
-        1.  Set `updateHash` to the sha256 hash of the `update`.
+        1.  Set `updateHash` to the result of passing `update` into the [JSON Canonicalization and Hash]
+            algorithm
         1.  Push `updateHash` onto `updateHashHistory`.
-        1.  Set `contemporaryHash` to the SHA256 hash of the
-            `contemporaryDIDDocument`.
+        1.  Set `contemporaryHash` to result of passing `contemporaryDIDDocument` into the 
+            [JSON Canonicalization and Hash] algorithm.
     1.  If `update.targetVersionId` is greater than `currentVersionId + 1`, MUST
         throw a LatePublishing error.
 1. Increment `contemporaryBlockheight`.
@@ -420,9 +421,16 @@ to process the ::Beacon Signals::.
     1. Set `signalId` to `signalTx.id`.
     1. Set `signalSidecarData` to `sidecarData[signalId]`. TODO: formalize
        structure of sidecarData
-    1. Set `didUpdatePayload` to the result of passing `signalTx` and
-       `signalSidecarData` to the Process ::Beacon Signal:: algorithm defined by the
-       corresponding ::Beacon Type::. See [Update Beacons].
+   1. Set `didUpdatePayload` to null.
+   1. If `type` == `SingletonBeacon`:
+      1. Set `didUpdatePayload` to the result of passing `signalTx` and   
+        `signalSidecarData` to the [Process Singleton Beacon Signal] algorithm.
+   1. If `type` == `CIDAggregateBeacon`:
+      1. Set `didUpdatePayload` to the result of passing `signalTx` and   
+        `signalSidecarData` to the [Process CIDAggregate Beacon Signal] algorithm.
+   1. If `type` == `SMTAggregateBeacon`:
+      1. Set `didUpdatePayload` to the result of passing `signalTx` and   
+        `signalSidecarData` to the [Process SMTAggregate Beacon Signal] algorithm.
     1. If `didUpdatePayload` is not null, push `didUpdatePayload` to `updates`.
 1. Return `updates`.
 
@@ -632,23 +640,6 @@ containing a `patch` defining how the DID document for
 be mutated.
 
 ```json
-{
-   "@context": [
-      "https://w3id.org/zcap/v1",
-      "https://w3id.org/security/data-integrity/v2",
-      "https://w3id.org/json-ld-patch/v1"
-   ],
-   "patch": [
-      {
-         "op": "add",
-         "path": "/service/4",
-         "value": {
-            "id": "#linked-domain",
-            "type": "LinkedDomains",
-            "serviceEndpoint": "https://contact-me.com"
-         }
-      }
-   ],
    "proof": {
       "type": "DataIntegrityProof",
       "cryptosuite": "secp-schnorr-2024",
@@ -681,27 +672,21 @@ necessary data to validate the ::Beacon Signal:: against the `didUpdateInvocatio
     1. If `beaconService.type` == `SingletonBeacon`:
         1. Set `signalMetadata` to the result of
            passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast DID Update] algorithm.
-        1. Push `signalMetadata` to `signalsMetadata`.
+           [Broadcast Singleton Beacon Signal] algorithm.
+        1. Merge `signalMetadata` into `signalsMetadata`.
     1. Else If `beaconService.type` == `CIDAggregateBeacon`:
         1. Set `signalMetadata` to the result of
            passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast DID Update] algorithm.
+           [Broadcast CIDAggregate Beacon Signal] algorithm.
         1. Push `signalMetadata` to `signalsMetadata`.
     1. Else If `beaconService.type` == `SMTAggregateBeacon`:
-        1. Push `signalMetadata` to `signalsMetadata`
+        1. Set `signalMetadata` to the result of
            passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast DID Update] algorithm.
-        1. Push `signalMetadata` to `signalsMetadata`.
+           [Broadcast SMTAggregate Beacon Signal] algorithm.
+        1. Merge `signalMetadata` to `signalsMetadata`.
     1. Else:
         1. MUST throw `invalidBeacon` error.
 1. Return `signalsMetadata`.
-
-// Note: need to update the Beacon Signal algorithms to reflect returning the `signalsMetadata`.
-Idea is this data object contains all the info necessary to be stored by the DID
-controller. So that they can prove a Beacon Signal announces an update. This might
-just be, the Signal txid and the update itself. But in the SMT case we need additional
-merkleProofs.
 
 ### Deactivate
 

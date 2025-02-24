@@ -9,7 +9,7 @@ Beacon
   service endpoint in a DID document along with a specific ::Beacon Type::. By spending
   from a Beacon address, DID controllers announce that an update to their DID has
   occurred (in the case of a SingletonBeacon) or may have occurred (in the case
-  of a CIDAggregator or SMTAggregator Beacons).
+  of a CIDAggregate or SMTAggregate Beacons).
 
 Beacons
 
