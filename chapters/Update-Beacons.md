@@ -37,37 +37,36 @@ this specification.
 
 ### Singleton Beacon
 
-#### Establish Beacon
+#### Establish Singleton Beacon
 
 A ::Singleton Beacon:: is a ::Beacon:: that can be used to publish a single ::DID Update
 Payload:: targeting a single DID document. The serviceEndpoint for this ::Beacon Type::
 is a Bitcoin address represented as a URI following the
 [BIP21 scheme](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki).
 It is RECOMMENDED that this Bitcoin address be under the sole control of the
-DID controller.
+DID controller. How the Bitcoin address and the cryptographic material that controls it are generated is left to implementation.
 
-The algorithm is as follows:
+This algorithm takes in a Bitcoin `address` and a `serviceId` and returns a ::Singleton Beacon:: `service`.
 
-1. Generate a secp256k1 keypair.
-1. Use the public key to generate a Bitcoin address. It is RECOMMENDED to use
-   either P2PKH, P2WPKH, P2TR. However, other custom Bitcoin addresses are still
-   valid. It is up to the DID controller to ensure the address is spendable by them alone.
-    1. It is possible to use an existing Bitcoin address.
-    1. Before the ::Beacon:: can be used to publish an update it MUST be funded.
-1. Set `beaconUri` to the URI for the address following BIP21.
-1. Initialize `beaconService` to the JSON string (interpolating values as needed):
-   ```json
-   {
-       "id": "#singletonBeacon", 
-       "type": "SingletonBeacon", 
-       "serviceEndpoint": "${beaconUri}",
-       "casType": "IPFS" // Optional hint at the CAS storage used 
-   }
-   ```
-1. Add `beaconService` to the DID document through an update following the algorithm
-   defined in [Update].
+1. Initialize a `service` variable to an empty object.
+1. Set `service.id` to `serviceId`.
+1. Set `service.type` to "SingletonBeacon".
+1. Set `service.serviceEndpoint` to the result of converting `address` to
+   a URI as per **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**
+1. Return `service`.
 
-#### Broadcast DID Update Attestation
+
+// TODO: Style and link to examples.
+```json
+{
+   "id": "#singletonBeacon", 
+   "type": "SingletonBeacon", 
+   "serviceEndpoint": "${beaconUri}",
+}
+```
+
+
+#### Broadcast DID Update
 
 This algorithm is called from [Update], step 8, if the
 ::Beacon:: being used is of the type SingletonBeacon. A ::Content Identifier::, `cid`,
@@ -178,7 +177,7 @@ BIP21:
 }
 ```
 
-#### Broadcast DID Update Attestation
+#### Broadcast DID Update
 
 This is an algorithm involving two roles: a set of cohort participants and a
 ::Beacon:: coordinator. The ::Beacon:: coordinator collects individual ::DID Update Payload::
@@ -308,7 +307,7 @@ Additionally, the SMTAggregator ::Beacon:: cohort participants MUST register the
 coordinator can generate the necessary proofs of both inclusion and non-inclusion
 for each DID.
 
-#### Broadcast DID Update Attestation
+#### Broadcast DID Update
 
 To publish a ::DID Update Payload::, the DID controller MUST get a hash of the ::DID
 Update Payload:: included at the leaf of the ::Sparse Merkle Tree:: (SMT) identified by
