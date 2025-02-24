@@ -1,0 +1,5 @@
+{
+  "id": "#cidAggregateBeacon",
+  "type": "CIDAggregateBeacon",
+  "serviceEndpoint": "bitcoin:tb1pfdnyc8vxeca2zpsg365sn308dmrpka4e0n9c5axmp2nptdf7j6ts7eqhr8"
+}

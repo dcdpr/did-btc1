@@ -1,0 +1,5 @@
+{
+  "beaconId": "${beaconService.id}",
+  "beaconType": "${beaconService.type}",
+  "tx": "${tx}"
+}

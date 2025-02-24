@@ -403,21 +403,12 @@ containing `beaconId`, `beaconType`, and `tx` properties.
    check to see if any transaction inputs are spends from one of the ::Beacon:: addresses.
    If they are, create a `signal` object containing the following fields and push
    `signal` to `beaconSignals`:
-   ```json
-   {
-       "beaconId": `beaconService.id`,
-       "beaconType": `beaconService.type`,
-       "tx": `tx`
-   }
+   ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
    ```
 1. If no `beaconSignals`, set `nextSignals` to the result of algorithm
    [Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
 1. Else initialize a `nextSignals` object to the following:
-   ```json
-   {
-     "blockheight": `block.blockheight`,
-     "signals": `beaconSignals`
-   }
+   ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
    ```
 1. Return `nextSignals`.
 
@@ -613,13 +604,7 @@ The algorithm takes in a **did:btc1** identifier and returns a `rootCapability` 
 
 Below is an example root capability for updating the DID document for **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u**:
 
-```json
-{
-  "@context": "https://w3id.org/zcap/v1",
-  "id": "urn:zcap:root:did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-  "controller": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-  "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u"
-}
+```{.json include="json/CRUD-Operations/Update-zcap-root-capability.json"}
 ```
 
 ##### Dereference Root Capability Identifier
@@ -648,35 +633,7 @@ containing a `patch` defining how the DID document for
 **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
 be mutated.
 
-```json
-{
-   "@context": [
-      "https://w3id.org/zcap/v1",
-      "https://w3id.org/security/data-integrity/v2",
-      "https://w3id.org/json-ld-patch/v1"
-   ],
-   "patch": [
-      {
-         "op": "add",
-         "path": "/service/4",
-         "value": {
-            "id": "#linked-domain",
-            "type": "LinkedDomains",
-            "serviceEndpoint": "https://contact-me.com"
-         }
-      }
-   ],
-   "proof": {
-      "type": "DataIntegrityProof",
-      "cryptosuite": "secp-schnorr-2024",
-      "verificationMethod": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey",
-      "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-      "capability": "urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-      "capabilityAction": "Write",
-      "proofPurpose": "assertionMethod",
-      "proofValue": "z381yXYmxU8NudZ4HXY56DfMN6zfD8syvWcRXzT9xD9uYoQToo8QsXD7ahM3gXTzuay5WJbqTswt2BKaGWYn2hHhVFKJLXaDz"
-   }
-}
+```{.json include="json/CRUD-Operations/Update-zcap-root-capability-patch.json"}
 ```
 
 #### Announce DID Update Payload
