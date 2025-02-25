@@ -13,11 +13,11 @@ Beacon
 
 Beacons
 
-: ::Beacon::
+: See ::Beacon::
 
 Beacon's
 
-: ::Beacon::
+: See ::Beacon::
 
 Singleton Beacon
 
@@ -39,7 +39,7 @@ Beacon Type
 
 Beacon Types
 
-: ::Beacon Type::
+: See ::Beacon Type::
 
 Beacon Signal
 
@@ -54,7 +54,7 @@ Beacon Signal
 
 Beacon Signals
 
-: ::Beacon Signal::
+: See ::Beacon Signal::
 
 Authorized Beacon Signal
 
@@ -69,11 +69,11 @@ DID Update Payload
 
 DID Update Payloads
 
-: ::DID Update Payload::
+: See ::DID Update Payload::
 
 DID's Update Payload
 
-: ::DID Update Payload::
+: See ::DID Update Payload::
 
 DID Update Bundle
 
@@ -103,7 +103,8 @@ Sparse Merkle Tree
   **did:btc1** identifier that indexed to the leaf.
 
 SMT
-: ::Sparse Merkle Tree:
+
+: See ::Sparse Merkle Tree::
 
 Invocation
 
@@ -120,10 +121,11 @@ Schnorr Signature
 
 Schnorr Signatures
 
-: ::Schnorr Signature::
+: See ::Schnorr Signature::
 
 Schnorr
-: ::Scnhorr Signature::
+
+: See ::Schnorr Signature::
 
 Taproot
 
@@ -141,7 +143,7 @@ Unspent Transaction Output
 
 UTXO
 
-: ::Unspent Transaction Output::
+: See ::Unspent Transaction Output::
 
 Content Identifier
 
@@ -152,15 +154,15 @@ Content Identifier
 
 Content Identifiers
 
-: ::Content Identifier::
+: See ::Content Identifier::
 
 CID
 
-: ::Content Identifier::
+: See ::Content Identifier::
 
 CIDs
 
-: ::Content Identifier::
+: See ::Content Identifier::
 
 Content Addressable Storage
 
@@ -170,7 +172,7 @@ Content Addressable Storage
 
 CAS
 
-: ::Content Addressable Storage::
+: See ::Content Addressable Storage::
 
 Non-Repudiation
 
@@ -195,6 +197,7 @@ Offline Creation
   initial DID document are created without requiring network interactions.
 
 **did:btc1** supports offline creation in two modes:
+
 * Key Pair Deterministic Creation; and
 * DID Document Initiated Creation.
 
