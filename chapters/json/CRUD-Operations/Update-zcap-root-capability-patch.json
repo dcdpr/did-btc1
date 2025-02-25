@@ -17,7 +17,7 @@
   ],
   "proof": {
     "type": "DataIntegrityProof",
-    "cryptosuite": "secp-schnorr-2024",
+    "cryptosuite": "schnorr-secp256k1-jcs-2025",
     "verificationMethod": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey",
     "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
     "capability": "urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
