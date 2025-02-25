@@ -13,11 +13,11 @@ Beacon
 
 Beacons
 
-: See ::Beacon::
+: ::Beacon::
 
 Beacon's
 
-: See ::Beacon::
+: ::Beacon::
 
 Singleton Beacon
 
@@ -39,7 +39,7 @@ Beacon Type
 
 Beacon Types
 
-: See ::Beacon Type::
+: ::Beacon Type::
 
 Beacon Signal
 
@@ -54,7 +54,7 @@ Beacon Signal
 
 Beacon Signals
 
-: See ::Beacon Signal::
+: ::Beacon Signal::
 
 Authorized Beacon Signal
 
@@ -69,11 +69,11 @@ DID Update Payload
 
 DID Update Payloads
 
-: See ::DID Update Payload::
+: ::DID Update Payload::
 
 DID's Update Payload
 
-: See ::DID Update Payload::
+: ::DID Update Payload::
 
 DID Update Bundle
 
@@ -104,7 +104,7 @@ Sparse Merkle Tree
 
 SMT
 
-: See ::Sparse Merkle Tree::
+: ::Sparse Merkle Tree::
 
 Invocation
 
@@ -121,11 +121,11 @@ Schnorr Signature
 
 Schnorr Signatures
 
-: See ::Schnorr Signature::
+: ::Schnorr Signature::
 
 Schnorr
 
-: See ::Schnorr Signature::
+: ::Schnorr Signature::
 
 Taproot
 
@@ -143,7 +143,7 @@ Unspent Transaction Output
 
 UTXO
 
-: See ::Unspent Transaction Output::
+: ::Unspent Transaction Output::
 
 Content Identifier
 
@@ -154,15 +154,15 @@ Content Identifier
 
 Content Identifiers
 
-: See ::Content Identifier::
+: ::Content Identifier::
 
 CID
 
-: See ::Content Identifier::
+: ::Content Identifier::
 
 CIDs
 
-: See ::Content Identifier::
+: ::Content Identifier::
 
 Content Addressable Storage
 
@@ -172,7 +172,7 @@ Content Addressable Storage
 
 CAS
 
-: See ::Content Addressable Storage::
+: ::Content Addressable Storage::
 
 Non-Repudiation
 
