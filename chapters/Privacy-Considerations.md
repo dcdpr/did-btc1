@@ -7,7 +7,7 @@
 **did:btc1** was designed such that updates to DID documents are NOT REQUIRED
 to be public. Bitcoin is used to publicly announce and anchor updates to DID
 documents, however the updates themselves can be kept private by DID controllers
-and provided through a ::Sidecar: mechanism at ::Resolution Time::.
+and provided through a ::Sidecar:: mechanism at ::Resolution Time::.
 
 #### DID Documents Need not be Public
 

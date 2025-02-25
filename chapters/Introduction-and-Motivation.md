@@ -22,8 +22,8 @@ documents leak every time the DID is used then these DIDs do not accomplish
 much, either. DIDs that are shared with a relying party can be seen by not only
 that party but also by any third party resolver that the relying party contracts
 with. The next step in trust-minimization is a DID document transferred directly
-from the DID controller to the relying party. We call this transfer "::Sidecar::"
-delivery.When a relying party *who is willing to cooperate with privacy concerns*
+from the DID controller to the relying party. We call this transfer ::Sidecar::
+delivery. When a relying party *who is willing to cooperate with privacy concerns*
 has the capacity to act as their own resolver, then privacy has a chance.
 
 Lastly, many DID Methods do not anchor DID documents temporally, to create a
@@ -33,10 +33,11 @@ anchoring information to a specific time. This DID Method takes care to only
 allow resolution to succeed when the resolver can clearly state that all data is
 available to present only one canonical history for a DID. This is a necessary
 feature when key material is used to sign serious contracts. We call this feature
-"::Non-Repudiation::", and point out how an anti-feature called "::Late Publishing::"
+::Non-Repudiation::, and point out how an anti-feature called ::Late Publishing::
 affects some other DID Methods.
 
 **did:btc1** is created for those who wish to have it all:
+
 * resistance to censorship;
 * non-correlation through pairwise DIDs;
 * private communication of the DID document;
@@ -103,7 +104,7 @@ provide. In summary its main limitations are:
 * ::Offline Creation:: allows creating DIDs without any on-chain transactions.
 * Aggregator Beacons can aggregate any number of updates from any number of DID
   controllers in one Bitcoin transaction.
-* ::Non-Repudiation:: is provided by - and *"::Late Publishing::"* is avoided by - ensuring
+* ::Non-Repudiation:: is provided by - and ::Late Publishing:: is avoided by - ensuring
   100% valid coverage of the entire update history without gaps or ambiguity.
 * Public disclosure of DID documents can be avoided by using ::Sidecar:: delivery
   of the necessary DID history along with the DID itself.
