@@ -510,9 +510,8 @@ three ::Beacon Types::: `SingletonBeacon`, `CIDAggregateBeacon`, and
 1. Set `didUpdateInvocation` to the result of passing `btc1Identifier`,
    `unsignedUpdate` as `didUpdatePayload, `and `verificationMethod` to the
    [Invoke DID Update Payload] algorithm.
-1. Set `signalsMetadata` to the result of passing `sourceDocument`, `beaconIds` and
-   `didUpdateInvocation` to the
-   [Announce DID Update] algorithm.
+1. Set `signalsMetadata` to the result of passing `btc1Identifier`, `sourceDocument`, 
+   `beaconIds` and `didUpdateInvocation` to the [Announce DID Update] algorithm.
 1. Return `signalsMetadata`. It is up to implementations to ensure that the
    `signalsMetadata` is persisted.
 
@@ -623,10 +622,10 @@ This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
 1. Set `rootCapability` to an empty object.
 1. Set `components` to the result of `capabilityId.split(":")`.
 1. Validate `components`:
-    1. Assert length of `components` is 4.
-    1. `components[0] == urn`.
-    1. `components[1] == zcap`.
-    1. `components[2] == root`.
+   1. Assert length of `components` is 4.
+   1. `components[0] == urn`.
+   1. `components[1] == zcap`.
+   1. `components[2] == root`.
 1. Set `uriEncodedId` to `components[3]`.
 1. Set `bct1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
 1. Set `rootCapability.id` to `capabilityId`.
@@ -655,8 +654,8 @@ be mutated.
 
 #### Announce DID Update
 
-This algorithm takes in a `sourceDocument`, an array of `beaconIds`, and a
-`didUpdateInvocation`. It retrieves `beaconServices` from the `sourceDocument`
+This algorithm takes in a `btc1Identifier`, `sourceDocument`, an array of `beaconIds`, 
+and a `didUpdateInvocation`. It retrieves `beaconServices` from the `sourceDocument`
 and calls the Broadcast DID Update algorithm corresponding the type of
 the ::Beacon::. The algorithm returns an array of `signalsMetadata`, containing the
 necessary data to validate the ::Beacon Signal:: against the `didUpdateInvocation`.
@@ -664,28 +663,28 @@ necessary data to validate the ::Beacon Signal:: against the `didUpdateInvocatio
 1. Set `beaconServices` to an empty array.
 1. Set `signalMetadata` to an empty array.
 1. For `beaconId` in `beaconIds`:
-    1. Find `beaconService` in `sourceDocument.service` with an `id` property
-       equal to `beaconId`.
-    1. If no `beaconService` MUST throw `beaconNotFound` error.
-    1. Push `beaconService` to `beaconServices`.
+   1. Find `beaconService` in `sourceDocument.service` with an `id` property
+    equal to `beaconId`.
+   1. If no `beaconService` MUST throw `beaconNotFound` error.
+   1. Push `beaconService` to `beaconServices`.
 1. For `beaconService` in `beaconServices`:
-    1. If `beaconService.type` == `SingletonBeacon`:
-        1. Set `signalMetadata` to the result of
-           passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast Singleton Beacon Signal] algorithm.
-        1. Merge `signalMetadata` into `signalsMetadata`.
-    1. Else If `beaconService.type` == `CIDAggregateBeacon`:
-        1. Set `signalMetadata` to the result of
-           passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast CIDAggregate Beacon Signal] algorithm.
-        1. Push `signalMetadata` to `signalsMetadata`.
-    1. Else If `beaconService.type` == `SMTAggregateBeacon`:
-        1. Set `signalMetadata` to the result of
-           passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast SMTAggregate Beacon Signal] algorithm.
-        1. Merge `signalMetadata` to `signalsMetadata`.
-    1. Else:
-        1. MUST throw `invalidBeacon` error.
+   1. Set `signalMetadata` to null.
+   1. If `beaconService.type` == `SingletonBeacon`:
+      1. Set `signalMetadata` to the result of
+        passing `beaconService` and `didUpdateInvocation` to the
+        [Broadcast Singleton Beacon Signal] algorithm.
+   1. Else If `beaconService.type` == `CIDAggregateBeacon`:
+      1. Set `signalMetadata` to the result of
+        passing `btc1Identifier`, `beaconService` and `didUpdateInvocation` to the
+        [Broadcast CIDAggregate Beacon Signal] algorithm.
+   1. Else If `beaconService.type` == `SMTAggregateBeacon`:
+      1. Set `signalMetadata` to the result of
+        passing `btc1Identifier`, `beaconService` and `didUpdateInvocation` to the
+        [Broadcast SMTAggregate Beacon Signal] algorithm.
+   1. Else:
+      1. MUST throw `invalidBeacon` error.
+  1. Merge `signalMetadata` into `signalsMetadata`.
+
 1. Return `signalsMetadata`.
 
 ### Deactivate

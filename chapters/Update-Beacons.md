@@ -105,13 +105,16 @@ signal announces a specific ::DID Update Payload::.
 #### Process Singleton Beacon Signal
 
 This algorithm is called by the [Process Beacon Signals] algorithm as part of the
-[Read] operation. It takes as inputs a Bitcoin transaction ::Beacon Signal, `tx`, 
+[Read] operation. It takes as inputs a Bitcoin transaction, `tx`, representing a ::Beacon Signal::
 and a optional object, `signalSidecarData`, containing any sidecar data provided to the 
 resolver for the ::Beacon Signal:: identified by the Bitcoin transaction identifier.
 
+The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signal:: or throws
+an error.
+
 1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
-1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, 32BYTE]`, if not,
+1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`, if not,
    then return `didUpdatePayload`. The Bitcoin transaction is not a ::Beacon Signal::.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
@@ -121,10 +124,9 @@ resolver for the ::Beacon Signal:: identified by the Bitcoin transaction identif
    1. If `updateHashBytes` does not equal `hashBytes`, MUST throw an `invalidSidecarData` error.
    1. Return `didUpdatePayload`
 1. Else:
-   1. Set `cid` to the result of converting `hashBytes` to an IPFS v1 ::CID::.
-   1. Set `didUpdatePayload` to the result of fetching the `cid`
-   from a ::Content Addressable Storage:: (CAS) system such as IPFS.
-   1. If content for `cid` cannot be found MUST raise a `latePublishingError`. May identify Beacon Signal
+   1. Set `didUpdatePayload` to the result of passing `hashBytes` into the 
+      [Fetch Content from Addressable Storage] algorithm.
+   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. May identify Beacon Signal
       to resolver and request additional ::Sidecar data:: be provided.
 1. Return `didUpdatePayload`.
 
@@ -285,31 +287,57 @@ be broadcast to the network.
 
 #### Process CIDAggregate Beacon Signal
 
-A ::Beacon Signal:: from a CIDAggregator Beacon is a Bitcoin transaction that contains
-a `bundleCID` referencing a ::DID Update Bundle:: in its first transaction output.
-The bundle MUST be retrieved and then the relevant `payloadCID` for the DID Update
-payload of the specific DID being resolved MUST be identified and the content
-is retrieved. If the content identified by either ::CID:: cannot be retrieved, either
-from the ::CAS:: or through ::Sidecar:: at any point, a LatePublishing error MUST be
-raised. If the ::DID Update Bundle:: contains no ::CID:: for the relevant DID, then the
-::Beacon Signal:: is ignored.
+A ::Beacon Signal:: from a CIDAggregate Beacon is a Bitcoin transaction that contains
+the `hashBytes` of a ::DID Update Bundle:: in its first transaction output.
+The corresponding ::DID Update Bundle:: MUST either be provided through ::Sidecar Data::
+or by converting `hashBytes` into a IPFS v1 ::Content Identifier:: and attempting to 
+retrieve it from ::Content Addressable Storage::. The ::DID Update Bundle:: maps from 
+**did:btc1** identifiers to hashes of ::DID Update payloads:: applicable for that identifier.
+Again this algorithm attempts to retrieve and validate the ::DID Update Payload:: identified 
+for the identifier being resolved. If successful, the ::DID Update Payload:: is returned.
 
-1. Initialize a `txOut` variable to `tx.txOuts[0]`.
-1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, 32BYTE_CID]`, if not,
-   Bitcoin transaction is not a ::Beacon Signal::, return.
-1. Set `cid` to the 32 byte ::CID:: in `txOut`.
-1. Initialize a `didUpdateBundle` variable to the result of retrieving the `cid`
-   from the ::CAS::. If unable to retrieve `cid`, MUST throw a `latePublishError` and
-   treat the DID being resolved as invalid.
-1. Set `didUpdateCID` to the value of `didUpdateBundle[document.id]`.
-1. If `didUpdateCID` is empty return null (this ::Beacon Signal:: contains no update
-   for the DID being resolved).
-1. Set `didUpdatePayload` to the result of retrieving `didUpdateCID` from ::Content
-   Addressable Storage:: (CAS) or ::Sidecar Data::. If `didUpdateCID` not found MUST throw
-   a `latePublishError`.
-1. Return `didUpdatePayload`.
+This algorithm is called by the [Process Beacon Signals] algorithm as part of the
+[Read] operation. It takes as inputs a **did:btc1** identifier, `btc1Identifier`, a 
+::Beacon Signal::, `tx`, and a optional object, `signalSidecarData`, containing any 
+sidecar data provided to the resolver for the ::Beacon Signal:: identified by the 
+Bitcoin transaction identifier.
 
-![](https://hackmd.io/_uploads/HkZe90lkp.jpg)
+The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signal::
+for the ::did:btc1:: identifier being resolved or throws an error.
+
+
+1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Set `didUpdatePayload` to null.
+1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, 32BYTE]`, if not,
+   then return `didUpdatePayload`. The Bitcoin transaction is not a ::Beacon Signal::.
+1. Set `hashBytes` to the 32 bytes in the `txOut`.
+1. If `signalSidecarData`:
+   1. Set `didUpdateBundle` to `signalSidecarData.updateBundle`
+   1. Set `bundleHashBytes` to the result of passing `didUpdateBundle` to the 
+      [JSON Canonicalization and Hash] algorithm.
+   1. If `bundleHashBytes` does not equal `hashBytes`, MUST raise an `invalidSidecarData` error. 
+      May identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
+   1. Set `signalUpdateHashBytes` to `didUpdateBundle.get(btc1Identifier)`
+   1. If `signalUpdateHashBytes` is null, MUST raise an `incompleteSidecarData` error. May identify Beacon Signal
+      to resolver and request additional ::Sidecar data:: be provided.
+   1. Set `didUpdatePayload` to `signalSidecarData.updatePayload`.
+   1. Set `updateHashBytes` to the result of passing `didUpdatePayload` to the 
+      [JSON Canonicalization and Hash] algorithm.
+   1. If `signalUpdateHashBytes` does not equal `updateHashBytes`,  MUST raise an `invalidSidecarData` error. 
+      May identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
+1. Else:
+   1. Set `didUpdateBundle` to the result of calling the [Fetch From Content Addressable Storage] algorithm passing 
+      in `hashBytes`.
+   1. If `didUpdateBundle` is null, MUST raise a `latePublishingError`. May identify Beacon Signal
+      to resolver and request additional ::Sidecar data:: be provided.
+   1. Set `signalUpdateHashBytes` to the `didUpdateBundle.get(btc1Identifier)` 
+   // TODO: Will need to decode this. Bundle is not going to store raw bytes
+   1. Set `didUpdatePayload` to the result of calling the [Fetch From Content Addressable Storage] algorithm 
+      passing in `signalUpdateHashBytes`.
+   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. May identify Beacon Signal
+      to resolver and request additional ::Sidecar data:: be provided.
+1. Return `didUpdatePayload` 
+
 
 ### SMTAggregate Beacon
 
@@ -378,29 +406,38 @@ sequenceDiagram
 
 #### Process SMTAggregate Beacon Signal
 
-::Beacon Signals:: broadcast from SMTAggregate Beacons are expected to be a Bitcoin
-transaction with the first transaction output of the format
-`[OP_RETURN, OP_PUSH32, 32Bytes]`, where the 32 bytes are interpreted as a root
-to a ::Sparse Merkle Tree:: (SMT) that aggregates a set of hashes of ::DID Update
-Payloads::. To retrieve and validate a ::DID Update Payload:: for a specific DID, the
-resolver MUST receive (out of band) the ::SMT:: proof and ::DID Update Payload:: for a
-specific DID. This is typically provided by the DID controller. Using the ::SMT::
-root from the ::Beacon Signal::, the resolver can check the proof, gaining confidence
-that the payload provided is the same payload announced in the ::Beacon Signal::.
-The payload MAY be empty, in which case the proof is a proof of non-inclusion and
-this ::Beacon Signal:: has no valid information for the specific DID being resolved.
+A ::Beacon Signal:: from a SMTAggregate Beacon is a Bitcoin transaction with the 
+first transaction output of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`. The 32 bytes
+of data contained within this transaction output represent the root of a ::Sparse Merkle Tree::
+(SMT). This SMT aggregates a set of hashes of ::DID Update payloads::. In order to process 
+these ::Beacon Signals::, the resolver MUST have been passed ::Sidecar data:: for this signal
+containing either the ::DID Update payload:: object and a ::SMT:: proof that the hash of
+this object is in the ::SMT:: at the leaf indexed by the **did:btc1:: identifier being resolved.
+Or the ::Sidecar data:: MUST contain a proof that the leaf indexed by the **did:btc1:: identifier 
+is empty, thereby proving that the ::SMT:: does not contain an update for their identifier.
 
-```mermaid
-sequenceDiagram
-              autonumber
-    Note left of Resolver: Algorithm called with a Bitcoin tx and a did:btc1 identifier
-    Note over Out of Band: Some entity, likely the DID controller<br/>MUST be able to provide a valid proofPath for a payload.<br/>Where the payload is either a DID Update Payload or null.
-    Resolver->>Resolver:Initialize txOut to tx.txOuts[0]
-    Resolver->>Resolver:Check txOut is of the format [OP_RETURN, OP_PUSH32, 32BYTE_SMT_ROOT], if not return. Bitcoin transaction is not a valid Beacon Signal.
-    Resolver->>Resolver:Set smtRoot to the 32 bytes in txOut
-    Resolver->>Out of Band:Request SMT proof path and payload for did:btc1
-    Out of Band->>Resolver:proofPath, payload
-    Resolver->>Resolver:Verify proofPath for payload against smtRoot
-    Resolver->>null:Return payload
+This algorithm is called by the [Process Beacon Signals] algorithm as part of the
+[Read] operation. It takes as inputs a **did:btc1** identifier, `btc1Identifier`, a 
+::Beacon Signal::, `tx`, and a optional object, `signalSidecarData`, containing any 
+sidecar data provided to the resolver for the ::Beacon Signal:: identified by the 
+Bitcoin transaction identifier.
 
-```
+The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signal::
+for the ::did:btc1:: identifier being resolved or throws an error.
+
+
+1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, <32byte>]`, if not,
+   then return null. The Bitcoin transaction is not a ::Beacon Signal::.
+1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. May identify the Beacon Signal
+   to resolver and request additional ::Sidecar data:: be provided. 
+1. Set `smtProof` to `signalSidecarData.smtProof`.
+1. If no `smtProof`, MUST raise a `latePublishing` error.
+1. Set `smtRoot` to the 32 bytes of data in `txOut`.
+1. Set `didUpdatePayload` to `signalSidecarData.updatePayload`.
+1. Set `updateHashBytes` to the result of passing `didUpdatePayload` to the [JSON Canonicalization and Hash]
+   algorithm.
+1. Set `identifierBytes` to the result of converting `btc1Identifier` to bytes.
+1. Verify the ::SMT:: proof against the `smtRoot` with the key as `identifierBytes` and the value `updateHashBytes. 
+   // TODO: Need to define algorithm(s) for SMT properly.
+1. Return `didUpdatePayload`

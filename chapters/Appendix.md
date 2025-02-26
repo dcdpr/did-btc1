@@ -63,3 +63,17 @@ The function returns the `canonicalizedBytes`.
 1. Set `hashBytes` to the result of applying the SHA256 cryptographic hashing
    algorithm to the `canonicalBytes`.
 1. Return `hashBytes`.
+
+### Fetch Content from Addressable Storage
+
+A macro function that takes in SHA256 hash of some content, `hashBytes`, converts these 
+bytes to a IPFS v1 ::Content Identifier:: and attempts to retrieve the identified content 
+from ::Content Addressable Storage:: (CAS). 
+
+The function returns the retrieved `content` or null.
+
+1. Set `cid` to the result of converting `hashBytes` to an IPFS v1 ::CID::.
+1. Set `content` to the result of fetching the `cid` from a ::CAS:: system. Which ::CAS:: systems 
+   checked is left to the implementation. TODO: Is this right? Are implementations just supposed to check all CAS they trust?
+1. If content for `cid` cannot be found, set `content` to null.
+1. Return `content`
