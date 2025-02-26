@@ -29,4 +29,4 @@ you will need to rerun the script `npm run pandoc-spec-local` to see the changes
 Included under the `notebooks` folder are a set of Jupyter notebooks that implement the
 various features of the **did:btc1** specification. These are included as helpful reference
 material for those intending to implement the specification. To run the notebooks locally see
-the `noteooks/README.md`.
+the `notebooks/README.md`.
