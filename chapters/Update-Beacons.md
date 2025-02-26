@@ -5,7 +5,7 @@ DID document by broadcasting an attestation to this update onto the public Bitco
 network. ::Beacons:: are identified by a Bitcoin address and emit ::Beacon Signals:: by
 broadcasting a valid Bitcoin transaction that spends from this ::Beacon:: address.
 These transactions include attestations to a set of `didUpdatePayload`s, either
-in the form of ::Content Addressable Identifiers:: (CIDs) or ::Sparse Merkle Tree:: (SMT)
+in the form of ::Content Identifiers:: (CIDs) or ::Sparse Merkle Tree:: (SMT)
 roots. ::Beacons:: are included as a service in DID documents, with the Service Endpoint
 identifying a Bitcoin address to watch for ::Beacon Signals::. All ::Beacon Signals::
 broadcast from this ::Beacon:: MUST be processed as part of resolution
@@ -50,12 +50,28 @@ the implementation.
 
 This algorithm takes in a Bitcoin `address` and a `serviceId` and returns a ::Singleton Beacon:: `service`.
 
+<<<<<<< HEAD
 1. Initialize a `service` variable to an empty object.
 1. Set `service.id` to `serviceId`.
 1. Set `service.type` to "SingletonBeacon".
 1. Set `service.serviceEndpoint` to the result of converting `address` to
    a URI as per **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**
 1. Return `service`.
+=======
+1. Generate a secp256k1 keypair.
+1. Use the public key to generate a Bitcoin address. It is RECOMMENDED to use
+   either P2PKH, P2WPKH, P2TR. However, other custom Bitcoin addresses are still
+   valid. It is up to the DID controller to ensure the address is spendable by them alone.
+    1. It is possible to use an existing Bitcoin address.
+    1. Before the ::Beacon:: can be used to publish an update it MUST be funded.
+1. Set `beaconUri` to the URI for the address following BIP21.
+1. Initialize `beaconService` to the JSON string (interpolating values as needed):
+   ```{.json include="json/Update-Beacons/Singleton-initialize-beacon-service.json"}
+   ```
+   Note that the `casType` is optional and provides a hint at the CAS storage being used.
+1. Add `beaconService` to the DID document through an update following the algorithm
+   defined in [Update].
+>>>>>>> main
 
 
 // TODO: Style and link to examples.
@@ -202,12 +218,7 @@ The following is an example of the ::Beacon:: service endpoint the DID controlle
 adds into their DID document, the ::Beacon:: address is converted into a URI following
 BIP21:
 
-```json
-{
-    "id": "#cidAggregateBeacon",
-    "type": "CIDAggregateBeacon",
-    "serviceEndpoint": "bitcoin:tb1pfdnyc8vxeca2zpsg365sn308dmrpka4e0n9c5axmp2nptdf7j6ts7eqhr8"
-}
+```{.json include="json/Update-Beacons/CIDAggregator-add-beacon-service.json"}
 ```
 
 #### Broadcast CIDAggregate Beacon Signal

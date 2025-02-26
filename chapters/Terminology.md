@@ -103,7 +103,8 @@ Sparse Merkle Tree
   **did:btc1** identifier that indexed to the leaf.
 
 SMT
-: ::Sparse Merkle Tree:
+
+: ::Sparse Merkle Tree::
 
 Invocation
 
@@ -123,7 +124,8 @@ Schnorr Signatures
 : ::Schnorr Signature::
 
 Schnorr
-: ::Scnhorr Signature::
+
+: ::Schnorr Signature::
 
 Taproot
 
@@ -195,6 +197,7 @@ Offline Creation
   initial DID document are created without requiring network interactions.
 
 **did:btc1** supports offline creation in two modes:
+
 * Key Pair Deterministic Creation; and
 * DID Document Initiated Creation.
 
