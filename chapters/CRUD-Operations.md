@@ -640,7 +640,7 @@ be mutated.
 
 This algorithm takes in a `sourceDocument`, an array of `beaconIds`, and a
 `didUpdateInvocation`. It retrieves `beaconServices` from the `sourceDocument`
-and calls the [Broadcast DID Update Attestation] algorithm corresponding the type of
+and calls the [Broadcast DID Update Attestation] algorithm corresponding to the type of
 the ::Beacon::. The algorithm returns an array of `signalsMetadata`, containing the
 necessary data to validate the ::Beacon Signal:: against the `didUpdateInvocation`.
 

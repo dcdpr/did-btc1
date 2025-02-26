@@ -5,7 +5,7 @@ DID document by broadcasting an attestation to this update onto the public Bitco
 network. ::Beacons:: are identified by a Bitcoin address and emit ::Beacon Signals:: by
 broadcasting a valid Bitcoin transaction that spends from this ::Beacon:: address.
 These transactions include attestations to a set of `didUpdatePayload`s, either
-in the form of ::Content Addressable Identifiers:: (CIDs) or ::Sparse Merkle Tree:: (SMT)
+in the form of ::Content Identifiers:: (CIDs) or ::Sparse Merkle Tree:: (SMT)
 roots. ::Beacons:: are included as a service in DID documents, with the Service Endpoint
 identifying a Bitcoin address to watch for ::Beacon Signals::. All ::Beacon Signals::
 broadcast from this ::Beacon:: MUST be processed as part of resolution
