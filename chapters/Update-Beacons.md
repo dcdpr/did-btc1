@@ -50,28 +50,12 @@ the implementation.
 
 This algorithm takes in a Bitcoin `address` and a `serviceId` and returns a ::Singleton Beacon:: `service`.
 
-<<<<<<< HEAD
 1. Initialize a `service` variable to an empty object.
 1. Set `service.id` to `serviceId`.
 1. Set `service.type` to "SingletonBeacon".
 1. Set `service.serviceEndpoint` to the result of converting `address` to
    a URI as per **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**
 1. Return `service`.
-=======
-1. Generate a secp256k1 keypair.
-1. Use the public key to generate a Bitcoin address. It is RECOMMENDED to use
-   either P2PKH, P2WPKH, P2TR. However, other custom Bitcoin addresses are still
-   valid. It is up to the DID controller to ensure the address is spendable by them alone.
-    1. It is possible to use an existing Bitcoin address.
-    1. Before the ::Beacon:: can be used to publish an update it MUST be funded.
-1. Set `beaconUri` to the URI for the address following BIP21.
-1. Initialize `beaconService` to the JSON string (interpolating values as needed):
-   ```{.json include="json/Update-Beacons/Singleton-initialize-beacon-service.json"}
-   ```
-   Note that the `casType` is optional and provides a hint at the CAS storage being used.
-1. Add `beaconService` to the DID document through an update following the algorithm
-   defined in [Update].
->>>>>>> main
 
 
 // TODO: Style and link to examples.
