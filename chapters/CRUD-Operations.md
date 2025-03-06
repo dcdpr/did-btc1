@@ -304,7 +304,7 @@ a valid `targetDocument` or throws an error.
 1. Set `currentVersionId` to 1.
 1. If `currentVersionId` equals `targetVersionId` return `initialDocument`.
 1. Set `updateHashHistory` to an empty array.
-1. Set `contemporaryBlockheight` to 0.
+1. Set `contemporaryBlockheight` to 1.
 1. Set `contemporaryDIDDocument` to the `initialDocument`.
 1. Set `targetDocument` to the result of calling the [Traverse Blockchain History]
    algorithm passing in `contemporaryDIDDocument`, `contemporaryBlockheight`,
@@ -326,7 +326,7 @@ This algorithm takes in an OPTIONAL Unix `targetTime` and returns a Bitcoin
 
 ##### Traverse Blockchain History
 
-This algorithm traverse Bitcoin blocks, starting from the block with the
+This algorithm traverses Bitcoin blocks, starting from the block with the
 `contemporaryBlockheight`, to find `beaconSignals` emitted by Beacons within
 the `contemporaryDIDDocument`. Each `beaconSignal` is processed to retrieve a
 didUpdatePayload to the DID document. Each update is applied to the document and
@@ -341,19 +341,17 @@ a `currentVersionId`, a `targetVersionId`, a `targetBlockheight`, an array of
 
 The algorithm returns a DID document.
 
-1. Set `contemporaryHash` to the SHA256 hash of the `contemporaryDIDDocument`.
-   TODO: NEED TO DEAL WITH CANONICALIZATION
+1. Set `contemporaryHash` to the result of passing `contemporaryDIDDocument` into the 
+[JSON Canonicalization and Hash] algorithm.
 1. Find all `beacons` in `contemporaryDIDDocument`: All `service` in
-   `contemporaryDIDDocument.services` where `service.type` equals one of
+   `contemporaryDIDDocument.service` where `service.type` equals one of
    `SingletonBeacon`, `CIDAggregateBeacon` and `SMTAggregateBeacon` Beacon.
 1. For each `beacon` in `beacons` convert the `beacon.serviceEndpoint` to a Bitcoin
    address following
    **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**.
    Set `beacon.address` to the Bitcoin address.
 1. Set `nextSignals` to the result of calling algorithm
-   [Find Next Signals] passing in `contemporaryBlockheight` and `beacons`.
-1. If `nextSignals.blockheight` is greater than `targetBlockheight` return
-   `contemporaryDIDDocument`.
+   [Find Next Signals] passing in `beacons`, `contemporaryBlockheight` and `targetBlockheight`.
 1. Set `signals` to `nextSignals.signals`.
 1. Set `updates` to the result of calling algorithm
    [Process Beacon Signals] passing in `signals` and `sidecarData`.
@@ -399,7 +397,7 @@ containing `beaconId`, `beaconType`, and `tx` properties.
 
 1. Get Bitcoin `block` at `contemporaryBlockheight`.
 1. Set `beaconSignals` to an empty array.
-1. For all `tx` in `block.txs`:
+1. For all `tx` in `block.tx`:
    check to see if any transaction inputs are spends from one of the Beacon addresses.
    If they are, create a `signal` object containing the following fields and push
    `signal` to `beaconSignals`:
@@ -415,7 +413,7 @@ containing `beaconId`, `beaconType`, and `tx` properties.
 1. Else initialize a `nextSignals` object to the following:
    ```json
    {
-     "blockheight": `block.blockheight`,
+     "blockheight": `contemporaryBlockheight`,
      "signals": `beaconSignals`
    }
    ```
