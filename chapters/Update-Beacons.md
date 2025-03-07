@@ -126,7 +126,7 @@ an error.
 1. Else:
    1. Set `didUpdatePayload` to the result of passing `hashBytes` into the 
       [Fetch Content from Addressable Storage] algorithm.
-   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. May identify Beacon Signal
+   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. MAY identify Beacon Signal
       to resolver and request additional ::Sidecar data:: be provided.
 1. Return `didUpdatePayload`.
 
@@ -311,25 +311,25 @@ for the ::did:btc1:: identifier being resolved or throws an error.
    1. Set `bundleHashBytes` to the result of passing `didUpdateBundle` to the 
       [JSON Canonicalization and Hash] algorithm.
    1. If `bundleHashBytes` does not equal `hashBytes`, MUST raise an `invalidSidecarData` error. 
-      May identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
+      MAY identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
    1. Set `signalUpdateHashBytes` to `didUpdateBundle.get(btc1Identifier)`
-   1. If `signalUpdateHashBytes` is null, MUST raise an `incompleteSidecarData` error. May identify Beacon Signal
+   1. If `signalUpdateHashBytes` is null, MUST raise an `incompleteSidecarData` error. MAY identify Beacon Signal
       to resolver and request additional ::Sidecar data:: be provided.
    1. Set `didUpdatePayload` to `signalSidecarData.updatePayload`.
    1. Set `updateHashBytes` to the result of passing `didUpdatePayload` to the 
       [JSON Canonicalization and Hash] algorithm.
    1. If `signalUpdateHashBytes` does not equal `updateHashBytes`,  MUST raise an `invalidSidecarData` error. 
-      May identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
+      MAY identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
 1. Else:
    1. Set `didUpdateBundle` to the result of calling the [Fetch From Content Addressable Storage] algorithm passing 
       in `hashBytes`.
-   1. If `didUpdateBundle` is null, MUST raise a `latePublishingError`. May identify Beacon Signal
+   1. If `didUpdateBundle` is null, MUST raise a `latePublishingError`. MAY identify Beacon Signal
       to resolver and request additional ::Sidecar data:: be provided.
    1. Set `signalUpdateHashBytes` to the `didUpdateBundle.get(btc1Identifier)` 
    // TODO: Will need to decode this. Bundle is not going to store raw bytes
    1. Set `didUpdatePayload` to the result of calling the [Fetch From Content Addressable Storage] algorithm 
       passing in `signalUpdateHashBytes`.
-   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. May identify Beacon Signal
+   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. MAY identify Beacon Signal
       to resolver and request additional ::Sidecar data:: be provided.
 1. Return `didUpdatePayload` 
 
@@ -424,7 +424,7 @@ for the ::did:btc1:: identifier being resolved or throws an error.
 1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
 1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, <32byte>]`, if not,
    then return null. The Bitcoin transaction is not a ::Beacon Signal::.
-1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. May identify the Beacon Signal
+1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. MAY identify the Beacon Signal
    to resolver and request additional ::Sidecar data:: be provided. 
 1. Set `smtProof` to `signalSidecarData.smtProof`.
 1. If no `smtProof`, MUST raise a `latePublishing` error.
