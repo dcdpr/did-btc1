@@ -612,7 +612,7 @@ This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
    1. `components[1] == zcap`.
    1. `components[2] == root`.
 1. Set `uriEncodedId` to `components[3]`.
-1. Set `bct1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
+1. Set `btc1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
 1. Set `rootCapability.id` to `capabilityId`.
 1. Set `rootCapability.controller` to `btc1Identifier`.
 1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
