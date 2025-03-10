@@ -1,0 +1,6 @@
+{
+  "blockheight": "${block.blockheight}",
+  "signals": [
+    "${beaconSignals}"
+  ]
+}

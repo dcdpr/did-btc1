@@ -31,7 +31,7 @@ public key and optional `version` and `network` values. The algorithm returns a
 
 It is possible to create a **did:btc1** from some initiating arbitrary DID document.
 This allows for more complex initial DID documents, including the ability to include
-Service Endpoints and Beacons that support aggregation.
+Service Endpoints and ::Beacons:: that support aggregation.
 
 The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
 and an OPTIONAL `network`. The `intermediateDocument` SHOULD be a valid DID document
@@ -49,8 +49,8 @@ the type SingletonBeacon.
 1. Set `initialDocument` to a copy of the `intermediateDocument`.
 1. Replace all `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
    values in the `initialDocument` with the `did`.
-1.  Optionally store `canonicalBytes` on a Content Addressable Storage (CAS)
-    system like IPFS. If doing so, implementations MUST use CIDs generated following
+1.  Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
+    system like IPFS. If doing so, implementations MUST use ::CIDs:: generated following
     the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
 
@@ -76,11 +76,11 @@ intermediate DID document.
 ### Read
 
 The read operation is executed by a resolver after a resolution request identifying
-a specific **did:btc1** `identifier` is received from a client at Resolution Time.
+a specific **did:btc1** `identifier` is received from a client at ::Resolution Time::.
 The request MAY contain a `resolutionOptions` object containing additional information
 to be used in resolution. The resolver then attempts to resolve the DID document
-of the `identifier` at a specific Target Time. The Target Time is either provided
-in `resolutionOptions` or is set to the Resolution Time of the request.
+of the `identifier` at a specific ::Target Time::. The ::Target Time:: is either provided
+in `resolutionOptions` or is set to the ::Resolution Time:: of the request.
 
 To do so it executes the following algorithm:
 
@@ -186,58 +186,41 @@ returns a `initialDocument`.
 
 ###### Deterministically Generate Beacon Services
 
-This algorithm deterministically generates three Beacons from the single
+This algorithm deterministically generates three ::Beacons:: from the single
 `keyBytes` value used to generate the deterministic **did:btc1**, one for each
 of the following three Bitcoin address types for the Bitcoin `network` specified
 by the DID: Pay-to-Public-Key-Hash (P2PKH), Pay-to-Witness-Public-Key-Hash (P2WPKH),
 and Pay-to-Taproot (P2TR). Spends from these three addresses can be produced only
 through signatures from the `keyBytes`'s associated private key.
-Each Beacon is of the type SingletonBeacon. The algorithm returns a `services` array.
+Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `services` array.
 
 1. Initialize a `services` variable to an empty array.
-1. Set `beaconType` to `SingletonBeacon`.
 1. Set `serviceId` to `#initialP2PKH`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Public-Key-Hash Bitcoin
    address from the `keyBytes` for the appropriate `network`.
-1. Set `p2pkhBeacon` to the result of passing `serviceId`, `beaconType`, and
-   `beaconAddress` to [Create Beacon Service].
+1. Set `p2pkhBeacon` to the result of passing `serviceId`, and
+   `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2pkhBeacon` to `services`.
 1. Set `serviceId` to `#initialP2WPKH`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Witness-Public-Key-Hash
    Bitcoin address from the `keyBytes` for the appropriate `network`.
-1. Set `p2wpkhBeacon` to the result of passing `serviceId`, `beaconType`, and
-   `beaconAddress` to [Create Beacon Service].
+1. Set `p2wpkhBeacon` to the result of passing `serviceId`, and
+   `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2wpkhBeacon` to `services`.
 1. Set `serviceId` to `#initialP2TR`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Taproot Bitcoin address
    from the `keyBytes` for the appropriate `network`.
-1. Set `p2trBeacon` to the result of passing `serviceId`, `beaconType`, and
-   `beaconAddress` to [Create Beacon Service].
+1. Set `p2trBeacon` to the result of passing `serviceId`, and
+   `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2trBeacon` to `services`.
 1. Return the `services` array.
-
-###### Create Beacon Service
-
-// TODO: This is a generic algorithm. Perhaps move to appendix.
-
-This algorithm creates a Beacon service that can be included into the services
-array of a DID document.
-The algorithm takes in a `serviceId`, a Beacon Type, `beaconType`, and a
-`bitcoinAddress`. It returns a `service` object.
-
-1. Initialize a `beacon` variable to an empty object.
-1. Set `beacon.id` to `serviceId`.
-1. Set `beacon.type` to `beaconType`.
-1. Set `beacon.serviceEndpoint` to the result of converting `bitcoinAddress` to
-   a URI as per **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**
-1. Return `beacon`.
 
 ##### External Resolution
 
 This algorithm externally retrieves an `intermediateDocumentRepresentation`,
-either by retrieving it from Content Addressable Storage (CAS) or from the Sidecar
-data provided as part of the resolution request. The algorithm takes in a
-**did:btc1** `identifier`, a `identifierComponents` object and a
+either by retrieving it from ::Content Addressable Storage:: (CAS) or from the
+::Sidecar Data:: provided as part of the resolution request. The algorithm
+takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
 `resolutionOptions` object.
 It returns an `initialDocument`, which is a conformant DID document validated
 against the `identifier`.
@@ -271,15 +254,15 @@ otherwise it throws an error.
 
 ###### CAS Retrieval
 
-This algorithm attempts to retrieve an `initialDocument` from a Content
-Addressable Storage (CAS) system by converting the bytes in the `identifier`
-into a Content Identifier (CID). The algorithm takes in an `identifier` and an
+This algorithm attempts to retrieve an `initialDocument` from a ::Content
+Addressable Storage:: (CAS) system by converting the bytes in the `identifier`
+into a ::Content Identifier:: (CID). The algorithm takes in an `identifier` and an
 `identifierComponents` object and returns an `initialDocument`.
 
 1. Set `hashBytes` to `identifierComponents.genesisBytes`.
-1. Set `cid` to the result of converting `hashBytes` to a IPFS v1 CID.
+1. Set `cid` to the result of converting `hashBytes` to a IPFS v1 ::CID::.
 1. Set `intermediateDocumentRepresentation` to the result of fetching the `cid`
-   against a Content Addressable Storage (CAS) system such as IPFS.
+   against a ::Content Addressable Storage:: (CAS) system such as IPFS.
 1. Set `initialDocument` to the copy of the `intermediateDocumentRepresentation`.
 1. Replace the string
    (`did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) with
@@ -289,7 +272,7 @@ into a Content Identifier (CID). The algorithm takes in an `identifier` and an
 #### Resolve Target Document
 
 This algorithm resolves a DID document from an initial document by walking the
-Bitcoin blockchain to identify Beacon Signals that announce DID Update Payloads
+Bitcoin blockchain to identify ::Beacon Signals:: that announce ::DID Update Payloads::
 applicable to the **did:btc1** identifier being resolved. The algorithm takes
 in an `initialDocument` and a set of `resolutionOptions`. The algorithm returns
 a valid `targetDocument` or throws an error.
@@ -327,7 +310,7 @@ This algorithm takes in an OPTIONAL Unix `targetTime` and returns a Bitcoin
 ##### Traverse Blockchain History
 
 This algorithm traverses Bitcoin blocks, starting from the block with the
-`contemporaryBlockheight`, to find `beaconSignals` emitted by Beacons within
+`contemporaryBlockheight`, to find `beaconSignals` emitted by ::Beacons:: within
 the `contemporaryDIDDocument`. Each `beaconSignal` is processed to retrieve a
 didUpdatePayload to the DID document. Each update is applied to the document and
 duplicates are ignored. If the algorithm reaches the block with the blockheight
@@ -363,16 +346,17 @@ The algorithm returns a DID document.
        `documentHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
         1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
-            raise LatePublishing error.
+            raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
         1.  Increment `currentVersionId`
         1.  If `currentVersionId` equals `targetVersionId` return
             `contemporaryDIDDocument`.
-        1.  Set `updateHash` to the sha256 hash of the `update`.
+        1.  Set `updateHash` to the result of passing `update` into the [JSON Canonicalization and Hash]
+            algorithm
         1.  Push `updateHash` onto `updateHashHistory`.
-        1.  Set `contemporaryHash` to the SHA256 hash of the
-            `contemporaryDIDDocument`.
+        1.  Set `contemporaryHash` to result of passing `contemporaryDIDDocument` into the 
+            [JSON Canonicalization and Hash] algorithm.
     1.  If `update.targetVersionId` is greater than `currentVersionId + 1`, MUST
         throw a LatePublishing error.
 1. Increment `contemporaryBlockheight`.
@@ -385,7 +369,7 @@ The algorithm returns a DID document.
 ##### Find Next Signals
 
 This algorithm takes in a `contemporaryBlockheight` and a set of `beacons` and
-finds the next Bitcoin block containing Beacon Signals from one or more of the
+finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
 `beacons`.
 
 This algorithm takes as inputs a Bitcoin blockheight specified by
@@ -398,35 +382,26 @@ containing `beaconId`, `beaconType`, and `tx` properties.
 1. Get Bitcoin `block` at `contemporaryBlockheight`.
 1. Set `beaconSignals` to an empty array.
 1. For all `tx` in `block.tx`:
-   check to see if any transaction inputs are spends from one of the Beacon addresses.
+   check to see if any transaction inputs are spends from one of the ::Beacon:: addresses.
    If they are, create a `signal` object containing the following fields and push
    `signal` to `beaconSignals`:
-   ```json
-   {
-       "beaconId": `beaconService.id`,
-       "beaconType": `beaconService.type`,
-       "tx": `tx`
-   }
+   ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
    ```
 1. If no `beaconSignals`, set `nextSignals` to the result of algorithm
    [Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
 1. Else initialize a `nextSignals` object to the following:
-   ```json
-   {
-     "blockheight": `contemporaryBlockheight`,
-     "signals": `beaconSignals`
-   }
+   ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
    ```
 1. Return `nextSignals`.
 
 ##### Process Beacon Signals
 
 This algorithm takes in an array of struct `beaconSignals` and attempts
-to process these signals according the type of the Beacon they were produced by.
+to process these signals according the type of the ::Beacon:: they were produced by.
 Each `beaconSignal` struct contains the properties `beaconId`, `beaconType`, and
 a `tx`. Additionally, this algorithm takes in `sidecarData` passed into the
 resolver through the `resolutionOptions`. If `sidecarData` is present it is used
-to process the Beacon Signals.
+to process the ::Beacon Signals::.
 
 1. Set `updates` to an empty array.
 1. For `beaconSignal` in `beaconSignals`:
@@ -435,22 +410,29 @@ to process the Beacon Signals.
     1. Set `signalId` to `signalTx.id`.
     1. Set `signalSidecarData` to `sidecarData[signalId]`. TODO: formalize
        structure of sidecarData
-    1. Set `didUpdatePayload` to the result of passing `signalTx` and
-       `signalSidecarData` to the Process Beacon Signal algorithm defined by the
-       corresponding Beacon `type`. See [Update Beacons].
+   1. Set `didUpdatePayload` to null.
+   1. If `type` == `SingletonBeacon`:
+      1. Set `didUpdatePayload` to the result of passing `signalTx` and   
+        `signalSidecarData` to the [Process Singleton Beacon Signal] algorithm.
+   1. If `type` == `CIDAggregateBeacon`:
+      1. Set `didUpdatePayload` to the result of passing `signalTx` and   
+        `signalSidecarData` to the [Process CIDAggregate Beacon Signal] algorithm.
+   1. If `type` == `SMTAggregateBeacon`:
+      1. Set `didUpdatePayload` to the result of passing `signalTx` and   
+        `signalSidecarData` to the [Process SMTAggregate Beacon Signal] algorithm.
     1. If `didUpdatePayload` is not null, push `didUpdatePayload` to `updates`.
 1. Return `updates`.
 
 ##### Confirm Duplicate Update
 
-This algorithm takes in a DID Update Payload and verifies that the update is a
+This algorithm takes in a ::DID Update Payload:: and verifies that the update is a
 duplicate against the hash history of previously applied updates.
 The algorithm takes in an `update` and an array of hashes, `updateHashHistory`.
 It throws an error if the `update` is not a duplicate, otherwise it returns.
 TODO: does this algorithm need  `contemporaryHash` passed in?
 
 1. Let `updateHash` equal the SHA256 hash of the `update`.
-1. Let `updateHashIndex` equal `update.targetVersionId - 2`.
+1. Let `updateHashIndex` equal `update.sourceVersionId - 1`.
 1. Let `historicalUpdateHash` equal `updateHashHistory[updateHashIndex]`.
 1. Assert `historicalUpdateHash` equals `updateHash`, if not MUST throw a
    LatePublishing error.
@@ -503,7 +485,7 @@ produce a DID document conformant to the DID Core specification. The
 `verificationMethodId` is an identifier for a verificationMethod within the
 `sourceDocument`. The verificationMethod identified MUST be a Schnorr secp256k1
 Multikey. The `beaconIds` MUST identify service endpoints with one of the
-three Beacon Types: `SingletonBeacon`, `CIDAggregateBeacon`, and
+three ::Beacon Types:: `SingletonBeacon`, `CIDAggregateBeacon`, and
 `SMTAggregateBeacon`.
 
 1. Set `unsignedUpdate` to the result of passing `btc1Identifier`, `sourceDocument`,
@@ -517,9 +499,8 @@ three Beacon Types: `SingletonBeacon`, `CIDAggregateBeacon`, and
 1. Set `didUpdateInvocation` to the result of passing `btc1Identifier`,
    `unsignedUpdate` as `didUpdatePayload, `and `verificationMethod` to the
    [Invoke DID Update Payload] algorithm.
-1. Set `signalsMetadata` to the result of passing `sourceDocument`, `beaconIds` and
-   `didUpdateInvocation` to the
-   [Announce DID Update Payload] algorithm.
+1. Set `signalsMetadata` to the result of passing `btc1Identifier`, `sourceDocument`, 
+   `beaconIds` and `didUpdateInvocation` to the [Announce DID Update] algorithm.
 1. Return `signalsMetadata`. It is up to implementations to ensure that the
    `signalsMetadata` is persisted.
 
@@ -528,7 +509,7 @@ three Beacon Types: `SingletonBeacon`, `CIDAggregateBeacon`, and
 This algorithm takes in a `btc1Identifier`, `sourceDocument`, `sourceVersionId`,
 and `documentPatch` objects. It applies the `documentPatch` to the `sourceDocument`
 and verifies the resulting `targetDocument` is a conformant DID document. Then
-it constructs and returns an unsigned DID Update Payload.
+it constructs and returns an unsigned ::DID Update Payload::.
 
 1. Check that `sourceDocument.id` equals `btc1Identifier` else MUST raise
    `invalidDIDUpdate` error.
@@ -560,7 +541,7 @@ This algorithm takes in a `btc1Identifier`, an unsigned `didUpdatePayload`, and 
 Integrity proof following the Authorization Capabilities (ZCAP-LD) and
 VC Data Integrity specifications.
 
-The algorithm returns the invoked DID Update Payload.
+The algorithm returns the invoked ::DID Update Payload::.
 
 1. Set `privateKeyBytes` to the result of retrieving the private key bytes
    associated with the `verificationMethod` value. How this is achieved is left to
@@ -611,13 +592,7 @@ The algorithm takes in a **did:btc1** identifier and returns a `rootCapability` 
 
 Below is an example root capability for updating the DID document for **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u**:
 
-```json
-{
-  "@context": "https://w3id.org/zcap/v1",
-  "id": "urn:zcap:root:did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-  "controller": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-  "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u"
-}
+```{.json include="json/CRUD-Operations/Update-zcap-root-capability.json"}
 ```
 
 ##### Dereference Root Capability Identifier
@@ -630,12 +605,12 @@ This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
 1. Set `rootCapability` to an empty object.
 1. Set `components` to the result of `capabilityId.split(":")`.
 1. Validate `components`:
-    1. Assert length of `components` is 4.
-    1. `components[0] == urn`.
-    1. `components[1] == zcap`.
-    1. `components[2] == root`.
+   1. Assert length of `components` is 4.
+   1. `components[0] == urn`.
+   1. `components[1] == zcap`.
+   1. `components[2] == root`.
 1. Set `uriEncodedId` to `components[3]`.
-1. Set `bct1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
+1. Set `btc1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
 1. Set `rootCapability.id` to `capabilityId`.
 1. Set `rootCapability.controller` to `btc1Identifier`.
 1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
@@ -646,83 +621,51 @@ containing a `patch` defining how the DID document for
 **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
 be mutated.
 
-```json
-{
-   "@context": [
-      "https://w3id.org/zcap/v1",
-      "https://w3id.org/security/data-integrity/v2",
-      "https://w3id.org/json-ld-patch/v1"
-   ],
-   "patch": [
-      {
-         "op": "add",
-         "path": "/service/4",
-         "value": {
-            "id": "#linked-domain",
-            "type": "LinkedDomains",
-            "serviceEndpoint": "https://contact-me.com"
-         }
-      }
-   ],
-   "proof": {
-      "type": "DataIntegrityProof",
-      "cryptosuite": "secp-schnorr-2024",
-      "verificationMethod": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u#initialKey",
-      "invocationTarget": "did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-      "capability": "urn:zcap:root:did%3Abtc1%3Ak1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u",
-      "capabilityAction": "Write",
-      "proofPurpose": "assertionMethod",
-      "proofValue": "z381yXYmxU8NudZ4HXY56DfMN6zfD8syvWcRXzT9xD9uYoQToo8QsXD7ahM3gXTzuay5WJbqTswt2BKaGWYn2hHhVFKJLXaDz"
-   }
-}
+```{.json include="json/CRUD-Operations/Update-zcap-root-capability-patch.json"}
 ```
 
-#### Announce DID Update Payload
+#### Announce DID Update
 
-This algorithm takes in a `sourceDocument`, an array of `beaconIds`, and a
-`didUpdateInvocation`. It retrieves `beaconServices` from the `sourceDocument`
-and calls the [Broadcast DID Update Attestation] algorithm corresponding the type of
-the Beacon. The algorithm returns an array of `signalsMetadata`, containing the
-necessary data to validate the Beacon Signal against the `didUpdateInvocation`.
+This algorithm takes in a `btc1Identifier`, `sourceDocument`, an array of `beaconIds`, 
+and a `didUpdateInvocation`. It retrieves `beaconServices` from the `sourceDocument`
+and calls the Broadcast DID Update algorithm corresponding to the type of
+the ::Beacon::. The algorithm returns an array of `signalsMetadata`, containing the
+necessary data to validate the ::Beacon Signal:: against the `didUpdateInvocation`.
 
 1. Set `beaconServices` to an empty array.
 1. Set `signalMetadata` to an empty array.
 1. For `beaconId` in `beaconIds`:
-    1. Find `beaconService` in `sourceDocument.service` with an `id` property
-       equal to `beaconId`.
-    1. If no `beaconService` MUST throw `beaconNotFound` error.
-    1. Push `beaconService` to `beaconServices`.
+   1. Find `beaconService` in `sourceDocument.service` with an `id` property
+    equal to `beaconId`.
+   1. If no `beaconService` MUST throw `beaconNotFound` error.
+   1. Push `beaconService` to `beaconServices`.
 1. For `beaconService` in `beaconServices`:
-    1. If `beaconService.type` == `SingletonBeacon`:
-        1. Set `signalMetadata` to the result of
-           passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast DID Update Attestation] algorithm.
-        1. Push `signalMetadata` to `signalsMetadata`.
-    1. Else If `beaconService.type` == `CIDAggregateBeacon`:
-        1. Set `signalId` to the result of
-           passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast DID Update Attestation] algorithm.
-        1. Push `signalMetadata` to `signalsMetadata`.
-    1. Else If `beaconService.type` == `SMTAggregateBeacon`:
-        1. Push `signalMetadata` to `signalsMetadata`
-           passing `beaconService` and `didUpdateInvocation` to the
-           [Broadcast DID Update Attestation] algorithm.
-        1. Push `signalMetadata` to `signalsMetadata`.
-    1. Else:
-        1. MUST throw `invalidBeacon` error.
+   1. Set `signalMetadata` to null.
+   1. If `beaconService.type` == `SingletonBeacon`:
+      1. Set `signalMetadata` to the result of
+        passing `beaconService` and `didUpdateInvocation` to the
+        [Broadcast Singleton Beacon Signal] algorithm.
+   1. Else If `beaconService.type` == `CIDAggregateBeacon`:
+      1. Set `signalMetadata` to the result of
+        passing `btc1Identifier`, `beaconService` and `didUpdateInvocation` to the
+        [Broadcast CIDAggregate Beacon Signal] algorithm.
+   1. Else If `beaconService.type` == `SMTAggregateBeacon`:
+      1. Set `signalMetadata` to the result of
+        passing `btc1Identifier`, `beaconService` and `didUpdateInvocation` to the
+        [Broadcast SMTAggregate Beacon Signal] algorithm.
+   1. Else:
+      1. MUST throw `invalidBeacon` error.
+  1. Merge `signalMetadata` into `signalsMetadata`.
+
 1. Return `signalsMetadata`.
 
-// Note: need to update the Beacon Signal algorithms to reflect returning the `signalsMetadata`.
-Idea is this data object contains all the info necessary to be stored by the DID
-controller. So that they can prove a Beacon Signal announces an update. This might
-just be, the Signal txid and the update itself. But in the SMT case we need additional
-merkleProofs.
+
 
 ### Deactivate
 
 To deactivate a **did:btc1**, the DID controller MUST add the property `deactivated`
 with the value `true` on the DID document. To do this, the DID controller constructs
-a valid DID Update payload with a JSON patch that adds this property and announces
-the payload through a Beacon in their current DID document following the algorithm
+a valid ::DID Update Payload:: with a JSON patch that adds this property and announces
+the payload through a ::Beacon:: in their current DID document following the algorithm
 in [Update]. Once a **did:btc1** has been deactivated this
 state is considered permanent and resolution MUST terminate.
