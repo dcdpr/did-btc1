@@ -273,35 +273,57 @@ into a ::Content Identifier:: (CID). The algorithm takes in an `identifier` and 
 
 This algorithm resolves a DID document from an initial document by walking the
 Bitcoin blockchain to identify ::Beacon Signals:: that announce ::DID Update Payloads::
-applicable to the **did:btc1** identifier being resolved. The algorithm takes
-in an `initialDocument` and a set of `resolutionOptions`. The algorithm returns
-a valid `targetDocument` or throws an error.
+applicable to the **did:btc1** identifier being resolved. 
+
+The algorithm takes as inputs:
+
+- `initialDocument`: The DID document that was used to initiate the **did:btc1**
+identifier being resolved as verified by the [Resolve Initial Document] algorithm.
+A DID Core conformant DID document.
+- `resolutionOptions`: A set of optional parameters passed in to the resolve function
+of the DID resolver.
+- `network`: The Bitcoin network of the **did:btc1** identifier.
+
+
+The algorithm returns `targetDocument`, a DID Core conformant DID document or throws an error.
 
 1. If `resolutionOptions.versionId` is not null, set `targetVersionId` to
    `resolutionOptions.versionId`.
 1. Else if `resolutionOptions.versionTime` is not null, set `targetTime` to
    `resolutionOptions.versionTime`.
-1. Set `targetBlockheight` to the result of passing `targetTime` to the algorithm
-   [Determine Target Blockheight].
-1. Set `sidecarData` to `resolutionOptions.sidecarData`.
+1. Else set `targetTime` to null and `targetVersionId` to null.
+1. Set `targetBlockheight` to the result of passing `network` and `targetTime`  
+   to the algorithm [Determine Target Blockheight].
+1. Set `signalsMetadata` to `resolutionOptions.sidecarData.signalsMetadata`.
 1. Set `currentVersionId` to 1.
 1. If `currentVersionId` equals `targetVersionId` return `initialDocument`.
 1. Set `updateHashHistory` to an empty array.
-1. Set `contemporaryBlockheight` to 1.
+1. Set `contemporaryBlockheight` to 0.
 1. Set `contemporaryDIDDocument` to the `initialDocument`.
 1. Set `targetDocument` to the result of calling the [Traverse Blockchain History]
    algorithm passing in `contemporaryDIDDocument`, `contemporaryBlockheight`,
    `currentVersionId`, `targetVersionId`, `targetBlockheight`, `updateHashHistory`, 
-   and `sidecarData`.
+   and `signalsMetadata`, `network`.
 1. Return `targetDocument`.
 
 ##### Determine Target Blockheight
 
-This algorithm takes in an OPTIONAL Unix `targetTime` and returns a Bitcoin
-`blockheight`.
+This algorithm determines the targetted Bitcoin blockheight that the resolution 
+algorithm should traverse the blockchain history up to looking for 
+for ::Beacon Signals::.
 
-1. If `targetTime`, find the Bitcoin `block` with greatest `blockheight` whose
-   `timestamp` is less than the `targetTime`.
+This algorithm takes the following inputs:
+
+- `network`: A string identifying the Bitcoin network of the **did:btc1** identifier.
+This algorithm MUST query the Bitcoin blockchain identified by the `network`.
+- `targetTime`: Identifies a timestamp that the DID document should be resolved to.
+If present, the value MUST be an ASCII string which is a valid XML datetime value.
+
+
+The algorithm returns a Bitcoin `blockheight`.
+
+1. If `targetTime`, find the Bitcoin `block` on the `network` with greatest `blockheight` 
+   whose `timestamp` is less than the `targetTime`.
 1. Else find the Bitcoin `block` with the greatest `blockheight` that has at
    least X conformations. TODO: what is X. Is it variable?
 1. Set `blockheight` to `block.blockheight`.
@@ -318,11 +340,38 @@ specified by a `targetBlockheight`, the `contemporaryDIDDocument` at that blockh
 is returned assuming a single canonical history of the DID document has been
 constructed up to that point.
 
-The algorithm takes as inputs a `contemporaryDIDDocument`, a `contemporaryBlockheight`,
-a `currentVersionId`, a `targetVersionId`, a `targetBlockheight`, an array of
-`updateHashHistory`, and a set of `sidecarData`.
+The algorithm takes the following inputs:
 
-The algorithm returns a DID document.
+- `contemporaryDIDDocument`: The DID document for the **did:btc1** identifier 
+   being resolved that is current at the blockheight of the `contemporaryBlockheight`. 
+   A DID Core conformant DID document.
+- `contemporaryBlockheight`: A Bitcoin blockheight identifying the contemporary time 
+   at which the resolution algorithm has reached as it traverses each block in the 
+   blockchain history. An integer greater of equal to 0. 
+- `currentVersionId`: The version of the contemporaryDIDDocument. An integer starting from 
+   1 and incrementing by 1 with each ::DID Update Payload:: applied to the DID document.
+- `targetVersionId`: The version of the DID document that the resolution algorithm is attempting to resolve.
+- `targetBlockheight`: The Bitcoin block at which the resolution algorithm stops
+   traversing he blockchain history. Once `contemporaryBlockheight` equals the 
+   `targetBlockheight` the algorithm with return the `contemporaryDIDDocument`.
+- `updateHashHistory`: An ordered array of SHA256 hashes of ::DID Update Payloads:: 
+   that have been applied to the DID document by the resolution algorithm in order 
+   to construct the `contemporaryDIDDocument`.
+- `signalsMetadata`: A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
+   to a struct containing ::Sidecar Data:: for that signal provided as part of the
+   resolutionOptions. This struct contains the following properties:
+   - `updatePayload`: A ::DID Update Payload:: which should match the update announced
+      by the ::Beacon Signal::. In the case of a ::SMT:: proof of non-inclusion no
+      DID Update Payload may be provided.
+   - `proofs`: A ::Sparse Merkle Tree:: proof that the provided `updatePayload` value is
+      the value at the leaf indexed by the **did:btc1** being resolved. TODO: What exactly this
+      structure is needs to be defined.
+- `network`:  A string identifying the Bitcoin network of the **did:btc1** identifier.
+This algorithm MUST query the Bitcoin blockchain identified by the `network`.
+
+
+The algorithm returns the `contemporaryDIDDocument` once either the `targetBlockheight` or 
+`targetVersionId` have been reached.
 
 1. Set `contemporaryHash` to the result of passing `contemporaryDIDDocument` into the 
 [JSON Canonicalization and Hash] algorithm.
@@ -333,11 +382,12 @@ The algorithm returns a DID document.
    address following
    **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**.
    Set `beacon.address` to the Bitcoin address.
-1. Set `nextSignals` to the result of calling algorithm
-   [Find Next Signals] passing in `beacons`, `contemporaryBlockheight` and `targetBlockheight`.
+1. Set `nextSignals` to the result of calling algorithm [Find Next Signals] passing 
+   in `beacons`, `contemporaryBlockheight`, `targetBlockheight` and `network`.
+1. Set `contemporaryBlockheight` to `nextSignals.contemporaryBlockheight`.
 1. Set `signals` to `nextSignals.signals`.
 1. Set `updates` to the result of calling algorithm
-   [Process Beacon Signals] passing in `signals` and `sidecarData`.
+   [Process Beacon Signals] passing in `signals` and `signalsMetadata`.
 1. Set `orderedUpdates` to the list of `updates` ordered by the `targetVersionId`
    property.
 1. For `update` in `orderedUpdates`:
@@ -359,6 +409,7 @@ The algorithm returns a DID document.
             [JSON Canonicalization and Hash] algorithm.
     1.  If `update.targetVersionId` is greater than `currentVersionId + 1`, MUST
         throw a LatePublishing error.
+1. If `contemporaryBlockheight` equals `targetBlockheight`, return `contemporaryDIDDocument`
 1. Increment `contemporaryBlockheight`.
 1. Set `targetDocument` to the result of calling the
    [Traverse Blockchain History] algorithm passing in `contemporaryDIDDocument`,
@@ -368,27 +419,56 @@ The algorithm returns a DID document.
 
 ##### Find Next Signals
 
-This algorithm takes in a `contemporaryBlockheight` and a set of `beacons` and
-finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
-`beacons`.
+This algorithm takes finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
+`beacons` and retuns all ::Beacon Signals:: within that block.
 
-This algorithm takes as inputs a Bitcoin blockheight specified by
-`contemporaryBlockheight` and an array of `beacons`.
+This algorithm takes in the following inputs:
 
-This algorithm returns a `nextSignals` struct, containing a `blockheight`
-the signals were found in and an array of `signals`. Each `signal` is a struct
-containing `beaconId`, `beaconType`, and `tx` properties.
+- `contemporaryBlockhieght`: The height of the block this function is looking for 
+   ::Beacon Signals:: in. An integer greater or equal to 0.
+- `targetBlockheight`: The height of the Bitcoin block that the resolution algorithm 
+   searches for ::Beacon Signals:: up to. An integer greater or equal to 0.
+- `beacons`: An array of ::Beacon:: services in the ::contemporary DID document::.
+   Each Beacon is a structure with the following properties:
+    - `id`: The id of the Beacon service in the DID document. A string.
+    - `type`: The type of the Beacon service in the DID document. A string whose values MUST be either SingletonBeacon, , CIDAggregateBeacon or SMTAggregateBeacon.
+    - `serviceEndpoint`: A BIP21 URI representing a Bitcoin address.
+    - `address`: The Bitcoin address decoded from the `serviceEndpoint value.
+- `network`: A string identifying the Bitcoin network of the **did:btc1** identifier.
+This algorithm MUST query the Bitcoin blockchain identified by the `network`.
+  
 
+This algorithm returns a `nextSignals` struct, containing the following properties:
+- `blockheight`: The Bitcoin blockheight for the block containing the ::Beacon Signals::.
+- `signals`: An array of `signals`. Each `signal` is a struct containing the following:
+   - `beaconId`: The id for the ::Beacon:: that the `signal` was announced by.
+   - `beaconType`: The type of the ::Beacon:: that announced the `signal`.
+   - `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
+
+1. Set `signals` to an empty array.
 1. Get Bitcoin `block` at `contemporaryBlockheight`.
-1. Set `beaconSignals` to an empty array.
-1. For all `tx` in `block.tx`:
-   check to see if any transaction inputs are spends from one of the ::Beacon:: addresses.
-   If they are, create a `signal` object containing the following fields and push
-   `signal` to `beaconSignals`:
-   ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
+1. For all `txid` in `block.tx`:
+   1. Ignore the coinbase and genesis transaction identifiers. Coinbase tx identifiers are
+   `0000000000000000000000000000000000000000000000000000000000000000` and the genesis tx
+   identifier is `4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b`.
+   1. Set `tx` to the result of fetching the Bitcoin transaction with the `txid`.
+   1. For each `tx_in` in the set of transaction inpurs for `tx`:
+      1. Set `prev_tx_id` to transaction identifier spent in the `tx_in`
+      1. Ignore coinbase transaction identifiers 
+      1. Set `prev_tx` to the result of fetch the transaction with the `prev_tx_id`
+      1. Set `spent_tx_out` to transaction output of `prev_tx` indexed by the `tx_in.prev_index`
+      1. Set `spent_address` to the script pubkey address for the `spent_tx_out` for the provided `network`.
+      1. If `spent_address` equals any of the `address` fields of the provided `beacons` array:
+         1. Set `beaconSignal` to an object containing the following fields object:
+            ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
+            ```
+         1. Push `beaconSignal` onto the `signals` array.
+         1. Break the loop, transaction is a ::Beacon Signal::, no need to check additional transaction inputs.
+1. If `contemporaryBlockheight` equals `targetBlockheight`, return a `nextSignals` struct: 
+   ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
    ```
-1. If no `beaconSignals`, set `nextSignals` to the result of algorithm
-   [Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
+1. If no `signals`, set `nextSignals` to the result of algorithm
+[Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
 1. Else initialize a `nextSignals` object to the following:
    ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
    ```
@@ -396,19 +476,35 @@ containing `beaconId`, `beaconType`, and `tx` properties.
 
 ##### Process Beacon Signals
 
-This algorithm takes in an array of struct `beaconSignals` and attempts
-to process these signals according the type of the ::Beacon:: they were produced by.
-Each `beaconSignal` struct contains the properties `beaconId`, `beaconType`, and
-a `tx`. Additionally, this algorithm takes in `sidecarData` passed into the
-resolver through the `resolutionOptions`. If `sidecarData` is present it is used
-to process the ::Beacon Signals::.
+This algorithm processes each ::Beacon Signal:: by attempting to retrieve and validate an announce 
+::DID Update Payload:: for that signal according to the type of the ::Beacon::.
+
+This algorithm takes as inputs:
+
+- `beaconSignals`: An array of struct representing ::Beacon Signals:: retrieved through executing
+the [Find Next Signals] algorithm. Each struct contains the follow properties:
+   - `beaconId`: The id for the ::Beacon:: that the `signal` was announced by.
+   - `beaconType`: The type of the ::Beacon:: that announced the `signal`.
+   - `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
+- `signalsMetadata`: A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
+   to a struct containing ::Sidecar Data:: for that signal provided as part of the
+   resolutionOptions. This struct contains the following properties:
+   - `updatePayload`: A ::DID Update Payload:: which should match the update announced
+      by the ::Beacon Signal::. In the case of a ::SMT:: proof of non-inclusion no
+      DID Update Payload may be provided.
+   - `proofs`: A ::Sparse Merkle Tree:: proof that the provided `updatePayload` value is
+      the value at the leaf indexed by the **did:btc1** being resolved. TODO: What exactly this
+      structure is needs to be defined.
+
+The algorithm returns an array of ::DID Update Payloads::.
+
 
 1. Set `updates` to an empty array.
 1. For `beaconSignal` in `beaconSignals`:
     1. Set `type` to `beaconSignal.beaconType`.
     1. Set `signalTx` to `beaconSignal.tx`.
     1. Set `signalId` to `signalTx.id`.
-    1. Set `signalSidecarData` to `sidecarData[signalId]`. TODO: formalize
+    1. Set `signalSidecarData` to `signalsMetadata[signalId]`. TODO: formalize
        structure of sidecarData
    1. Set `didUpdatePayload` to null.
    1. If `type` == `SingletonBeacon`:
@@ -448,23 +544,25 @@ matches the targetHash specified by the update and validates it is a conformant
 DID document before returning it. This algorithm takes inputs
 `contemporaryDIDDocument` and an `update`.
 
+1. Set `capabilityId` to `update.proof.capability`.
+1. Set `rootCapability` to the result of passing `capabilityId` to the [Dereference Root Capability Identifier] algorithm.
+1. If `rootCapability.invocationTarget` does not equal `contemporaryDIDDocument.id` and `rootCapability.controller` 
+   does not equal  `contemporaryDIDDocument.id`, MUST throw an `invalidDidUpdate` error.
 1. Instantiate a `schnorr-secp256k1-2025` `cryptosuite` instance.
 1. Set `expectedProofPurpose` to `capabilityInvocation`.
-1. Set `mediaType` to ???? TODO
+1. Set `mediaType` to ???? TODO: is this just `application/json`?
 1. Set `documentBytes` to the bytes representation of `update`.
 1. Set `verificationResult` to the result of passing `mediaType`, `documentBytes`,
    `cryptosuite`, and `expectedProofPurpose` into the
    [Verify Proof algorithm](https://w3c.github.io/vc-data-integrity/#verify-proof)
    defined in the VC Data Integrity specification.
-1. TODO: HOW DO WE ENSURE THAT THE PROOF IS A VALID INVOCATION OF THE ROOT
-   CAPABILITY derived using [Derive Root Capability from **did:btc1** Identifier]
-   algorithm
+1. If `verificationResult.verified` equals False, MUST raise a `invalidUpdateProof` exception.
 1. Set `targetDIDDocument` to a copy of `contemporaryDIDDocument`.
 1. Use JSON Patch to apply the `update.patch` to the `targetDIDDOcument`.
 1. Verify that `targetDIDDocument` is conformant with the data model specified
    by the DID Core specification.
-1. Set `targetHash` to the SHA256 hash of `targetDIDDocument`.
-1. Check that `targetHash` equals `update.targetHash`, else raise InvalidDIDUpdate
+1. Set `targetHash` to the result of passing `targetDIDDocument` to the [JSON Canonicalization and Hash] algorithm.
+1. Check that `targetHash` equals the base58 decoded `update.targetHash`, else raise InvalidDIDUpdate
    error.
 1. Return `targetDIDDocument`.
 
@@ -566,63 +664,6 @@ The algorithm returns the invoked ::DID Update Payload::.
    algorithm from VC Data Integrity passing `didUpdatePayload` as the input document,
    `cryptosuite`, and the set of `proofOptions`.
 1. Return `didUpdateInvocation`.
-
-#### Root did:btc1 Update Capabilities
-
-Note: Not sure if these algorithms should go here or in the appendix?
-
-##### Derive Root Capability from **did:btc1** Identifier
-
-This algorithm deterministically generates a ZCAP-LD root capability from a
-given **did:btc1** identifier. Each root capability is unique to the identifier.
-This root capability is defined and understood by the **did:btc1** specification
-as the root capability to authorize updates to the specific **did:btc1** identifiers
-DID document.
-
-The algorithm takes in a **did:btc1** identifier and returns a `rootCapability` object.
-
-1. Define `rootCapability` as an empty object.
-1. Set `rootCapability.@context` to 'https://w3id.org/zcap/v1'.
-1. Set `encodedIdentifier` to result of calling algorithm
-   `encodeURIComponent(identifier)`.
-1. Set `rootCapability.id` to `urn:zcap:root:${encodedIdentifier}`.
-1. Set `rootCapability.controller` to `identifier`.
-1. Set `rootCapability.invocationTarget` to `identifier`.
-1. Return `rootCapability`.
-
-Below is an example root capability for updating the DID document for **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u**:
-
-```{.json include="json/CRUD-Operations/Update-zcap-root-capability.json"}
-```
-
-##### Dereference Root Capability Identifier
-
-This algorithm takes in a root capability identifier and dereferences it to the
-root capability object.
-
-This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
-
-1. Set `rootCapability` to an empty object.
-1. Set `components` to the result of `capabilityId.split(":")`.
-1. Validate `components`:
-   1. Assert length of `components` is 4.
-   1. `components[0] == urn`.
-   1. `components[1] == zcap`.
-   1. `components[2] == root`.
-1. Set `uriEncodedId` to `components[3]`.
-1. Set `btc1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
-1. Set `rootCapability.id` to `capabilityId`.
-1. Set `rootCapability.controller` to `btc1Identifier`.
-1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
-1. Return `rootCapability`.
-
-Below is an example of a `didUpdatePayload`. An invoked ZCAP-LD capability
-containing a `patch` defining how the DID document for
-**did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
-be mutated.
-
-```{.json include="json/CRUD-Operations/Update-zcap-root-capability-patch.json"}
-```
 
 #### Announce DID Update
 
