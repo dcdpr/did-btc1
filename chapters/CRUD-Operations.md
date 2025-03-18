@@ -70,7 +70,7 @@ intermediate DID document.
    [Bech32 Encoding a secp256k1 Public Key] algorithm, passing `genesisBytes`.
 1. Else if `idType` is "external",  append the result of the
    [Bech32 encoding a hash-value] algorithm, passing `genesisBytes`.
-1. Else, MUST raise "InvalidDID" exception.
+1. Else, MUST raise an [`invalidDid` error](https://www.w3.org/TR/did-resolution/#invaliddid).
 1. Return `result`.
 
 ### Read
@@ -109,6 +109,9 @@ This algorithm returns an `identifierComponents` structure whose items are:
    `components`.
 1. Set `scheme` to `components[0]`.
 1. Set `methodId` to `components[1]`.
+1. The `methodId` MUST be the value `btc1`. If this
+   requirement fails then a [`methodNotSupported` error](https://www.w3.org/TR/did-resolution/#methodnotsupported)
+   MUST be raised.
 1. If the length of `components` equals `3`, set `identifierComponents.version`
    to `1` and `identifierComponents.network` to `mainnet`. Set `idBech32` to
    `components[2]`.
@@ -120,13 +123,13 @@ This algorithm returns an `identifierComponents` structure whose items are:
 1. Else if the length of `components` equals `5`, set `identifierComponents.version`
    to `components[2]`, `identifierComponents.network` to `components[3]` and `idBech32`
    to the `components[4]`.
-1. Else MUST raise `InvalidDID` error. There are an incorrect number of components
+1. Else MUST raise [`invalidDid` error](https://www.w3.org/TR/did-resolution/#invaliddid). There are an incorrect number of components
    to the `identifier`.
 1. Check the validity of the identifier components. The `scheme` MUST be the value
-   `did`. The `methodId` MUST be the value `btc1`. The `identifierComponents.version`
+   `did`. The `identifierComponents.version`
    MUST be convertible to a positive integer value. The `identifierComponents.network`
    MUST be one of `mainnet`, ` signet`, `testnet`, or `regnet`. If any of these
-   requirements fail then an `InvalidDID` error MUST be raised.
+   requirements fail then an [`invalidDid` error](https://www.w3.org/TR/did-resolution/#invaliddid) MUST be raised.
 1. Decode `idBech32` using the Bech32 algorithm to get `decodeResult`.
 1. Set `identifierComponents.hrp` to `decodeResult.hrp`.
 1. Set `identifierComponents.genesisBytes` to `decodeResult.value`.
