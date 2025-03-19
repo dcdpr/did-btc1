@@ -232,7 +232,7 @@ against the `identifier`.
 1. Else set `initialDocument` to the result of passing `identifier` and
    `identifierComponents` to the [CAS Retrieval] algorithm.
 1. Validate `initialDocument` is a conformant DID document according to the
-   DID Core 1.1 specification.
+   DID Core 1.1 specification. Else MUST raise `invalidDidDocument` error.
 1. Return `initialDocument`.
 
 ###### Sidecar Initial Document Validation
