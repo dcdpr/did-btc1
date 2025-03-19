@@ -144,7 +144,7 @@ for that identifier.
    to the result of running the algorithm in
    [Deterministically Generate Initial DID Document] passing in the `identifier`,
    `identifierComponents` values.
-1. Else If `decodeResult.hrp` value is `x`, then set the `initialDocument` to
+1. Else If `identifierComponents.hrp` value is `x`, then set the `initialDocument` to
    the result of running [External Resolution] passing in the `identifier`,
    `identifierComponents` and `resolutionOptions` values.
 1. Else MUST raise `invalidHRPValue` error.
