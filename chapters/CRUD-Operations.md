@@ -125,7 +125,7 @@ This algorithm returns an `identifierComponents` structure whose items are:
 1. Check the validity of the identifier components. The `scheme` MUST be the value
    `did`. The `methodId` MUST be the value `btc1`. The `identifierComponents.version`
    MUST be convertible to a positive integer value. The `identifierComponents.network`
-   MUST be one of `mainnet`, ` signet`, `testnet`, or `regnet`. If any of these
+   MUST be one of `mainnet`, ` signet`, `testnet`, or `regtest`. If any of these
    requirements fail then an `InvalidDID` error MUST be raised.
 1. Decode `idBech32` using the Bech32 algorithm to get `decodeResult`.
 1. Set `identifierComponents.hrp` to `decodeResult.hrp`.
