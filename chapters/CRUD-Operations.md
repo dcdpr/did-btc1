@@ -225,7 +225,7 @@ takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
 It returns an `initialDocument`, which is a conformant DID document validated
 against the `identifier`.
 
-1. If `resolutionOptions.sidecarData.genesisDocument` is not null, set
+1. If `resolutionOptions.sidecarData.initialDocument` is not null, set
    `initialDocument` to the result of passing `identifier`, `identifierComponents`
    and `resolutionOptions.sidecarData.initialDocument` into algorithm
    [Sidecar Initial Document Validation].
