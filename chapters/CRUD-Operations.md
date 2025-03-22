@@ -345,7 +345,7 @@ The algorithm returns a DID document.
 1. For `update` in `orderedUpdates`:
     1. If `update.targetVersionId` is less than or equal to `currentVersionId`,
        run Algorithm [Confirm Duplicate Update] passing in `update`,
-       `documentHistory`, and `contemporaryHash`.
+       `updateHashHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
         1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
             raise `latePublishing` error.
@@ -365,7 +365,7 @@ The algorithm returns a DID document.
 1. Set `targetDocument` to the result of calling the
    [Traverse Blockchain History] algorithm passing in `contemporaryDIDDocument`,
    `contemporaryBlockheight`, `currentVersionId`, `targetVersionId`,
-   `targetBlockheight`, `documentHistory`, and `sidecarData`.
+   `targetBlockheight`, `updateHashHistory`, and `sidecarData`.
 1. Return `targetDocument`.
 
 ##### Find Next Signals
