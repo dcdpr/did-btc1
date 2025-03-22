@@ -433,7 +433,7 @@ The algorithm takes in an `update` and an array of hashes, `updateHashHistory`.
 It throws an error if the `update` is not a duplicate, otherwise it returns.
 TODO: does this algorithm need  `contemporaryHash` passed in?
 
-1. Let `updateHash` equal the SHA256 hash of the `update`.
+1. Let `updateHash` equal the result of passing `update` into the [JSON Canonicalization and Hash] algorithm.
 1. Let `updateHashIndex` equal `update.targetVersionId - 2`.
 1. Let `historicalUpdateHash` equal `updateHashHistory[updateHashIndex]`.
 1. Assert `historicalUpdateHash` equals `updateHash`, if not MUST throw a
