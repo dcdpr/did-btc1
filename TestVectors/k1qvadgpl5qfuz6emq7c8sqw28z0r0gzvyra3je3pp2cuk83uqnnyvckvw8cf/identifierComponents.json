@@ -1,6 +1,0 @@
-{
-  "version": 1,
-  "network": "regtest",
-  "hrp": "k",
-  "hexGenesisBytes": "033ad407f402782d6760f60f00394713c6f409841f632cc421563963c7809cc8cc"
-}

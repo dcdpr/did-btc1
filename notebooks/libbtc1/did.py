@@ -123,9 +123,9 @@ def resolve_deterministic(did_btc1, identifier_components):
     return did_document
 
 def deterministically_generate_beacon_services(pubkey: S256Point, network):
-    p2pkh_beacon = generate_singleton_beacon_service(pubkey, "#initial_p2pkh",P2PKH,network)
-    p2wpkh_beacon = generate_singleton_beacon_service(pubkey, "#initial_p2wpkh",P2WPKH,network)
-    p2tr_beacon = generate_singleton_beacon_service(pubkey, "#initial_p2tr",P2TR,network)
+    p2pkh_beacon = generate_singleton_beacon_service(pubkey, "#initialP2PKH",P2PKH,network)
+    p2wpkh_beacon = generate_singleton_beacon_service(pubkey, "#initialP2WPKH",P2WPKH,network)
+    p2tr_beacon = generate_singleton_beacon_service(pubkey, "#initialP2TR",P2TR,network)
     service = [p2pkh_beacon, p2wpkh_beacon, p2tr_beacon]
     return service
 

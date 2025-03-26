@@ -16,22 +16,22 @@
         }
       }
     ],
-    "sourceHash": "9EUnJwoNB1DZF4yUmb8iFsBjXkUkSg9Hjq2P1NS96AX7",
-    "targetHash": "BZ4n8wiDWFRBV4Zu6aDV4WFsRPn3Jmu2Nb4xW9ebW8fj",
+    "sourceHash": "9kSA9j3z2X3a26yAdJi6nwg31qyfaHMCU1u81ZrkHirM",
+    "targetHash": "C45TsdfkLZh5zL6pFfRmK93X4EdHusbCDwvt8d7Xs3dP",
     "targetVersionId": 2,
     "proof": {
       "type": "DataIntegrityProof",
-      "cryptosuite": "schnorr-secp256k1-jcs-2025",
-      "verificationMethod": "did:btc1:regtest:k1qvadgpl5qfuz6emq7c8sqw28z0r0gzvyra3je3pp2cuk83uqnnyvckvw8cf#initialKey",
+      "cryptosuite": "bip340-jcs-2025",
+      "verificationMethod": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc#initialKey",
       "proofPurpose": "capabilityInvocation",
-      "capability": "urn:zcap:root:did%3Abtc1%3Aregtest%3Ak1qvadgpl5qfuz6emq7c8sqw28z0r0gzvyra3je3pp2cuk83uqnnyvckvw8cf",
+      "capability": "urn:zcap:root:did%3Abtc1%3Aregtest%3Ak1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
       "capabilityAction": "Write",
       "@context": [
         "https://w3id.org/security/v2",
         "https://w3id.org/zcap/v1",
         "https://w3id.org/json-ld-patch/v1"
       ],
-      "proofValue": "z5xYgTCPgBW7ZAYywGkhznBXKKtjMX4cudM3Zc29GdHWe1QvV4hLmzuL2vYcb3gzc5ZyAm1KezfbYXHU6TuDaChCm"
+      "proofValue": "z3yfzVGdoDF4s8y4Bk8JeV9XuZw1nMeMtNW3x5brEm7DNtmWZkNBPbCLzUBJRpctBj9QJL1dydm94ZNsPxosPnkPP"
     }
   }
 ]

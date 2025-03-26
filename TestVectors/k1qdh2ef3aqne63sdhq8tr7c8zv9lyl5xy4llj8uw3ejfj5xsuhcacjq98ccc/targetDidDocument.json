@@ -1,5 +1,5 @@
 {
-  "id": "did:btc1:regtest:k1qvadgpl5qfuz6emq7c8sqw28z0r0gzvyra3je3pp2cuk83uqnnyvckvw8cf",
+  "id": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
   "@context": [
     "https://www.w3.org/ns/did/v1",
     "https://did-btc1/TBD/context"
@@ -8,8 +8,8 @@
     {
       "id": "#initialKey",
       "type": "Multikey",
-      "controller": "did:btc1:regtest:k1qvadgpl5qfuz6emq7c8sqw28z0r0gzvyra3je3pp2cuk83uqnnyvckvw8cf",
-      "publicKeyMultibase": "z66Ppr1hk7fkH6Corq9M62V4uT31tv4j4AZwCxrCUKC5Vofy"
+      "controller": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
+      "publicKeyMultibase": "zQ3shn68faoXE2EqCTtefQXNLgaTa7ZohG2ftZjgXphStJsGc"
     }
   ],
   "authentication": [
@@ -26,19 +26,19 @@
   ],
   "service": [
     {
-      "id": "#initial_p2pkh",
+      "id": "#initialP2PKH",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:muRxiMKmqP5HeA4njajdmuL7tQfrKjcNgb"
+      "serviceEndpoint": "bitcoin:moFJwqLXBDmw4rnWQm9c3ag4kSdFxD5yiz"
     },
     {
-      "id": "#initial_p2wpkh",
+      "id": "#initialP2WPKH",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:bcrt1qnzsq0ejh4jkuqdslqn7vxdu589pxe45gkyfmhx"
+      "serviceEndpoint": "bitcoin:bcrt1q2n9edlz3yehahctcj6p93lzznhz9m0kzp67ung"
     },
     {
-      "id": "#initial_p2tr",
+      "id": "#initialP2TR",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:bcrt1pez6hwgel8rn7hykyzkxl4xxtna6clsvev5pgwquqn3ulqkkz7v7skh4md6"
+      "serviceEndpoint": "bitcoin:bcrt1p6rs5tnq94rt4uu5edc9luahlkyphk30yk8smwfzurpc8ru06vcws8ylq7l"
     },
     {
       "id": "#linked-domain",
