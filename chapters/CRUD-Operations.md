@@ -125,7 +125,7 @@ This algorithm returns an `identifierComponents` structure whose items are:
 1. Check the validity of the identifier components. The `scheme` MUST be the value
    `did`. The `methodId` MUST be the value `btc1`. The `identifierComponents.version`
    MUST be convertible to a positive integer value. The `identifierComponents.network`
-   MUST be one of `mainnet`, ` signet`, `testnet`, or `regnet`. If any of these
+   MUST be one of `mainnet`, ` signet`, `testnet`, or `regtest`. If any of these
    requirements fail then an `InvalidDID` error MUST be raised.
 1. Decode `idBech32` using the Bech32 algorithm to get `decodeResult`.
 1. Set `identifierComponents.hrp` to `decodeResult.hrp`.
@@ -144,7 +144,7 @@ for that identifier.
    to the result of running the algorithm in
    [Deterministically Generate Initial DID Document] passing in the `identifier`,
    `identifierComponents` values.
-1. Else If `decodeResult.hrp` value is `x`, then set the `initialDocument` to
+1. Else If `identifierComponents.hrp` value is `x`, then set the `initialDocument` to
    the result of running [External Resolution] passing in the `identifier`,
    `identifierComponents` and `resolutionOptions` values.
 1. Else MUST raise `invalidHRPValue` error.
@@ -225,14 +225,14 @@ takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
 It returns an `initialDocument`, which is a conformant DID document validated
 against the `identifier`.
 
-1. If `resolutionOptions.sidecarData.genesisDocument` is not null, set
+1. If `resolutionOptions.sidecarData.initialDocument` is not null, set
    `initialDocument` to the result of passing `identifier`, `identifierComponents`
    and `resolutionOptions.sidecarData.initialDocument` into algorithm
    [Sidecar Initial Document Validation].
 1. Else set `initialDocument` to the result of passing `identifier` and
    `identifierComponents` to the [CAS Retrieval] algorithm.
 1. Validate `initialDocument` is a conformant DID document according to the
-   DID Core 1.1 specification.
+   DID Core 1.1 specification. Else MUST raise `invalidDidDocument` error.
 1. Return `initialDocument`.
 
 ###### Sidecar Initial Document Validation
@@ -393,7 +393,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
 1. For `update` in `orderedUpdates`:
     1. If `update.targetVersionId` is less than or equal to `currentVersionId`,
        run Algorithm [Confirm Duplicate Update] passing in `update`,
-       `documentHistory`, and `contemporaryHash`.
+       `updateHashHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
         1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
             raise `latePublishing` error.
@@ -414,7 +414,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
 1. Set `targetDocument` to the result of calling the
    [Traverse Blockchain History] algorithm passing in `contemporaryDIDDocument`,
    `contemporaryBlockheight`, `currentVersionId`, `targetVersionId`,
-   `targetBlockheight`, `documentHistory`, and `sidecarData`.
+   `targetBlockheight`, `updateHashHistory`, and `sidecarData`.
 1. Return `targetDocument`.
 
 ##### Find Next Signals
@@ -527,8 +527,8 @@ The algorithm takes in an `update` and an array of hashes, `updateHashHistory`.
 It throws an error if the `update` is not a duplicate, otherwise it returns.
 TODO: does this algorithm need  `contemporaryHash` passed in?
 
-1. Let `updateHash` equal the SHA256 hash of the `update`.
-1. Let `updateHashIndex` equal `update.sourceVersionId - 1`.
+1. Let `updateHash` equal the result of passing `update` into the [JSON Canonicalization and Hash] algorithm.
+1. Let `updateHashIndex` equal `update.targetVersionId - 2`.
 1. Let `historicalUpdateHash` equal `updateHashHistory[updateHashIndex]`.
 1. Assert `historicalUpdateHash` equals `updateHash`, if not MUST throw a
    LatePublishing error.
