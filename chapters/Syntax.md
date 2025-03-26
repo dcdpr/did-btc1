@@ -14,7 +14,7 @@ The ABNF for a **did:btc1** DID follows:
 ```abnf
 did-btc1 = "did:btc1:" [ version ":" ] [ network ":" ] id-bech32
 version	= 1*DIGIT
-network =  "mainnet" / "signet" / "testnet" / "regnet"
+network =  "mainnet" / "signet" / "testnet" / "regtest"
 id-bech32 = key-value / hash-value
 hash-value = "x1" bech32-encoding
 key-value = "k1" bech32-encoding
