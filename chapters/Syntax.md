@@ -184,7 +184,7 @@ Decode the **did:btc1** identifier as follows:
    1. `1` - "signet"
    1. `2` - "regtest"
    1. `3` - "testnet3"
-   1. `4` = "testnet4"
+   1. `4` - "testnet4"
    1. `5`-`7` - raise `InvalidDID` error
    1. `8`-`F` - `networkValue - 7`
 1. If the number of nibbles consumed is odd:
