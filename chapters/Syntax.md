@@ -110,7 +110,7 @@ Given:
   * "testnet3"
   * "testnet4"
   * number
-* `idBytes` - byte array, one of:
+* `genesisBytes` - byte array, one of:
   * a compressed secp256k1 public key if `idType` is "key"
   * a hash of an initiating DID document if `idType` is "hash"
 
@@ -120,7 +120,7 @@ Encode the **did:btc1** identifier as follows:
 1. If `version` is not `1`, raise `InvalidDID` error.
 1. If `network` is not a valid value per above, raise `InvalidDID` error.
 1. if `network` is a number and is outside the range of 1-8, raise `InvalidDID` error.
-1. If `idType` is "key" and `idBytes` is not a valid compressed secp256k1
+1. If `idType` is "key" and `genesisBytes` is not a valid compressed secp256k1
    public key, raise `InvalidDID` error.
 1. Map `idType` to `hrp` from the following:
    1. "key" - "k"
@@ -141,7 +141,7 @@ Encode the **did:btc1** identifier as follows:
 1. Create a `decodedBytes` byte array from `nibbles`, where `index` is from `0`
    to `nibbles.length / 2 - 1` and `encodingBytes[index] = (nibbles[2 * index]
    << 8) | nibbles[2 * index + 1]`.
-1. Append `idBytes` to `encodingBytes`.
+1. Append `genesisBytes` to `encodingBytes`.
 1. Set `id` to "did:btc1:".
 1. Pass `hrp` and `decodedBytes` to the Bech32m encoding algorithm, retrieving
    `encodedString`.
@@ -190,10 +190,10 @@ Decode the **did:btc1** identifier as follows:
 1. If the number of nibbles consumed is odd:
    1. Advance to the next nibble and set `fillerNibble` to its value.
    1. If `fillerNibble` is not `0`, raise `InvalidDID` error.
-1. Set `idBytes` to the remaining `decodedBytes`.
-1. If `idType` is "key" and `idBytes` is not a valid compressed secp256k1
+1. Set `genesisBytes` to the remaining `decodedBytes`.
+1. If `idType` is "key" and `genesisBytes` is not a valid compressed secp256k1
    public key, raise `InvalidDID` error.
-1. Return `idType`, `version`, `network`, and `idBytes`.
+1. Return `idType`, `version`, `network`, and `genesisBytes`.
 
 ### Differentiating **did:btc1** Identifiers
 
