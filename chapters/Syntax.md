@@ -8,7 +8,7 @@ encoding of:
 * the Bitcoin `network` identifier; and
 * either:
   * a `key-value` representing a secp256k1 public key; or
-  * a `hash-value` representing the hash of an initiating DID document.
+  * a `hash-value` representing the hash of an initiating external DID document.
 
 The specification `version` and the Bitcoin `network` identifier are encoded
 into a single byte as follows:
@@ -101,7 +101,7 @@ Given:
 
 * `idType` - required, one of:
   * "key"
-  * "hash"
+  * "external"
 * `version` - required, number
 * `network` - required, one of:
   * "bitcoin"
@@ -112,7 +112,7 @@ Given:
   * number
 * `genesisBytes` - required, byte array, one of:
   * a compressed secp256k1 public key if `idType` is "key"
-  * a hash of an initiating DID document if `idType` is "hash"
+  * a hash of an initiating external DID document if `idType` is "external"
 
 Encode the **did:btc1** identifier as follows:
 
@@ -124,7 +124,7 @@ Encode the **did:btc1** identifier as follows:
    public key, raise `InvalidDID` error.
 1. Map `idType` to `hrp` from the following:
    1. "key" - "k"
-   1. "hash" - "x"
+   1. "external" - "x"
 1. Create an empty `nibbles` numeric array.
 1. Set `fCount` equal to `(version - 1) / 15`, rounded down.
 1. Append hexadecimal `F` (decimal `15`) to `nibbles` `fCount` times.
@@ -142,21 +142,21 @@ Encode the **did:btc1** identifier as follows:
    `nibbles.length / 2 - 1` and `encodingBytes[index] =
    (nibbles[2 * index] << 8) | nibbles[2 * index + 1]`.
 1. Append `genesisBytes` to `encodingBytes`.
-1. Set `id` to "did:btc1:".
+1. Set `identifier` to "did:btc1:".
 1. Pass `hrp` and `dataBytes` to the [Bech32m Encoding] algorithm, retrieving
    `encodedString`.
-1. Append `encodedString` to `id`.
-1. Return `id`.
+1. Append `encodedString` to `identifier`.
+1. Return `identifier`.
 
 ### **did:btc1** Identifier Decoding
 
 Given:
 
-* `id` - required, a string ***did:btc1** identifier
+* `identifier` - required, a string ***did:btc1** identifier
 
 Decode the **did:btc1** identifier as follows:
 
-1. Split `id` into an array of `components` at the colon `:` character.
+1. Split `identifier` into an array of `components` at the colon `:` character.
 1. If the length of the `components` array is not `3`, raise `InvalidDID` error.
 1. If `components[0]` is not "did", raise `InvalidDID` error.
 1. If `components[1]` is not "btc1", raise `methodNotSupported` error.
@@ -166,7 +166,7 @@ Decode the **did:btc1** identifier as follows:
 1. If the Bech32m decoding algorithm fails, raise `invalidDid` error.
 1. Map `hrp` to `idType` from the following:
    1. "k" - "key"
-   1. "x" - "hash"
+   1. "x" - "external"
    1. other - raise `invalidDid` error
 1. Set `version` to `1`.
 1. If at any point in the remaining steps there are not enough nibbles to

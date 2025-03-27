@@ -20,10 +20,14 @@ The algorithm takes in `pubKeyBytes`, a compressed SEC encoded secp256k1
 public key and optional `version` and `network` values. The algorithm returns a
 **did:btc1** identifier and corresponding initial DID document.
 
-1. Set `genesisBytes` to `pubKeyBytes`.
 1. Set `idType` to "key".
-1. Set `did` to the result of [did:btc1 Identifier Construction] passing`idType` and
-   `genesisBytes` and passing `version` and `network` if set.
+1. Set `version` to `1`.
+1. Set `network` to the desired network.
+1. Set `genesisBytes` to `pubKeyBytes`.
+1. Pass `idType`, `version`, `network`, and `genesisBytes` to the [did:btc1
+   Identifier Encoding](#didbtc1-identifier-encoding) algorithm, retrieving
+   `id`.
+1. Set `did` to `id`.
 1. Set `initialDocument` to the result of passing `did` into the [Read] algorithm.
 1. Return `did` and `initialDocument`.
 
@@ -42,36 +46,21 @@ The DID document SHOULD include at least one verificationMethod and service of
 the type SingletonBeacon.
 
 1. Set `idType` to "external".
+1. Set `version` to `1`.
+1. Set `network` to the desired network.
 1. Set `genesisBytes` to the result of passing `intermediateDocument` into the
    [JSON Canonicalization and Hash] algorithm.
-1. Set `did` to the result of [did:btc1 Identifier Construction] passing `idType` and `genesisBytes` and
-   passing `version` and `network` if set.
+1. Pass `idType`, `version`, `network`, and `genesisBytes` to the [did:btc1
+   Identifier Encoding](#didbtc1-identifier-encoding) algorithm, retrieving
+   `id`.
+1. Set `did` to `id`.
 1. Set `initialDocument` to a copy of the `intermediateDocument`.
 1. Replace all `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
    values in the `initialDocument` with the `did`.
-1.  Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
-    system like IPFS. If doing so, implementations MUST use ::CIDs:: generated following
-    the IPFS v1 algorithm.
+1. Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
+   system like IPFS. If doing so, implementations MUST use ::CIDs:: generated following
+   the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
-
-#### did:btc1 Identifier Construction
-
-A macro or convenience function can be used to construct **did:btc1** identifiers.
-The algorithm takes two REQUIRED inputs: `idType` and `genesisBytes`, and
-two OPTIONAL inputs: `version` and `network`. If `idType` is "key", then `genesisBytes`
-is a compressed SEC encoded secp256k1 public key. If `idType` is "external",
-then `genesisBytes` is the byte representation of a SHA256 hash of a genesis
-intermediate DID document.
-
-1. Initialize `result` to the **did:btc1** prefix string `"did:btc1:"`.
-1. If `version` is not null, append `version` and `":"` to `result`.
-1. If `network` is not null, append `network` and `":"` to `result`.
-1. If `idType` is "key", append the result of the
-   [Bech32 Encoding a secp256k1 Public Key] algorithm, passing `genesisBytes`.
-1. Else if `idType` is "external",  append the result of the
-   [Bech32 encoding a hash-value] algorithm, passing `genesisBytes`.
-1. Else, MUST raise an [`invalidDid` error](https://www.w3.org/TR/did-resolution/#invaliddid).
-1. Return `result`.
 
 ### Read
 
@@ -84,56 +73,15 @@ in `resolutionOptions` or is set to the ::Resolution Time:: of the request.
 
 To do so it executes the following algorithm:
 
-1. Let `identifierComponents` be the result of running the algorithm in
-   [Parse **did:btc1** identifier], passing in the `identifier`.
+1. Pass `identifier` to the [did:btc1 Identifier Decoding](#didbtc1-identifier-decoding)
+   algorithm, retrieving `idType`, `version`, `network`, and `genesisBytes`.
+1. Set `identifierComponents` to a map of `idType`, `version`, `network`, and `genesisBytes`.
 1. Set `initialDocument` to the result of running the algorithm in
    [Resolve Initial Document] passing in the `identifier`, `identifierComponents`
    and `resolutionOptions`.
 1. Set `targetDocument` to the result of running the algorithm in
    [Resolve Target Document] passing in `initialDocument` and `resolutionOptions`.
 1. Return `targetDocument`.
-
-#### Parse **did:btc1** Identifier
-
-The following algorithm specifies how to parse a **did:btc1** identifier according
-to the syntax defined in [Syntax]. REQUIRED input is a DID identifier.
-This algorithm returns an `identifierComponents` structure whose items are:
-
-- network
-- version
-- hrp
-- genesisBytes
-
-1. Set `identifierComponents` to an empty object.
-1. Using a colon (`:`) as the delimiter, split the `identifier` into an array of
-   `components`.
-1. Set `scheme` to `components[0]`.
-1. Set `methodId` to `components[1]`.
-1. The `methodId` MUST be the value `btc1`. If this
-   requirement fails then a [`methodNotSupported` error](https://www.w3.org/TR/did-resolution/#methodnotsupported)
-   MUST be raised.
-1. If the length of `components` equals `3`, set `identifierComponents.version`
-   to `1` and `identifierComponents.network` to `mainnet`. Set `idBech32` to
-   `components[2]`.
-1. Else if length of `components` equals `4`, check if `components[2]` can be cast
-   to an integer. If so, set `identifierComponents.version` to `components[2]` and
-   `identifierComponents.network` to `mainnet`. Otherwise, set
-   `identifierComponents.network` to `components[2]` and `identifierComponents.version`
-   to `1`. Set `idBech32` to `components[3]`.
-1. Else if the length of `components` equals `5`, set `identifierComponents.version`
-   to `components[2]`, `identifierComponents.network` to `components[3]` and `idBech32`
-   to the `components[4]`.
-1. Else MUST raise [`invalidDid` error](https://www.w3.org/TR/did-resolution/#invaliddid). There are an incorrect number of components
-   to the `identifier`.
-1. Check the validity of the identifier components. The `scheme` MUST be the value
-   `did`. The `identifierComponents.version`
-   MUST be convertible to a positive integer value. The `identifierComponents.network`
-   MUST be one of `mainnet`, ` signet`, `testnet`, or `regtest`. If any of these
-   requirements fail then an [`invalidDid` error](https://www.w3.org/TR/did-resolution/#invaliddid) MUST be raised.
-1. Decode `idBech32` using the Bech32 algorithm to get `decodeResult`.
-1. Set `identifierComponents.hrp` to `decodeResult.hrp`.
-1. Set `identifierComponents.genesisBytes` to `decodeResult.value`.
-1. Return `identifierComponents`.
 
 #### Resolve Initial Document
 
@@ -143,13 +91,13 @@ inputs a **did:btc1** `identifier`, `identifierComponents` object and a
 `resolutionsOptions` object. This algorithm returns a valid `initialDocument`
 for that identifier.
 
-1. If `identifierComponents.hrp` value is `k`, then set the `initialDocument`
+1. If `identifierComponents.idType` value is "key", then set the `initialDocument`
    to the result of running the algorithm in
-   [Deterministically Generate Initial DID Document] passing in the `identifier`,
-   `identifierComponents` values.
-1. Else If `identifierComponents.hrp` value is `x`, then set the `initialDocument` to
-   the result of running [External Resolution] passing in the `identifier`,
-   `identifierComponents` and `resolutionOptions` values.
+   [Deterministically Generate Initial DID Document] passing in the `identifier`
+   and `identifierComponents` values.
+1. Else If `identifierComponents.idType` value is "external", then set the
+   `initialDocument` to the result of running [External Resolution] passing in
+   the `identifier`, `identifierComponents` and `resolutionOptions` values.
 1. Else MUST raise `invalidHRPValue` error.
 1. Return `initialDocument`.
 
