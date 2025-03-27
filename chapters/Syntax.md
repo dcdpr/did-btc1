@@ -159,7 +159,7 @@ Decode the **did:btc1** identifier as follows:
 1. Split `id` into an array of `components` at the colon `:` character.
 1. If the length of the `components` array is not `3`, raise `InvalidDID` error.
 1. If `components[0]` is not "did", raise `InvalidDID` error.
-1. If `components[1]` is not "btc1", raise `InvalidDID` error.
+1. If `components[1]` is not "btc1", raise `methodNotSupported` error.
 1. Set `encodedString` to `components[2]`.
 1. Pass `encodedString` to the Bech32m decoding algorithm, retrieving `hrp` and
    `decodedBytes`.
