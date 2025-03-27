@@ -95,22 +95,22 @@ follows (spaces between bytes added for readability):
 | *F2 90* 03 c7 ... |      18 | custom signet 2 |
 | *FF 72* 03 c7 ... |      38 | regtest         |
 
-### Encoding a **did:btc1** Identifier
+### **did:btc1** Identifier Encoding
 
 Given:
 
-* `idType` - one of:
+* `idType` - required, one of:
   * "key"
   * "hash"
-* `version` - number
-* `network` - one of:
+* `version` - required, number
+* `network` - required, one of:
   * "bitcoin"
   * "signet"
   * "regtest"
   * "testnet3"
   * "testnet4"
   * number
-* `genesisBytes` - byte array, one of:
+* `genesisBytes` - required, byte array, one of:
   * a compressed secp256k1 public key if `idType` is "key"
   * a hash of an initiating DID document if `idType` is "hash"
 
@@ -138,21 +138,21 @@ Encode the **did:btc1** identifier as follows:
     1. "testnet4" - `4`
 1. If `network` is a number, append `network + 7` to `nibbles`.
 1. If the number of entries in `nibbles` is odd, append `0`.
-1. Create a `decodedBytes` byte array from `nibbles`, where `index` is from `0`
-   to `nibbles.length / 2 - 1` and `encodingBytes[index] = (nibbles[2 * index]
-   << 8) | nibbles[2 * index + 1]`.
+1. Create a `dataBytes` byte array from `nibbles`, where `index` is from `0` to
+   `nibbles.length / 2 - 1` and `encodingBytes[index] =
+   (nibbles[2 * index] << 8) | nibbles[2 * index + 1]`.
 1. Append `genesisBytes` to `encodingBytes`.
 1. Set `id` to "did:btc1:".
-1. Pass `hrp` and `decodedBytes` to the Bech32m encoding algorithm, retrieving
+1. Pass `hrp` and `dataBytes` to the [Bech32m Encoding] algorithm, retrieving
    `encodedString`.
 1. Append `encodedString` to `id`.
 1. Return `id`.
 
-### Decoding a **did:btc1** Identifier
+### **did:btc1** Identifier Decoding
 
 Given:
 
-* `id` - a ***did:btc1** identifier
+* `id` - required, a string ***did:btc1** identifier
 
 Decode the **did:btc1** identifier as follows:
 
@@ -161,8 +161,8 @@ Decode the **did:btc1** identifier as follows:
 1. If `components[0]` is not "did", raise `InvalidDID` error.
 1. If `components[1]` is not "btc1", raise `methodNotSupported` error.
 1. Set `encodedString` to `components[2]`.
-1. Pass `encodedString` to the Bech32m decoding algorithm, retrieving `hrp` and
-   `decodedBytes`.
+1. Pass `encodedString` to the [Bech32m Decoding] algorithm, retrieving `hrp`
+   and `dataBytes`.
 1. If the Bech32m decoding algorithm fails, raise `invalidDid` error.
 1. Map `hrp` to `idType` from the following:
    1. "k" - "key"
@@ -172,7 +172,7 @@ Decode the **did:btc1** identifier as follows:
 1. If at any point in the remaining steps there are not enough nibbles to
    complete the process, raise `InvalidDID` error.
 1. Start with the first nibble (the higher nibble of the first byte) of
-   `decodedBytes`.
+   `dataBytes`.
 1. Add the value of the current nibble to `version`.
 1. If the value of the nibble is hexadecimal `F` (decimal `15`), advance to the
    next nibble (the lower nibble of the current byte or the higher nibble of the
@@ -190,7 +190,7 @@ Decode the **did:btc1** identifier as follows:
 1. If the number of nibbles consumed is odd:
    1. Advance to the next nibble and set `fillerNibble` to its value.
    1. If `fillerNibble` is not `0`, raise `InvalidDID` error.
-1. Set `genesisBytes` to the remaining `decodedBytes`.
+1. Set `genesisBytes` to the remaining `dataBytes`.
 1. If `idType` is "key" and `genesisBytes` is not a valid compressed secp256k1
    public key, raise `InvalidDID` error.
 1. Return `idType`, `version`, `network`, and `genesisBytes`.
