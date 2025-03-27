@@ -116,12 +116,12 @@ Given:
 
 Encode the **did:btc1** identifier as follows:
 
-1. If `idType` is not a valid value per above, raise `InvalidDID` error.
-1. If `version` is not `1`, raise `InvalidDID` error.
-1. If `network` is not a valid value per above, raise `InvalidDID` error.
-1. if `network` is a number and is outside the range of 1-8, raise `InvalidDID` error.
+1. If `idType` is not a valid value per above, raise `invalidDid` error.
+1. If `version` is not `1`, raise `invalidDid` error.
+1. If `network` is not a valid value per above, raise `invalidDid` error.
+1. if `network` is a number and is outside the range of 1-8, raise `invalidDid` error.
 1. If `idType` is "key" and `genesisBytes` is not a valid compressed secp256k1
-   public key, raise `InvalidDID` error.
+   public key, raise `invalidDid` error.
 1. Map `idType` to `hrp` from the following:
    1. "key" - "k"
    1. "external" - "x"
@@ -157,8 +157,8 @@ Given:
 Decode the **did:btc1** identifier as follows:
 
 1. Split `identifier` into an array of `components` at the colon `:` character.
-1. If the length of the `components` array is not `3`, raise `InvalidDID` error.
-1. If `components[0]` is not "did", raise `InvalidDID` error.
+1. If the length of the `components` array is not `3`, raise `invalidDid` error.
+1. If `components[0]` is not "did", raise `invalidDid` error.
 1. If `components[1]` is not "btc1", raise `methodNotSupported` error.
 1. Set `encodedString` to `components[2]`.
 1. Pass `encodedString` to the [Bech32m Decoding] algorithm, retrieving `hrp`
@@ -170,14 +170,14 @@ Decode the **did:btc1** identifier as follows:
    1. other - raise `invalidDid` error
 1. Set `version` to `1`.
 1. If at any point in the remaining steps there are not enough nibbles to
-   complete the process, raise `InvalidDID` error.
+   complete the process, raise `invalidDid` error.
 1. Start with the first nibble (the higher nibble of the first byte) of
    `dataBytes`.
 1. Add the value of the current nibble to `version`.
 1. If the value of the nibble is hexadecimal `F` (decimal `15`), advance to the
    next nibble (the lower nibble of the current byte or the higher nibble of the
    next byte) and return to the previous step.
-1. If `version` is not `1`, raise `InvalidDID` error.
+1. If `version` is not `1`, raise `invalidDid` error.
 1. Advance to the next nibble and set `networkValue` to its value.
 1. Map `networkValue` to `network` from the following:
    1. `0` - "bitcoin"
@@ -185,14 +185,14 @@ Decode the **did:btc1** identifier as follows:
    1. `2` - "regtest"
    1. `3` - "testnet3"
    1. `4` - "testnet4"
-   1. `5`-`7` - raise `InvalidDID` error
+   1. `5`-`7` - raise `invalidDid` error
    1. `8`-`F` - `networkValue - 7`
 1. If the number of nibbles consumed is odd:
    1. Advance to the next nibble and set `fillerNibble` to its value.
-   1. If `fillerNibble` is not `0`, raise `InvalidDID` error.
+   1. If `fillerNibble` is not `0`, raise `invalidDid` error.
 1. Set `genesisBytes` to the remaining `dataBytes`.
 1. If `idType` is "key" and `genesisBytes` is not a valid compressed secp256k1
-   public key, raise `InvalidDID` error.
+   public key, raise `invalidDid` error.
 1. Return `idType`, `version`, `network`, and `genesisBytes`.
 
 ### Differentiating **did:btc1** Identifiers

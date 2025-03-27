@@ -200,7 +200,7 @@ otherwise it throws an error.
    `intermediateDocumentRepresentation` with the string
    (`did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`).
 1. Set `hashBytes` to the SHA256 hash of the `intermediateDocumentRepresentation`.
-1. If `hashBytes` does not equal `identifierComponents.genesisBytes` MUST throw an `invalidDID` error.
+1. If `hashBytes` does not equal `identifierComponents.genesisBytes` MUST throw an `invalidDid` error.
 1. Return `initialDocument`.
 
 ###### CAS Retrieval
@@ -417,7 +417,7 @@ DID document before returning it. This algorithm takes inputs
 1. Verify that `targetDIDDocument` is conformant with the data model specified
    by the DID Core specification.
 1. Set `targetHash` to the SHA256 hash of `targetDIDDocument`.
-1. Check that `targetHash` equals `update.targetHash`, else raise InvalidDIDUpdate
+1. Check that `targetHash` equals `update.targetHash`, else raise invalidDidUpdate
    error.
 1. Return `targetDIDDocument`.
 
@@ -465,7 +465,7 @@ and verifies the resulting `targetDocument` is a conformant DID document. Then
 it constructs and returns an unsigned ::DID Update Payload::.
 
 1. Check that `sourceDocument.id` equals `btc1Identifier` else MUST raise
-   `invalidDIDUpdate` error.
+   `invalidDidUpdate` error.
 1. Initialize `didUpdatePayload` to an empty object.
 1. Set `didUpdatePayload.@context` to the following list // TODO: Need to add btc1 context.
    `["https://w3id.org/zcap/v1", "https://w3id.org/security/data-integrity/v2", 
@@ -474,7 +474,7 @@ it constructs and returns an unsigned ::DID Update Payload::.
 1. Set `targetDocument` to the result of applying the `documentPatch` to the
    `sourceDocument`, following the JSON Patch specification.
 1. Validate `targetDocument` is a conformant DID document, else MUST raise
-   `invalidDIDUpdate` error.
+   `invalidDidUpdate` error.
 1. Set `sourceHashBytes` to the result of passing `sourceDocument` into
    the [JSON Canonicalization and Hash] algorithm.
 1. Set `didUpdatePayload.sourceHash` to the base58-btc Multibase encoding
