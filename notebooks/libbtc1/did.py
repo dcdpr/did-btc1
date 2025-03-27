@@ -5,7 +5,7 @@ from buidl.ecc import S256Point
 MAINNET="mainnet"
 SIGNET="signet"
 TESTNET="testnet"
-REGNET="regnet"
+REGNET="regtest"
 
 NETWORKS = [MAINNET,SIGNET,TESTNET, REGNET]
 
@@ -43,45 +43,52 @@ def create_deterministic(public_key, network=None, version=None):
 
 
 def resolve(did_btc1):
-    identifier_components = did_btc1.split(":")
+    did_chunks = did_btc1.split(":")
 
-    if len(identifier_components) < 3:
+    if len(did_chunks) < 3:
         raise Exception(f"Invalid DID: {did_btc1}")
     
-    assert identifier_components[0] == "did", f"Invalid DID: {did_btc1}. No did scheme."
-    assert identifier_components[1] == "btc1", f"Invalid DID: {did_btc1}. Method is not btc1."
+    assert did_chunks[0] == "did", f"Invalid DID: {did_btc1}. No did scheme."
+    assert did_chunks[1] == "btc1", f"Invalid DID: {did_btc1}. Method is not btc1."
     
     version = None
     network = None
     bech32_id = None
 
-    if len(identifier_components) == 3:
-        bech32_id = identifier_components[2]
+    if len(did_chunks) == 3:
+        bech32_id = did_chunks[2]
         version = 1
         network = "mainnet"
-    elif len(identifier_components) == 4:
+    elif len(did_chunks) == 4:
         try:
-            version = int(identifier_components[2])
+            version = int(did_chunks[2])
             network = MAINNET
         except:
-            network = identifier_components[2]
+            network = did_chunks[2]
             version = 1
 
-        bech32_id = identifier_components[3]
-    elif len(identifier_components) == 5:
-        version = int(identifier_components[1])
-        network = identifier_components[3]
-        bech32_id = identifier_components[4]
+        bech32_id = did_chunks[3]
+    elif len(did_chunks) == 5:
+        version = int(did_chunks[1])
+        network = did_chunks[3]
+        bech32_id = did_chunks[4]
     else:
         raise Exception(f"Invalid DID: {did_btc1}. Too many identifier components.")
 
     assert version in VERSIONS, f"Invalid DID: {did_btc1}. Version {version} not recognised."
     assert network in NETWORKS, f"Invalid DID: {did_btc1}. Network {network} not recognised."
 
-    type, identifier_bytes = decode_bech32_identifier(bech32_id)
+    hrp, identifier_bytes = decode_bech32_identifier(bech32_id)
 
-    if type == KEY:
-        initial_did_document = resolve_deterministic(did_btc1, identifier_bytes, version, network)
+    identifierComponents = {
+        "version": version,
+        "network": network,
+        "hrp": hrp,
+        "genesisBytes": identifier_bytes
+    }
+
+    if hrp == "k":
+        initial_did_document = resolve_deterministic(did_btc1, identifierComponents)
     elif type == EXTERNAL:
         raise NotImplemented
     
@@ -93,7 +100,9 @@ def resolve(did_btc1):
 
 
 
-def resolve_deterministic(did_btc1, key_bytes, version, network):
+def resolve_deterministic(did_btc1, identifier_components):
+    key_bytes = identifier_components["genesisBytes"]
+    network = identifier_components["network"]
     did_document = {}
     did_document["id"] = did_btc1
     did_document["@context"] = CONTEXT
@@ -114,9 +123,9 @@ def resolve_deterministic(did_btc1, key_bytes, version, network):
     return did_document
 
 def deterministically_generate_beacon_services(pubkey: S256Point, network):
-    p2pkh_beacon = generate_singleton_beacon_service(pubkey, "#initial_p2pkh",P2PKH,network)
-    p2wpkh_beacon = generate_singleton_beacon_service(pubkey, "#initial_p2wpkh",P2WPKH,network)
-    p2tr_beacon = generate_singleton_beacon_service(pubkey, "#initial_p2tr",P2TR,network)
+    p2pkh_beacon = generate_singleton_beacon_service(pubkey, "#initialP2PKH",P2PKH,network)
+    p2wpkh_beacon = generate_singleton_beacon_service(pubkey, "#initialP2WPKH",P2WPKH,network)
+    p2tr_beacon = generate_singleton_beacon_service(pubkey, "#initialP2TR",P2TR,network)
     service = [p2pkh_beacon, p2wpkh_beacon, p2tr_beacon]
     return service
 
