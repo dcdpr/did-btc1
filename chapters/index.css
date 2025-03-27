@@ -2,12 +2,6 @@ html {
     overflow: hidden;
 }
 
-.overflow-auto {
-    overflow-y: auto !important;
-    overflow-x: hidden;
-}
-
-
 #toc {
     background-color: #eceff1;
     padding: 1em 0.8em;
