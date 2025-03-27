@@ -163,7 +163,7 @@ Decode the **did:btc1** identifier as follows:
 1. Set `encodedString` to `components[2]`.
 1. Pass `encodedString` to the Bech32m decoding algorithm, retrieving `hrp` and
    `decodedBytes`.
-1. If the Bech32m decoding algorithm fails, raise `InvalidDID` error.
+1. If the Bech32m decoding algorithm fails, raise `invalidDid` error.
 1. Map `hrp` to `idType` from the following:
    1. "k" - "key"
    1. "x" - "hash"
