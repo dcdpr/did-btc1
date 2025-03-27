@@ -167,7 +167,7 @@ Decode the **did:btc1** identifier as follows:
 1. Map `hrp` to `idType` from the following:
    1. "k" - "key"
    1. "x" - "hash"
-   1. other - raise `InvalidDID` error
+   1. other - raise `invalidDid` error
 1. Set `version` to `1`.
 1. If at any point in the remaining steps there are not enough nibbles to
    complete the process, raise `InvalidDID` error.
