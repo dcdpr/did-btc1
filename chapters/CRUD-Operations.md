@@ -387,7 +387,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
    Set `beacon.address` to the Bitcoin address.
 1. Set `nextSignals` to the result of calling algorithm [Find Next Signals] passing 
    in `beacons`, `contemporaryBlockheight`, `targetBlockheight` and `network`.
-1. Set `contemporaryBlockheight` to `nextSignals.contemporaryBlockheight`.
+1. Set `contemporaryBlockheight` to `nextSignals.blockheight`.
 1. Set `signals` to `nextSignals.signals`.
 1. Set `updates` to the result of calling algorithm
    [Process Beacon Signals] passing in `signals` and `signalsMetadata`.
