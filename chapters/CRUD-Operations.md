@@ -417,7 +417,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
 1. Set `targetDocument` to the result of calling the
    [Traverse Blockchain History] algorithm passing in `contemporaryDIDDocument`,
    `contemporaryBlockheight`, `currentVersionId`, `targetVersionId`,
-   `targetBlockheight`, `updateHashHistory`, and `sidecarData`.
+   `targetBlockheight`, `updateHashHistory`, `signalsMetadata`, and `network`.
 1. Return `targetDocument`.
 
 ##### Find Next Signals
