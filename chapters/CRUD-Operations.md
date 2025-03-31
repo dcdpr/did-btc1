@@ -427,7 +427,7 @@ This algorithm takes finds the next Bitcoin block containing ::Beacon Signals:: 
 
 This algorithm takes in the following inputs:
 
-- `contemporaryBlockhieght`: The height of the block this function is looking for 
+- `contemporaryBlockheight`: The height of the block this function is looking for 
    ::Beacon Signals:: in. An integer greater or equal to 0.
 - `targetBlockheight`: The height of the Bitcoin block that the resolution algorithm 
    searches for ::Beacon Signals:: up to. An integer greater or equal to 0.
