@@ -12,3 +12,5 @@ py_rdfc10 @ git+https://github.com/amagioss/py_rdfc10
 base58
 jsonpatch
 multiformats
+di-bip340 @ git+https://github.com/LegReq/di-bip340-python
+bitcoinrpc

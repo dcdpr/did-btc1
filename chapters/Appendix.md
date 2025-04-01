@@ -56,3 +56,60 @@ The function returns the retrieved `content` or null.
    checked is left to the implementation. TODO: Is this right? Are implementations just supposed to check all CAS they trust?
 1. If content for `cid` cannot be found, set `content` to null.
 1. Return `content`
+
+### Root did:btc1 Update Capabilities
+
+Note: Not sure if these algorithms should go here or in the appendix?
+
+#### Derive Root Capability from **did:btc1** Identifier
+
+This algorithm deterministically generates a ZCAP-LD root capability from a
+given **did:btc1** identifier. Each root capability is unique to the identifier.
+This root capability is defined and understood by the **did:btc1** specification
+as the root capability to authorize updates to the specific **did:btc1** identifiers
+DID document.
+
+The algorithm takes in a **did:btc1** identifier and returns a `rootCapability` object.
+
+1. Define `rootCapability` as an empty object.
+1. Set `rootCapability.@context` to 'https://w3id.org/zcap/v1'.
+1. Set `encodedIdentifier` to result of calling algorithm
+   `encodeURIComponent(identifier)`.
+1. Set `rootCapability.id` to `urn:zcap:root:${encodedIdentifier}`.
+1. Set `rootCapability.controller` to `identifier`.
+1. Set `rootCapability.invocationTarget` to `identifier`.
+1. Return `rootCapability`.
+
+Below is an example root capability for updating the DID document for **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u**:
+
+```{.json include="json/CRUD-Operations/Update-zcap-root-capability.json"}
+```
+
+#### Dereference Root Capability Identifier
+
+This algorithm takes in a root capability identifier and dereferences it to the
+root capability object.
+
+This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
+
+1. Set `rootCapability` to an empty object.
+1. Set `components` to the result of `capabilityId.split(":")`.
+1. Validate `components`:
+   1. Assert length of `components` is 4.
+   1. `components[0] == urn`.
+   1. `components[1] == zcap`.
+   1. `components[2] == root`.
+1. Set `uriEncodedId` to `components[3]`.
+1. Set `btc1Identifier` the result of `decodeURIComponent(uriEncodedId)`.
+1. Set `rootCapability.id` to `capabilityId`.
+1. Set `rootCapability.controller` to `btc1Identifier`.
+1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
+1. Return `rootCapability`.
+
+Below is an example of a `didUpdatePayload`. An invoked ZCAP-LD capability
+containing a `patch` defining how the DID document for
+**did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
+be mutated.
+
+```{.json include="json/CRUD-Operations/Update-zcap-root-capability-patch.json"}
+```
