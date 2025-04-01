@@ -471,7 +471,7 @@ This algorithm returns a `nextSignals` struct, containing the following properti
    ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
    ```
 1. If no `signals`, set `nextSignals` to the result of algorithm
-[Find Next Signals] passing in `contemporaryBlockheight + 1` and `beacons`.
+[Find Next Signals] passing in `contemporaryBlockheight + 1`, `beacons`, and `network`.
 1. Else initialize a `nextSignals` object to the following:
    ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
    ```
