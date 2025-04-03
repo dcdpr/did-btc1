@@ -211,14 +211,14 @@ With HRP `k`, there is the additional advantage that the first nibble of the
 public key is always zero (because the first byte is either 02 or 03, indicating
 the sign). That means that, for version 1 on bitcoin network, the first three
 nibbles (12 bits) are zero, which translates to "qq" (five bits zero followed by
-five bits zero), with two bits (also zero) left over. Any `did:btcr1:k1qq...`
+five bits zero), with two bits (also zero) left over. Any `did:btc1:k1qq...`
 pattern is therefore version 1 on bitcoin.
 
 HRP `x` is a little more complicated, because the extra two bits for the second
 block of five bits could be any of four values. Therefore, there are four
 two-character strings that could appear after the '1' separator: "qq", "qp",
-"qz", and "qr". Any `did:btcr1:x1qq...`, `did:btcr1:x1qp...`,
-`did:btcr1:x1qz...`, or `did:btcr1:x1qr...` pattern is therefore version 1 on
+"qz", and "qr". Any `did:btc1:x1qq...`, `did:btc1:x1qp...`,
+`did:btc1:x1qz...`, or `did:btc1:x1qr...` pattern is therefore version 1 on
 bitcoin.
 
 If the version changes, the strings change as well. Version 2 on bitcoin would
