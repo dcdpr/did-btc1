@@ -47,3 +47,29 @@ html {
 #content h1:first-of-type {
     margin: 1em 0 .5em;
 }
+
+table {
+    margin: .5em auto;
+}
+
+thead, tbody {
+    border: 2px solid #ddd;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: .25em .5em;
+}
+
+.unformattedTable table {
+    margin: .5em 0;
+}
+
+.unformattedTable :is(thead, tbody) {
+    border: 0;
+}
+
+.unformattedTable :is(th, td) {
+    border: 0;
+    padding: 0 .5em 0 0;
+}
