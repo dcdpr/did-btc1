@@ -53,6 +53,7 @@ affects some other DID Methods.
 
 BTCR is the original Bitcoin DID Method.  It kept its focus on censorship
 resistance. It has the following limitations:
+
 * It is prohibitively expensive to maintain many DIDs, because both creation and
   every update require a separate on-chain transaction.
 * It requires storing the data for the DID document somewhere public and exposed
@@ -71,6 +72,7 @@ resistance. It has the following limitations:
 
 ION anchors on the Bitcoin blockchain following a Sidetree approach. It has the
 following limitations:
+
 * Although in the normal case where data is available this DID Method performs
   fine, it does not fully address the ::Late Publishing:: problem, and thus attackers
   may manipulate edge cases to create doubt about signatures used for attestation.
@@ -83,6 +85,7 @@ following limitations:
 This DID Method stores the entire DID document on-chain in transactions using
 "inscriptions".  Because of this, its main feature of totally on-chain data is
 also its main structural limitation:
+
 * Those transactions are very expensive.
 * They cannot be kept private.
 
@@ -93,6 +96,7 @@ batching mechanism that reduces overhead but still stores all data on-chain.
 Its documentation lists "subject keys" as a feature, but they are just talking
 about defining additional keys in a DID document, which all of these DID Methods
 provide. In summary its main limitations are:
+
 * Creation and update require expensive transactions.
 * did:btc does not contemplate a way to keep DID documents private.
 
@@ -116,6 +120,7 @@ provide. In summary its main limitations are:
 * Simple deterministic DIDs can be recovered from typical Bitcoin seed words.
 
 ### Limitations
+
 * Resolvers require read-only view of all blocks arriving at the Bitcoin blockchain.
 * DID controllers are responsible for providing the data referenced in their
   ::Beacons::' updates (although many ::Beacons:: are expected to provide an archival
