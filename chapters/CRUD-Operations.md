@@ -38,9 +38,9 @@ This allows for more complex initial DID documents, including the ability to inc
 Service Endpoints and ::Beacons:: that support aggregation.
 
 The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
-and an OPTIONAL `network`. The `intermediateDocument` SHOULD be a valid DID document
+and an OPTIONAL `network`. The `intermediateDocument` MUST be a valid DID document
 except all places where the DID document requires the use of the identifier
-(e.g. the id field), this identifier SHOULD be the placeholder value
+(e.g. the id field), this identifier MUST be the placeholder value
 `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`.
 The DID document SHOULD include at least one verificationMethod and service of
 the type SingletonBeacon.
