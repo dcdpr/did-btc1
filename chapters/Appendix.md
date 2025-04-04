@@ -1,56 +1,35 @@
 ## Appendix
 
-### Bech32 Encoding and Decoding
+### Bech32m Encoding and Decoding
 
-**did:btc1** uses the Bech32 algorithm to encode and decode several data values.
-The Bech32 algorithm is documented in
-[BIP-0173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
-Additionally, **did:btc1** uses an updated Bech32 algorithm known as "bech32m"
-that is documented in
+**did:btc1** uses the Bech32m algorithm to encode and decode several data values.
+The original Bech32 algorithm is documented in
+[BIP-0173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki). The updated algorithm, Bech32m, is documented in
 [BIP-0350](https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki).
-For this specification we define two functions: `bech32-encode` and `bech32-decode`.
 
-#### bech32-encode
+#### Bech32m Encoding
 
-This algorithm takes two REQUIRED inputs: a string, `hrp` which is the human-readable
-part of the encoding and an array of bytes to be encoded called the `dataPart`.
+Given:
 
-1. Initialize `result` to the output of Bech32 encoding the `hrp` and the
-   `dataPart` as described in
-   [BIP-0173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
-1. Return `result`.
+* `hrp` - required, a string representing the Human-Readable Part of the encoding
+* `dataBytes` - required, a byte array to be encoded
 
-#### bech32-decode
+1. Initialize `encodedString` to the output of Bech32m encoding the `hrp` and
+   the `dataBytes` as described in
+   [BIP-0350](https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki).
+1. Return `encodedString`.
 
-This algorithm takes one REQUIRED input: a string `bech32Str` representing a Bech32
-encoding data value.
+#### Bech32m Decoding
 
-1. Initialize `hrp` and `dataPart` to the result of Bech32 decoding the `bech32Str`
-   as described in
-   [BIP-0173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
-1. Return a tuple (`hrp`, `dataPart`).
+Given:
 
-#### Bech32 Encoding a secp256k1 Public Key
+* `encodedString` - required, the Bech32m-encoded string from a prior encoding
+  operation
 
-A macro or convenience function can be used to encode a `keyBytes` representing
-a compressed SEC encoded secp256k1 public key. The algorithm takes one REQUIRED
-input, `keyBytes`.
-
-1. Initialize `hrp` to `"k"`.
-1. Initialize `dataPart` to `keyBytes`.
-1. Return the result of the [`bech32-encode`](#bech32-encode) algorithm,
-   passing `hrp` and `dataPart`.
-
-#### Bech32 Encoding a hash-value
-
-A macro or convenience function can be used to encode a `hashBytes` representing
-the sha256 hash of an initiating DID document. The algorithm takes one REQUIRED
-input, `hashBytes`.
-
-1. Initialize `hrp` to `"x"`.
-1. Initialize `dataPart` to `hashBytes`.
-1. Return the result of the [`bech32-encode`](#bech32-encode) algorithm,
-   passing `hrp` and `dataPart`.
+1. Initialize `hrp` and `dataBytes` to the result of Bech32m decoding the
+   `encodedString` as described in
+   [BIP-0350](https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki).
+1. Return `hrp` and `dataBytes`.
 
 ### JSON Canonicalization and Hash
 
