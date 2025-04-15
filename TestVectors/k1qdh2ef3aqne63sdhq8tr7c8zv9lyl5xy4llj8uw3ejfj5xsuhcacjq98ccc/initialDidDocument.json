@@ -1,44 +1,46 @@
 {
-  "id": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
   "@context": [
-    "https://www.w3.org/ns/did/v1",
-    "https://did-btc1/TBD/context"
+    "https://www.w3.org/ns/did/v1"
+  ],
+  "id": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq",
+  "controller": [
+    "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq"
   ],
   "verificationMethod": [
     {
-      "id": "#initialKey",
+      "id": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#initialKey",
       "type": "Multikey",
-      "controller": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
-      "publicKeyMultibase": "zQ3shn68faoXE2EqCTtefQXNLgaTa7ZohG2ftZjgXphStJsGc"
+      "controller": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq",
+      "publicKeyMultibase": "zQ3sheGUnbQHZD2zBa7DpgnZwS9uDK2DirTtkQPUNxzw1Ps6P"
     }
   ],
   "authentication": [
-    "#initialKey"
+    "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#initialKey"
   ],
   "assertionMethod": [
-    "#initialKey"
+    "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#initialKey"
   ],
   "capabilityInvocation": [
-    "#initialKey"
+    "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#initialKey"
   ],
   "capabilityDelegation": [
-    "#initialKey"
+    "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#initialKey"
   ],
   "service": [
     {
-      "id": "#initialP2PKH",
+      "id": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq##initialP2PKH",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:moFJwqLXBDmw4rnWQm9c3ag4kSdFxD5yiz"
+      "serviceEndpoint": "bitcoin:mv3YJB975gwdT2zDKGaPpnrH4poXWnvnRm"
     },
     {
-      "id": "#initialP2WPKH",
+      "id": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq##initialP2WPKH",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:bcrt1q2n9edlz3yehahctcj6p93lzznhz9m0kzp67ung"
+      "serviceEndpoint": "bitcoin:bcrt1qnadflyakxzf6zxqsnz26fgaw7370tpn2n6ckse"
     },
     {
-      "id": "#initialP2TR",
+      "id": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq##initialP2TR",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:bcrt1p6rs5tnq94rt4uu5edc9luahlkyphk30yk8smwfzurpc8ru06vcws8ylq7l"
+      "serviceEndpoint": "bitcoin:bcrt1pqznee84mm8d6u0n6zrfe2f09ush4eexp7xrzqklrcymq7zlrt2ls66nnse"
     }
   ]
 }

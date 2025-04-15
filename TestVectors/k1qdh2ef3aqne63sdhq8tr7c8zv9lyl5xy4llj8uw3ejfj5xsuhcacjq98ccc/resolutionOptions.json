@@ -1,8 +1,8 @@
 {
   "sidecarData": {
-    "did": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
+    "did": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq",
     "signalsMetadata": {
-      "5f8cd13f39fa509b1cdfdc7c6588b6cda99e82202e9498dff9f37dc99d4a1e10": {
+      "51dd616cb6f0b016657a79cca86ec9770c7f7e8df2e4e32b91f5a2f288c50320": {
         "updatePayload": {
           "@context": [
             "https://w3id.org/security/v2",
@@ -14,28 +14,28 @@
               "op": "add",
               "path": "/service/3",
               "value": {
-                "id": "#linked-domain",
-                "type": "LinkedDomains",
-                "serviceEndpoint": "https://contact-me.com"
+                "id": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#service-0",
+                "type": "SingletonBeacon",
+                "serviceEndpoint": "bitcoin:bcrt1p9a2fl6xxpgpayp0jz63v34m8agt0cxslu7c8jcxh9chf87jaeqts7l9n73"
               }
             }
           ],
-          "sourceHash": "9kSA9j3z2X3a26yAdJi6nwg31qyfaHMCU1u81ZrkHirM",
-          "targetHash": "C45TsdfkLZh5zL6pFfRmK93X4EdHusbCDwvt8d7Xs3dP",
+          "sourceHash": "8xNTKPj67nGgbJ4sqW4GPo4sXKyvywdJhMXBbqmrXKwr",
+          "targetHash": "9GLaB5E7gobfRAaVTbCG9Q2b5Ypbp1ik3gJG4gK3haRP",
           "targetVersionId": 2,
           "proof": {
             "type": "DataIntegrityProof",
             "cryptosuite": "bip340-jcs-2025",
-            "verificationMethod": "did:btc1:regtest:k1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc#initialKey",
+            "verificationMethod": "did:btc1:k1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq#initialKey",
             "proofPurpose": "capabilityInvocation",
-            "capability": "urn:zcap:root:did%3Abtc1%3Aregtest%3Ak1qdh2ef3aqne63sdhq8tr7c8zv9lyl5xy4llj8uw3ejfj5xsuhcacjq98ccc",
+            "capability": "urn:zcap:root:did%3Abtc1%3Ak1qgp05adk0y5msufdgt208jxmwu7g0k7pn6m9rgy3z36jhgzzm35a5vqlsjawq",
             "capabilityAction": "Write",
             "@context": [
               "https://w3id.org/security/v2",
               "https://w3id.org/zcap/v1",
               "https://w3id.org/json-ld-patch/v1"
             ],
-            "proofValue": "z3yfzVGdoDF4s8y4Bk8JeV9XuZw1nMeMtNW3x5brEm7DNtmWZkNBPbCLzUBJRpctBj9QJL1dydm94ZNsPxosPnkPP"
+            "proofValue": "z4Y7G2R4x4EdooiUk5rPxVwkCSe6L1PuM96ebNuZDJh69cBKSRcFCFUMEMcEaz2jFFcDVATAZoC4V8A1fyZZiZkN4"
           }
         }
       }
