@@ -1,6 +1,0 @@
-{
-  "version": 1,
-  "network": "regtest",
-  "idType": "key",
-  "hexGenesisBytes": "02fa75b67929b8712d42d4f3c8db773c87dbc19eb651a09114752ba042dc69da30"
-}
