@@ -242,9 +242,7 @@ The algorithm returns `targetDocument`, a DID Core conformant DID document or th
    `resolutionOptions.versionId`.
 1. Else if `resolutionOptions.versionTime` is not null, set `targetTime` to
    `resolutionOptions.versionTime`.
-1. Else set `targetTime` to null and `targetVersionId` to null.
-1. Set `targetBlockheight` to the result of passing `network` and `targetTime`  
-   to the algorithm [Determine Target Blockheight].
+1. Else set `targetTime` to the UNIX timestamp for now at the moment of execution.
 1. Set `signalsMetadata` to `resolutionOptions.sidecarData.signalsMetadata`.
 1. Set `currentVersionId` to 1.
 1. If `currentVersionId` equals `targetVersionId` return `initialDocument`.
@@ -253,43 +251,20 @@ The algorithm returns `targetDocument`, a DID Core conformant DID document or th
 1. Set `contemporaryDIDDocument` to the `initialDocument`.
 1. Set `targetDocument` to the result of calling the [Traverse Blockchain History]
    algorithm passing in `contemporaryDIDDocument`, `contemporaryBlockheight`,
-   `currentVersionId`, `targetVersionId`, `targetBlockheight`, `updateHashHistory`, 
+   `currentVersionId`, `targetVersionId`, `targetTime`, `updateHashHistory`, 
    `signalsMetadata`, and `network`.
 1. Return `targetDocument`.
 
-##### Determine Target Blockheight
-
-This algorithm determines the targetted Bitcoin blockheight that the resolution 
-algorithm should traverse the blockchain history up to looking for 
-for ::Beacon Signals::.
-
-This algorithm takes the following inputs:
-
-- `network`: A string identifying the Bitcoin network of the **did:btc1** identifier.
-This algorithm MUST query the Bitcoin blockchain identified by the `network`.
-- `targetTime`: Identifies a timestamp that the DID document should be resolved to.
-If present, the value MUST be an ASCII string which is a valid XML datetime value.
-
-
-The algorithm returns a Bitcoin `blockheight`.
-
-1. If `targetTime`, find the Bitcoin `block` on the `network` with greatest `blockheight` 
-   whose `timestamp` is less than the `targetTime`.
-1. Else find the Bitcoin `block` with the greatest `blockheight` that has at
-   least X conformations. TODO: what is X. Is it variable?
-1. Set `blockheight` to `block.blockheight`.
-1. Return `blockheight`.
-
 ##### Traverse Blockchain History
 
-This algorithm traverses Bitcoin blocks, starting from the block with the
-`contemporaryBlockheight`, to find `beaconSignals` emitted by ::Beacons:: within
-the `contemporaryDIDDocument`. Each `beaconSignal` is processed to retrieve a
-didUpdatePayload to the DID document. Each update is applied to the document and
-duplicates are ignored. If the algorithm reaches the block with the blockheight
-specified by a `targetBlockheight`, the `contemporaryDIDDocument` at that blockheight
-is returned assuming a single canonical history of the DID document has been
-constructed up to that point.
+This algorithm traverses this history of the Bitcoin blockchain, starting from the block 
+with the blockheight equal to `contemporaryBlockheight`, to find `beaconSignals` 
+emitted by ::Beacons:: specified within the `contemporaryDIDDocument`. 
+Each `beaconSignal` is processed to retrieve a ::DID Update Payload:: defining updates to 
+the DID document. Each update is applied to the document and duplicates are ignored. The algorithm 
+recursively executes until either a `targetVersionId` for the DID document is reached, or the 
+blockchain history passes the supplied `targetTime`. At this point the current `contemporaryDIDDocument`
+is returned.
 
 The algorithm takes the following inputs:
 
@@ -302,9 +277,9 @@ The algorithm takes the following inputs:
 - `currentVersionId`: The version of the contemporaryDIDDocument. An integer starting from 
    1 and incrementing by 1 with each ::DID Update Payload:: applied to the DID document.
 - `targetVersionId`: The version of the DID document that the resolution algorithm is attempting to resolve.
-- `targetBlockheight`: The Bitcoin block at which the resolution algorithm stops
-   traversing he blockchain history. Once `contemporaryBlockheight` equals the 
-   `targetBlockheight` the algorithm with return the `contemporaryDIDDocument`.
+- `targetTime`: A UNIX timestamp that can be used to target specific historical states of a DID document. 
+   Only ::Beacon Signals:: included in the Bitcoin blockchain before the `targetTime` are processed by the
+   resolution algorithm.
 - `updateHashHistory`: An ordered array of SHA256 hashes of ::DID Update Payloads:: 
    that have been applied to the DID document by the resolution algorithm in order 
    to construct the `contemporaryDIDDocument`.
@@ -321,7 +296,7 @@ The algorithm takes the following inputs:
 This algorithm MUST query the Bitcoin blockchain identified by the `network`.
 
 
-The algorithm returns the `contemporaryDIDDocument` once either the `targetBlockheight` or 
+The algorithm returns the `contemporaryDIDDocument` once either the `targetTime` or 
 `targetVersionId` have been reached.
 
 1. Set `contemporaryHash` to the result of passing `contemporaryDIDDocument` into the 
@@ -334,16 +309,17 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
    **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**.
    Set `beacon.address` to the Bitcoin address.
 1. Set `nextSignals` to the result of calling algorithm [Find Next Signals] passing 
-   in `contemporaryBlockheight`, `targetBlockheight`, `beacons` and `network`.
-1. Set `contemporaryBlockheight` to `nextSignals.blockheight`.
-1. Set `signals` to `nextSignals.signals`.
+   in `contemporaryBlockheight`, `beacons` and `network`.
+1. If `nextSignals` is empty, return `contemporaryDIDDocument`.
+1. If `nextSignals[0].blocktime` is greater than `targetTime`, return `contemporaryDIDDocument`.
+1. Set `contemporaryBlockheight` to `nextSignals[0].blockheight`.
 1. Set `updates` to the result of calling algorithm
-   [Process Beacon Signals] passing in `signals` and `signalsMetadata`.
+   [Process Beacon Signals] passing in `nextSignals` and `signalsMetadata`.
 1. Set `orderedUpdates` to the list of `updates` ordered by the `targetVersionId`
    property.
 1. For `update` in `orderedUpdates`:
     1. If `update.targetVersionId` is less than or equal to `currentVersionId`,
-       run Algorithm [Confirm Duplicate Update] passing in `update`,
+       run the [Confirm Duplicate Update] Algorithm passing in `update`,
        `updateHashHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
         1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
@@ -360,12 +336,11 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
             [JSON Canonicalization and Hash] algorithm.
     1.  If `update.targetVersionId` is greater than `currentVersionId + 1`, MUST
         throw a LatePublishing error.
-1. If `contemporaryBlockheight` equals `targetBlockheight`, return `contemporaryDIDDocument`
 1. Increment `contemporaryBlockheight`.
 1. Set `targetDocument` to the result of calling the
    [Traverse Blockchain History] algorithm passing in `contemporaryDIDDocument`,
    `contemporaryBlockheight`, `currentVersionId`, `targetVersionId`,
-   `targetBlockheight`, `updateHashHistory`, `signalsMetadata`, and `network`.
+   `targetTime`, `updateHashHistory`, `signalsMetadata`, and `network`.
 1. Return `targetDocument`.
 
 ##### Find Next Signals
@@ -373,12 +348,12 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetBlock
 This algorithm takes finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
 `beacons` and retuns all ::Beacon Signals:: within that block.
 
+Note: It is recommended that you use a Bitcoin indexer and API such as electers and Esplora to query the Bitcoin blockchain.
+
 This algorithm takes in the following inputs:
 
 - `contemporaryBlockheight`: The height of the block this function is looking for 
    ::Beacon Signals:: in. An integer greater or equal to 0.
-- `targetBlockheight`: The height of the Bitcoin block that the resolution algorithm 
-   searches for ::Beacon Signals:: up to. An integer greater or equal to 0.
 - `beacons`: An array of ::Beacon:: services in the ::contemporary DID document::.
    Each Beacon is a structure with the following properties:
     - `id`: The id of the Beacon service in the DID document. A string.
@@ -389,41 +364,28 @@ This algorithm takes in the following inputs:
 This algorithm MUST query the Bitcoin blockchain identified by the `network`.
   
 
-This algorithm returns a `nextSignals` struct, containing the following properties:
-- `blockheight`: The Bitcoin blockheight for the block containing the ::Beacon Signals::.
-- `signals`: An array of `signals`. Each `signal` is a struct containing the following:
-   - `beaconId`: The id for the ::Beacon:: that the `signal` was announced by.
-   - `beaconType`: The type of the ::Beacon:: that announced the `signal`.
+This algorithm returns a `nextSignals` array of `signal` structs with the following properties:
+   - `beaconId`: The id for the ::Beacon:: that the ::Beacon Signal:: was announced by.
+   - `beaconType`: The type of the ::Beacon:: that announced the ::Beacon Signal::.
    - `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
+   - `blockheight`: The blockheight for the block that the Bitcoin transaction was included within.
+   - `blocktime`: The timestamp that the Bitcoin block was included into the blockchain.
 
 1. Set `signals` to an empty array.
-1. Get Bitcoin `block` at `contemporaryBlockheight`.
-1. For all `txid` in `block.tx`:
-   1. Ignore the coinbase and genesis transaction identifiers. Coinbase tx identifiers are
-   `0000000000000000000000000000000000000000000000000000000000000000` and the genesis tx
-   identifier is `4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b`.
-   1. Set `tx` to the result of fetching the Bitcoin transaction with the `txid`.
-   1. For each `tx_in` in the set of transaction inpurs for `tx`:
-      1. Set `prev_tx_id` to transaction identifier spent in the `tx_in`
-      1. Ignore coinbase transaction identifiers 
-      1. Set `prev_tx` to the result of fetch the transaction with the `prev_tx_id`
-      1. Set `spent_tx_out` to transaction output of `prev_tx` indexed by the `tx_in.prev_index`
-      1. Set `spent_address` to the script pubkey address for the `spent_tx_out` for the provided `network`.
-      1. If `spent_address` equals any of the `address` fields of the provided `beacons` array:
-         1. Set `beaconSignal` to an object containing the following fields object:
-            ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
-            ```
-         1. Push `beaconSignal` onto the `signals` array.
-         1. Break the loop, transaction is a ::Beacon Signal::, no need to check additional transaction inputs.
-1. If `contemporaryBlockheight` equals `targetBlockheight`, return a `nextSignals` struct: 
-   ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
+1. For each `beacon` in `beacons`:
+   1. Set `beaconSpends` to the set of all Bitcoin transactions on the specified 
+   `network` that spend at least one transaction input controlled by the `beacon.address`
+   with a blockheight greater than or equal to the `contemporaryBlockheight`.
+   1. Filter the `beaconSpends`, identifying all transactions whose 0th transaction output 
+   is of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`.
+   1. For each of the filtered `beaconSpends` push the following `beaconSignal` object onto the `signals` array.
+   ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
    ```
-1. If no `signals`, set `nextSignals` to the result of algorithm
-[Find Next Signals] passing in `contemporaryBlockheight + 1`, `beacons`, and `network`.
-1. Else initialize a `nextSignals` object to the following:
-   ```{.json include="json/CRUD-Operations/Read-initialize-next-signals.json"}
-   ```
+1. If `signals` is empty, return `signals`.
+1. Sort `signals` by `blockheight` from lowest to highest.
+1. Set `nextSignals` to all `signals` with the lowest `blockheight`.
 1. Return `nextSignals`.
+
 
 ##### Process Beacon Signals
 
