@@ -114,8 +114,6 @@ an error.
 
 1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
-1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`, if not,
-   then return `didUpdatePayload`. The Bitcoin transaction is not a ::Beacon Signal::.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
    1. Set `didUpdatePayload` to `signalSidecarData.updatePayload`
@@ -303,8 +301,6 @@ for the ::did:btc1:: identifier being resolved or throws an error.
 
 1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
-1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, 32BYTE]`, if not,
-   then return `didUpdatePayload`. The Bitcoin transaction is not a ::Beacon Signal::.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
    1. Set `didUpdateBundle` to `signalSidecarData.updateBundle`
@@ -422,8 +418,6 @@ for the ::did:btc1:: identifier being resolved or throws an error.
 
 
 1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
-1. Check `txOut` is of the format `[OP_RETURN, OP_PUSH32, <32byte>]`, if not,
-   then return null. The Bitcoin transaction is not a ::Beacon Signal::.
 1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. MAY identify the Beacon Signal
    to resolver and request additional ::Sidecar data:: be provided. 
 1. Set `smtProof` to `signalSidecarData.smtProof`.
