@@ -111,14 +111,14 @@ returns a `initialDocument`.
 1. Set `keyBytes` to `identifierComponents.genesisBytes`.
 1. Initialize a `initialDocument` variable as an empty object.
 1. Set `initialDocument.id` to the `identifier`.
+1. Set `initialDocument.controller` to the `identifier`
 1. Initialize a `contextArray` to empty array:
     1. Append the DID Core context "https://www.w3.org/ns/did/v1".
-    1. Append the Data Integrity context "https://w3id.org/security/data-integrity/v2".
     1. Append a **did:btc1** context.
     1. Set `initialDocument['@context]' to contextArray`.
 1. Create an initial verification method:
     1. Initialize `verificationMethod` to an empty object.
-    1. Set `verificationMethod.id` to "#initialKey".
+    1. Set `verificationMethod.id` to `{identifier}#initialKey`.
     1. Set `verificationMethod.type` to "Multikey".
     1. Set `verificationMethod.controller` to `identifier`.
     1. Set `verificationMethod.publicKeyMultibase` to the result of the TODO:
@@ -131,7 +131,7 @@ returns a `initialDocument`.
    `capabilityDelegation` properties in `initialDocument` to a copy of the `tempArray`
    variable.
 1. Set the `initialDocument.services` property in `initialDocument` to the
-   result of passing the `keyBytes` and `identifierComponents.network` to the
+   result of passing the `identifier`, `keyBytes` and `identifierComponents.network` to the
    [Deterministically Generate Beacon Services] algorithm.
 1. Return `initialDocument`.
 
@@ -146,19 +146,19 @@ through signatures from the `keyBytes`'s associated private key.
 Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `services` array.
 
 1. Initialize a `services` variable to an empty array.
-1. Set `serviceId` to `#initialP2PKH`.
+1. Set `serviceId` to `{identifier}#initialP2PKH`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Public-Key-Hash Bitcoin
    address from the `keyBytes` for the appropriate `network`.
 1. Set `p2pkhBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2pkhBeacon` to `services`.
-1. Set `serviceId` to `#initialP2WPKH`.
+1. Set `serviceId` to `{identifier}#initialP2WPKH`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Witness-Public-Key-Hash
    Bitcoin address from the `keyBytes` for the appropriate `network`.
 1. Set `p2wpkhBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2wpkhBeacon` to `services`.
-1. Set `serviceId` to `#initialP2TR`.
+1. Set `serviceId` to `{identifier}#initialP2TR`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Taproot Bitcoin address
    from the `keyBytes` for the appropriate `network`.
 1. Set `p2trBeacon` to the result of passing `serviceId`, and
