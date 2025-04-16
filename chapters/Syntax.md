@@ -84,7 +84,7 @@ attempt to interpret **did:btc1** identifiers with an unknown `version`.
 
 For illustration purposes only, assume that the nibble following the version
 always represents the network and that the allowable values for the network
-don't change. The interpretation of the`version` and `network` would be as
+don't change. The interpretation of the `version` and `network` would be as
 follows (spaces between bytes added for readability):
 
 | Decoded bytes     | Version | Network         |
@@ -152,7 +152,7 @@ Encode the **did:btc1** identifier as follows:
 
 Given:
 
-* `identifier` - required, a string ***did:btc1** identifier
+* `identifier` - required, a string **did:btc1** identifier
 
 Decode the **did:btc1** identifier as follows:
 
