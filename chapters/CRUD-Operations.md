@@ -277,7 +277,7 @@ The algorithm takes the following inputs:
 - `currentVersionId`: The version of the contemporaryDIDDocument. An integer starting from 
    1 and incrementing by 1 with each ::DID Update Payload:: applied to the DID document.
 - `targetVersionId`: The version of the DID document that the resolution algorithm is attempting to resolve.
-- `targetTime`: A UNIX timestamp that can be used to target specific historical states of a DID document. 
+- `targetTime`: A 64-bit UNIX timestamp that can be used to target specific historical states of a DID document. 
    Only ::Beacon Signals:: included in the Bitcoin blockchain before the `targetTime` are processed by the
    resolution algorithm.
 - `updateHashHistory`: An ordered array of SHA256 hashes of ::DID Update Payloads:: 
