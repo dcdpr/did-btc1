@@ -14,6 +14,7 @@ The full specification may be viewed at http://dcdpr.github.io/did-btc1/.
 First, make sure you have 'pandoc' installed on your machine - https://pandoc.org/getting-started.html. Then you also need 'npm', a package manager for the JavaScript programming. Mac users can get both with homebrew: ```brew install npm pandoc``` 
 
 Then run:
+
 * ```cd did-btc1```
 * ```npm install```
 * ```npm run pandoc-spec-local```

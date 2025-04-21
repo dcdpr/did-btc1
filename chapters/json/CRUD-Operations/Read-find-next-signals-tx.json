@@ -1,5 +1,7 @@
 {
   "beaconId": "${beaconService.id}",
   "beaconType": "${beaconService.type}",
-  "tx": "${tx}"
+  "tx": "${tx}",
+  "blockheight": "${blockheight}",
+  "blocktime": "${blocktime}"
 }

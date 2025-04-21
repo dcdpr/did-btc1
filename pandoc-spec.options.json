@@ -17,5 +17,6 @@
   ],
   "outputDirectory": "_site",
   "cleanOutput": true,
-  "outputFile": "index.html"
+  "outputFile": "index.html",
+  "cssFile": "index.css"
 }
