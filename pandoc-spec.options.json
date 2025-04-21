@@ -3,7 +3,7 @@
   "verbose": true,
   "autoDate": true,
   "inputDirectory": "chapters",
-  "inputFile": [
+  "inputFiles": [
     "Index.md",
     "Introduction-and-Motivation.md",
     "Terminology.md",
