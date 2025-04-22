@@ -1,0 +1,10 @@
+{
+  "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-0": {
+    "pk": "02a02492a49564ee5b8dc213d21d60b4a45a2d66e6dc4ef1a84650ed0b1cd3779e",
+    "sk": "68415a8c13a7fcd9776a9932ab23daec8233774b0b72a986c7e3104727dfaf31"
+  },
+  "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-1": {
+    "pk": "02a02492a49564ee5b8dc213d21d60b4a45a2d66e6dc4ef1a84650ed0b1cd3779e",
+    "sk": "54d4682450441ca1efd30bd973943438fb9ad5888652cd67b925196e18f2e943"
+  }
+}
