@@ -1,0 +1,18 @@
+{
+  "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-0": {
+    "pk": "020ee4fc5a7be5758e106ba8726cd2ef2cc94f5817c405ee68c4a19088d25fae2b",
+    "sk": "da109f1020d1a83f7e80bfc40fdf983e20a2b26655e67f9bdea17ff6cc3728ca"
+  },
+  "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-1": {
+    "pk": "03fc073ae31fc9face2b8f824afa1facb357e60f64ed693e6158d8a6828cb04472",
+    "sk": "a9fed7bfec89c1940d57ded085d643f1f1a7d9abd1ec6cc9fa8ad39dfa4ccb26"
+  },
+  "did:btc1:x1qg4rwevhst9lkdaqe3nedhv7s79yyk64xmnjxy65alk4a869crsxq420u4s#service-1": {
+    "pk": "02da416254c3808a5445151f2f477f33093d9555269de2b4d37fee5de73d7bdc84",
+    "sk": "bcc9740af810830936f3d87699b6de6d30d5eb999cceea25521e6c327dde7b5b"
+  },
+  "did:btc1:x1qg4rwevhst9lkdaqe3nedhv7s79yyk64xmnjxy65alk4a869crsxq420u4s#key-2": {
+    "pk": "02c325332e66fa39f9c77417cce06e085a87292a5ca1c0850d11760ba7819c1aa8",
+    "sk": "010a4d82ab495402cdc5066e867a928909bd4755a20934d157b47d3ff0ef1823"
+  }
+}
