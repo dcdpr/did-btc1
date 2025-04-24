@@ -8,8 +8,10 @@ html {
     font-size: .85em;
 }
 
-#left-margin, #right-margin {
-    display: none;
+#toc-header {
+    display: table;
+    margin: 0 auto;
+    font-size: 1.7em;
 }
 
 #toc ul, #toc ul ul, #toc ul ul ul {
@@ -31,7 +33,7 @@ html {
 }
 
 #toc ul {
-    padding: 0 0 0 1em;;
+    padding: 0 0 0 1em;
 }
 
 #toc a:hover {

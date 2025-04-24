@@ -15,8 +15,10 @@
     "References.md",
     "Appendix.md"
   ],
+  "cssFiles": [
+    "index.css"
+  ],
   "outputDirectory": "_site",
   "cleanOutput": true,
-  "outputFile": "index.html",
-  "cssFile": "index.css"
+  "outputFile": "index.html"
 }
