@@ -40,7 +40,7 @@ Service Endpoints and ::Beacons:: that support aggregation.
 The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
 and an OPTIONAL `network`. The `intermediateDocument` MUST be a valid DID document
 except all places where the DID document requires the use of the identifier
-(e.g. the id field), this identifier MUST be the placeholder value
+(e.g., the id field), this identifier MUST be the placeholder value
 `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`.
 The DID document SHOULD include at least one verificationMethod and service of
 the type SingletonBeacon.
@@ -105,11 +105,11 @@ for that identifier.
 
 This algorithm deterministically generates an initial DID Document from a secp256k1
 public key.
-It takes in a **did:btc1** `identifier` and a `identifierComponents` object and
-returns a `initialDocument`.
+It takes in a **did:btc1** `identifier` and an `identifierComponents` object and
+returns an `initialDocument`.
 
 1. Set `keyBytes` to `identifierComponents.genesisBytes`.
-1. Initialize a `initialDocument` variable as an empty object.
+1. Initialize an `initialDocument` variable as an empty object.
 1. Set `initialDocument.id` to the `identifier`.
 1. Initialize a `contextArray` to empty array:
     1. Append the DID Core context "https://www.w3.org/ns/did/v1".
@@ -171,13 +171,13 @@ Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `service
 This algorithm externally retrieves an `intermediateDocumentRepresentation`,
 either by retrieving it from ::Content Addressable Storage:: (CAS) or from the
 ::Sidecar Data:: provided as part of the resolution request. The algorithm
-takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
+takes in a **did:btc1** `identifier`, an `identifierComponents` object and a
 `resolutionOptions` object.
 It returns an `initialDocument`, which is a conformant DID document validated
 against the `identifier`.
 
 1. If `resolutionOptions.sidecarData.initialDocument` is not null, set
-   `initialDocument` to the result of passing `identifier`, `identifierComponents`
+   `initialDocument` to the result of passing `identifier`, `identifierComponents`,
    and `resolutionOptions.sidecarData.initialDocument` into algorithm
    [Sidecar Initial Document Validation].
 1. Else set `initialDocument` to the result of passing `identifier` and
@@ -192,7 +192,7 @@ This algorithm validates an `initialDocument` against its `identifier`,
 by first constructing the `intermediateDocumentRepresentation` and verifying
 the hash of this document matches the bytes encoded within the `identifier`.
 The algorithm takes in a **did:btc1** `identifier`, `identifierComponents`
-and a `initialDocument`. The algorithm returns the `initialDocument` if validated,
+and an `initialDocument`. The algorithm returns the `initialDocument` if validated,
 otherwise it throws an error.
 
 1. Set `intermediateDocumentRepresentation` to a copy of the `initialDocument`.
@@ -231,7 +231,7 @@ The algorithm takes as inputs:
 - `initialDocument`: The DID document that was used to initiate the **did:btc1**
 identifier being resolved as verified by the [Resolve Initial Document] algorithm.
 A DID Core conformant DID document.
-- `resolutionOptions`: A set of optional parameters passed in to the resolve function
+- `resolutionOptions`: A set of optional parameters passed into the resolve function
 of the DID resolver.
 - `network`: The Bitcoin network of the **did:btc1** identifier.
 
@@ -346,9 +346,9 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
 ##### Find Next Signals
 
 This algorithm takes finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
-`beacons` and retuns all ::Beacon Signals:: within that block.
+`beacons` and returns all ::Beacon Signals:: within that block.
 
-Note: It is recommended that you use a Bitcoin indexer and API such as electers and Esplora to query the Bitcoin blockchain.
+Note: It is recommended that you use a Bitcoin indexer and API such as [electrs](https://github.com/romanz/electrs) or [Esplora](https://github.com/Blockstream/esplora) to query the Bitcoin blockchain.
 
 This algorithm takes in the following inputs:
 
@@ -357,7 +357,7 @@ This algorithm takes in the following inputs:
 - `beacons`: An array of ::Beacon:: services in the ::contemporary DID document::.
    Each Beacon is a structure with the following properties:
     - `id`: The id of the Beacon service in the DID document. A string.
-    - `type`: The type of the Beacon service in the DID document. A string whose values MUST be either SingletonBeacon, , CIDAggregateBeacon or SMTAggregateBeacon.
+    - `type`: The type of the Beacon service in the DID document. A string whose values MUST be either SingletonBeacon, CIDAggregateBeacon, or SMTAggregateBeacon.
     - `serviceEndpoint`: A BIP21 URI representing a Bitcoin address.
     - `address`: The Bitcoin address decoded from the `serviceEndpoint value.
 - `network`: A string identifying the Bitcoin network of the **did:btc1** identifier.
@@ -365,11 +365,12 @@ This algorithm MUST query the Bitcoin blockchain identified by the `network`.
   
 
 This algorithm returns a `nextSignals` array of `signal` structs with the following properties:
-   - `beaconId`: The id for the ::Beacon:: that the ::Beacon Signal:: was announced by.
-   - `beaconType`: The type of the ::Beacon:: that announced the ::Beacon Signal::.
-   - `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
-   - `blockheight`: The blockheight for the block that the Bitcoin transaction was included within.
-   - `blocktime`: The timestamp that the Bitcoin block was included into the blockchain.
+
+- `beaconId`: The id for the ::Beacon:: that the ::Beacon Signal:: was announced by.
+- `beaconType`: The type of the ::Beacon:: that announced the ::Beacon Signal::.
+- `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
+- `blockheight`: The blockheight for the block that the Bitcoin transaction was included within.
+- `blocktime`: The timestamp that the Bitcoin block was included into the blockchain.
 
 1. Set `signals` to an empty array.
 1. For each `beacon` in `beacons`:
@@ -469,7 +470,7 @@ DID document before returning it. This algorithm takes inputs
    `cryptosuite`, and `expectedProofPurpose` into the
    [Verify Proof algorithm](https://w3c.github.io/vc-data-integrity/#verify-proof)
    defined in the VC Data Integrity specification.
-1. If `verificationResult.verified` equals False, MUST raise a `invalidUpdateProof` exception.
+1. If `verificationResult.verified` equals False, MUST raise an `invalidUpdateProof` exception.
 1. Set `targetDIDDocument` to a copy of `contemporaryDIDDocument`.
 1. Use JSON Patch to apply the `update.patch` to the `targetDIDDOcument`.
 1. Verify that `targetDIDDocument` is conformant with the data model specified

@@ -35,7 +35,7 @@ Kate Sills    <katelynsills@gmail.com>
 
 ### Abstract {.unnumbered .unlisted}
 
-**did:btc1** is a censorship resistant DID Method using the Bitcoin blockchain
+**did:btc1** is a censorship-resistant DID Method using the Bitcoin blockchain
 as a Verifiable Data Registry to announce changes to the DID document.
 It improves on prior work by allowing: zero-cost off-chain DID creation;
 aggregated updates for scalable on-chain update costs; long-term identifiers
