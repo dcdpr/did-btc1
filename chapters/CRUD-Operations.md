@@ -113,7 +113,7 @@ returns a `initialDocument`.
 1. Set `initialDocument.id` to the `identifier`.
 1. Set `initialDocument.controller` to the `identifier`
 1. Initialize a `contextArray` to empty array:
-    1. Append the DID Core context "https://www.w3.org/ns/did/v1".
+    1. Append the DID Core v1.1 context "https://www.w3.org/ns/did/v1.1".
     1. Append a **did:btc1** context.
     1. Set `initialDocument['@context]' to contextArray`.
 1. Create an initial verification method:
