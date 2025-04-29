@@ -1,6 +1,7 @@
 {
   "@context": [
-    "https://www.w3.org/ns/did/v1"
+    "https://www.w3.org/TR/did-1.1",
+    "https://did-btc1/TBD/context"
   ],
   "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   "controller": [
@@ -11,13 +12,13 @@
       "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-0",
       "type": "Multikey",
       "controller": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "publicKeyMultibase": "zQ3shNQvyq2kunC8ZBD23tUsVX9yaqwNDfC3fphJ1VfWb7fhL"
+      "publicKeyMultibase": "zQ3shWD2qJAY9ULxF6KvrfkYu87oLk8msrUKw6dK2bsAUvt3P"
     },
     {
       "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-1",
       "type": "Multikey",
       "controller": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "publicKeyMultibase": "zQ3shwbvG7f5TUbCNeg5eHuERYRJ9KJzUxrfyTwdmgjuQmNMf"
+      "publicKeyMultibase": "zQ3shNHcrWjYee86TBSy261ihVgKEoJgj1veYws8MU6dekPh9"
     }
   ],
   "authentication": [
@@ -33,7 +34,7 @@
     {
       "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#service-0",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:bcrt1qjq69v2uxl0na3awga6s92f6w5n2vx859uvj9a9"
+      "serviceEndpoint": "bitcoin:bcrt1qa32qd3xz8mpmzzjsxvcvr6u8kjr6stldtv94rd"
     }
   ]
 }
