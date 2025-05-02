@@ -461,7 +461,23 @@ DID document before returning it. This algorithm takes inputs
 1. Set `rootCapability` to the result of passing `capabilityId` to the [Dereference Root Capability Identifier] algorithm.
 1. If `rootCapability.invocationTarget` does not equal `contemporaryDIDDocument.id` and `rootCapability.controller` 
    does not equal  `contemporaryDIDDocument.id`, MUST throw an `invalidDidUpdate` error.
-1. Instantiate a `schnorr-secp256k1-2025` `cryptosuite` instance.
+1. Instantiate a [`bip340-jcs-2025` `cryptosuite`](https://dcdpr.github.io/data-integrity-schnorr-secp256k1/#instantiate-cryptosuite) instance using the key referenced by the `verificationMethod` field in the update.
+```json
+   {
+   "type": "DataIntegrityProof",
+   "cryptosuite": "bip340-jcs-2025",
+   "verificationMethod": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp#key-1",
+   "proofPurpose": "capabilityInvocation",
+   "capability": "urn:zcap:root:did%3Abtc1%3Ax1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp",
+   "capabilityAction": "Write",
+   "@context": [
+      "https://w3id.org/security/v2",
+      "https://w3id.org/zcap/v1",
+      "https://w3id.org/json-ld-patch/v1"
+   ],
+   "proofValue": "z3SvqrVEjVur24zh1vnYHB3SxQPMvxXP1XMxjtqBptezKASXtUUTsotQh2rabGLDyBf8riJkcL9wbHkZjDRSYRVYC"
+}
+```
 1. Set `expectedProofPurpose` to `capabilityInvocation`.
 1. Set `mediaType` to ???? TODO: is this just `application/json`?
 1. Set `documentBytes` to the bytes representation of `update`.
@@ -484,7 +500,7 @@ DID document before returning it. This algorithm takes inputs
 An update to a **did:btc1** document is an invoked capability using the ZCAP-LD
 data format, signed by a verificationMethod that has the authority to make the
 update as specified in the previous DID document. Capability invocations for
-updates MUST be authorized using Data Integrity following the schnorr-secp256k1-jcs-2025
+updates MUST be authorized using Data Integrity following the bip340-jcs-2025
 cryptosuite with a proofPurpose of `capabilityInvocation`.
 
 This algorithm takes as inputs a `btc1Identifier`, `sourceDocument`,
@@ -494,7 +510,7 @@ of `beaconIds`. The `sourceDocument` is the DID document being updated. The
 be applied to the `sourceDocument`. The result of these transformations MUST
 produce a DID document conformant to the DID Core specification. The
 `verificationMethodId` is an identifier for a verificationMethod within the
-`sourceDocument`. The verificationMethod identified MUST be a Schnorr secp256k1
+`sourceDocument`. The verificationMethod identified MUST be a BIP340
 Multikey. The `beaconIds` MUST identify service endpoints with one of the
 three ::Beacon Types:: `SingletonBeacon`, `CIDAggregateBeacon`, and
 `SMTAggregateBeacon`.
@@ -504,7 +520,7 @@ three ::Beacon Types:: `SingletonBeacon`, `CIDAggregateBeacon`, and
    algorithm.
 1. Set `verificationMethod` to the result of retrieving the verificationMethod from
    `sourceDocument` using the `verificationMethodId`.
-1. Validate the `verificationMethod` is a Schnorr secp256k1 Multikey:
+1. Validate the `verificationMethod` is a BIP340 Multikey:
     1. `verificationMethod.type` == `Multikey`
     1. `verificationMethod.publicKeyMultibase[4]` == `z66P`
 1. Set `didUpdateInvocation` to the result of passing `btc1Identifier`,
@@ -561,14 +577,14 @@ The algorithm returns the invoked ::DID Update Payload::.
    [Derive Root Capability from **did:btc1** Identifier] algorithm.
 1. Initialize `proofOptions` to an empty object.
 1. Set `proofOptions.type` to `DataIntegrityProof`.
-1. Set `proofOptions.cryptosuite` to `schnorr-secp256k1-jcs-2025`.
+1. Set `proofOptions.cryptosuite` to `bip340-jcs-2025`.
 1. Set `proofOptions.verificationMethod` to `verificationMethod.id`.
 1. Set `proofOptions.proofPurpose` to `capabilityInvocation`.
 1. Set `proofOptions.capability` to `rootCapability.id`.
 1. Set `proofOptions.capabilityAction` to `Write`. // Wonder if we actually need this.
    Aren't we always writing.
 1. Set `cryptosuite` to the result of executing the Cryptosuite Instantiation
-   algorithm from the Schnorr secp256k1 Data Integrity specification passing in
+   algorithm from the [BIP340 Data Integrity specification](https://dcdpr.github.io/data-integrity-schnorr-secp256k1) passing in
    `proofOptions`.
 1. // TODO: need to set up the proof instantiation such that it can resolve
    / dereference the root capability. This is deterministic from the DID.
