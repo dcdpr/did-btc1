@@ -1,1 +1,2 @@
 TestVectors/didbtc1-TestNet.polar.zip filter=lfs diff=lfs merge=lfs -text
+TestVectors/did-btc1-electrs.polar.zip filter=lfs diff=lfs merge=lfs -text
