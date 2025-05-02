@@ -30,7 +30,7 @@ and externally resolvable DIDs.
 
 #### Beacon Coordinators do not Need to View or Validate DID Documents or Document Updates
 
-::Beacon:: coordinators in **did:btc1** are entities that coordinate Aggregator
+::Beacon:: coordinators in **did:btc1** are entities that coordinate Aggregate
 ::Beacons:: and the corresponding ::Beacon Signals:: that announce and anchor an aggregated
 set of ::DID Update Payloads::. However, in **did:btc1,** Aggregators are able to
 coordinate ::Beacon Signals:: without needing to view or validate DID documents or
@@ -75,14 +75,14 @@ node in the ::SMT::. The coordinator MUST know these paths for them to be able t
 construct the tree and generate the correct proof paths. Within ::Content Identifier::
 (CID) based ::Beacons::, the coordinator MUST construct an aggregated bundle that
 includes all DIDs aggregated as a key to the ::CID:: for that ::DID's Update Payload::.
-This means that for both types of Aggregator ::Beacons::, the coordinator necessarily
+This means that for both types of Aggregate ::Beacons::, the coordinator necessarily
 MUST know all DIDs being aggregated by a cohort.
 
-#### CID Aggregation Cohort Members Know All DIDs that are Updated
+#### CIDAggregate Cohort Members Know All DIDs that are Updated
 
-Cohort members participating in a ::CID:: Aggregator ::Beacon:: learn all DIDs that are
+Cohort members participating in a CIDAggregate ::Beacon:: learn all DIDs that are
 updated in each ::Beacon Signal::. This is because they SHOULD verify the contents
-of the ::Beacon Signal:: before authorizing it and a ::CID:: Aggregator's ::Beacon Signal::
+of the ::Beacon Signal:: before authorizing it and a CIDAggregate ::Beacon Signal::
 contains a ::CID:: to an Update Bundle. An Update Bundle is a JSON object mapping
 **did:btc1** identifiers to ::CID:: values for individual ::DID Update Payloads::. Each
 DID controller SHOULD independently retrieve and verify the contents of the
@@ -92,5 +92,5 @@ Update Bundle to ensure it contains the expected update for their DID.
 
 Although it might seem obvious, one of the side effects of using a DID is that
 a DID controller's relying party will see their DID Document. In addition,
-resolving a DID document requires making available to the resolver all the prior
+resolving a DID document requires making available to the resolver all prior
 DID document updates.

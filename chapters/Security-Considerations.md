@@ -5,7 +5,7 @@
 #### Late Publishing
 
 **did:btc1** was designed to avoid ::Late Publishing:: such that, independent of when
-a resolution occurs, the DID document history and provenance is guaranteed to
+a resolution occurs, the DID document history and provenance are guaranteed to
 be invariant. This is achieved through requiring strict ordering of DID updates
 and complete coverage of all relevant ::Beacon Signals::. Resolvers MUST process all
 relevant ::Beacon Signals:: and enforce strict ordering.
@@ -14,7 +14,7 @@ relevant ::Beacon Signals:: and enforce strict ordering.
 
 Invalidation attacks are where adversaries are able to publish ::Beacon Signals::
 that claim to contain updates for DIDs they do not control. Due to the requirement
-for complete coverage, if these updates can not be retrieved by a resolver, the
+for complete coverage, if these updates cannot be retrieved by a resolver, the
 DID MUST be considered invalid. To prevent these attacks, all ::Beacon Signals:: SHOULD
 be authorized by all cohort participants using an n-of-n multi-signature. That
 way DID controllers can verify the updates announced within a ::Beacon Signal::
@@ -35,16 +35,16 @@ controllers SHOULD consider that in some constrained environments it is preferab
 to discard a DID and replace it with a newly issued DID, rather than rotating
 a key.
 
-#### Aggregator Beacon Address Verification
+#### Aggregate Beacon Address Verification
 
-An Aggregator ::Beacon:: Address SHOULD be an n-of-n Pay-to-Taproot (P2TR) address,
+An Aggregate ::Beacon:: Address SHOULD be an n-of-n Pay-to-Taproot (P2TR) address,
 with a cohort key contributed to the n by each of the cohort participants. DID
 controllers participating in aggregation cohorts SHOULD verify the ::Beacon:: address
 is an n-of-n and that one of the n keys is the cohort key provided to the ::Beacon::
 coordinator. This can be achieved only by constructing the address for themselves
 from the set of cohort keys which the coordinator SHOULD provide.
 
-#### Aggregator Beacon Signal Verification
+#### Aggregate Beacon Signal Verification
 
 ::Beacon Signals:: from Aggregators that a DID controller is a participant of will
 either announce an update for their DID or will contain no update for their DID.
