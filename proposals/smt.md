@@ -409,8 +409,3 @@ In an open model, additions and removals are permitted, under the following cond
     * An added DID’s service entry for the SMTAggregateBeacon must include a blockheight, indicating the lowest block in which the DID is included in a signal, so that prior signals can be ignored for the DID.
 * Only existing DID controllers can remove entries, and can only remove their own.
     * Once removed, no proof of inclusion or non-inclusion is possible, effectively deactivating the DID.
-
-## Notes
-
-* Look into ZKP Merkle trees
-* Look into which hash formula to use
