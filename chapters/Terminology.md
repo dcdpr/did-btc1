@@ -79,7 +79,7 @@ DID Update Bundle
 
 : A JSON object that maps **did:btc1** identifiers to ::Content Identifiers:: (CIDs)
   that identify ::DID Update Payloads:: for the identified DID. DID Update Bundles
-  are announced by CIDAggregator Beacons.
+  are announced by CIDAggregate Beacons.
 
 Merkle Tree
 

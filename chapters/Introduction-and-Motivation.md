@@ -76,7 +76,7 @@ following limitations:
 * Although in the normal case where data is available this DID Method performs
   fine, it does not fully address the ::Late Publishing:: problem, and thus attackers
   may manipulate edge cases to create doubt about signatures used for attestation.
-* It stores DID documents on IPFS, and thus does not allow keeping the DID document
+* It stores DID documents on IPFS and thus does not allow keeping the DID document
   private between the DID controller and a relying party, even if they are capable of
   their own did:ion resolution.
 
@@ -106,7 +106,7 @@ provide. In summary its main limitations are:
 
 * There is no proprietary blockchain, only the Bitcoin blockchain.
 * ::Offline Creation:: allows creating DIDs without any on-chain transactions.
-* Aggregator Beacons can aggregate any number of updates from any number of DID
+* Aggregate Beacons can aggregate any number of updates from any number of DID
   controllers in one Bitcoin transaction.
 * ::Non-Repudiation:: is provided by - and ::Late Publishing:: is avoided by - ensuring
   100% valid coverage of the entire update history without gaps or ambiguity.
@@ -134,7 +134,7 @@ provide. In summary its main limitations are:
 ### Future Directions
 
 * ZCAPs delegation of the right to update only part of a DID Document;
-* More scalable Aggregator Beacons will be possible with a "transaction introspection"
+* More scalable Aggregate Beacons will be possible with a "transaction introspection"
   upgrade to Bitcoin, such as OP_CTV or OP_CAT; and
 * ::Beacons:: do not have to reuse their addresses if, in the controller's DID document,
   a descriptor is used instead of an address.
