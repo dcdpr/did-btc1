@@ -108,6 +108,7 @@ flowchart TD
     Hash1110 --> DataBlock1110[("Data Block 1110")]:::dataBlock
     Hash1111 --> DataBlock1111[("Data Block 1111")]:::dataBlock
 ```
+
 These are the requirements for using Merkle trees in *did:btc1*:
 
 * Each data block is either a DID update payload transitioning from one version of a DID document to another, or null, representing no change to the DID document.
@@ -116,9 +117,9 @@ These are the requirements for using Merkle trees in *did:btc1*:
     * By extension, the same DID can’t have two updates in the same signal.
 * The DID controller for each data block shares only the hash of the data block with the aggregator.
     * By extension, a DID controller can see only their own data block(s).
-* The only thing published to Bitcoin is the top hash.
+* The only thing published to Bitcoin is the top hash (the Merkle root).
 
-The DID controller has to prove either inclusion or non-inclusion in the signal. To prove inclusion, the DID controller provides either the DID update payload file (from which the resolver must calculate the hash) or the hash (which the resolver can use to retrieve the DID update payload file from IPFS); to prove non-inclusion, the DID controller provides the null value (from which the resolver must calculate the hash). In addition, the DID controller must provide the hashes of each peer in the tree as the resolver walks up it to determine the top hash (which, in turn, must have been provided to the DID controller by the aggregator).
+The DID controller has to prove either inclusion or non-inclusion in the signal. To prove inclusion, the DID controller provides either the DID update payload file (from which the resolver must calculate the hash) or the hash (which the resolver can use to retrieve the DID update payload file from IPFS); to prove non-inclusion, the DID controller provides the null value (from which the resolver must calculate the hash). In addition, the DID controller must provide the hashes of each peer in the tree (the Merkle proof) as the resolver walks up it to determine the top hash (which, in turn, must have been provided to the DID controller by the aggregator).
 
 Let’s assume that the DID controller has been allocated position 13 (1101).
 
