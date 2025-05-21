@@ -1,0 +1,47 @@
+[
+  {
+    "@context": [
+      "https://w3id.org/security/v2",
+      "https://w3id.org/zcap/v1",
+      "https://w3id.org/json-ld-patch/v1"
+    ],
+    "patch": [
+      {
+        "op": "add",
+        "path": "/service/1",
+        "value": {
+          "id": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp#service-1",
+          "type": "SingletonBeacon",
+          "serviceEndpoint": "bitcoin:bcrt1qser62ssp8n49yh5famt93m7tdgwqv76r3j9d5n"
+        }
+      },
+      {
+        "op": "add",
+        "path": "/verificationMethod/2",
+        "value": {
+          "id": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp#key-2",
+          "type": "Multikey",
+          "controller": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp",
+          "publicKeyMultibase": "zQ3shXtnYKjkm5a17b65bJ63TdqqP6cLMC6EEubVRvMtoR8DY"
+        }
+      }
+    ],
+    "sourceHash": "8Kpts1zHd1xxCEbXiL53phu8Xts9DUUnXHKvTHhM4m3u",
+    "targetHash": "8PjNUsm7aytqVC1BpcJE7WFmYobxRtqpsP4GPoLRW1s7",
+    "targetVersionId": 2,
+    "proof": {
+      "type": "DataIntegrityProof",
+      "cryptosuite": "bip340-jcs-2025",
+      "verificationMethod": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp#key-1",
+      "proofPurpose": "capabilityInvocation",
+      "capability": "urn:zcap:root:did%3Abtc1%3Ax1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp",
+      "capabilityAction": "Write",
+      "@context": [
+        "https://w3id.org/security/v2",
+        "https://w3id.org/zcap/v1",
+        "https://w3id.org/json-ld-patch/v1"
+      ],
+      "proofValue": "z3SvqrVEjVur24zh1vnYHB3SxQPMvxXP1XMxjtqBptezKASXtUUTsotQh2rabGLDyBf8riJkcL9wbHkZjDRSYRVYC"
+    }
+  }
+]
