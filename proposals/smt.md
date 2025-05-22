@@ -361,6 +361,78 @@ From this, the verifier can infer only that position 12 (1100) is not allocated.
 
 Assuming no changes to the allocated indexes (i.e., no DIDs added or removed), peer hashes that are zero will always be zero and those that are non-zero will always be non-zero.
 
+## Optimization
+
+The tree can be further optimized as outlined in [The Libra Blockchain](https://diem-developers-components.netlify.app/papers/the-diem-blockchain/2020-05-26.pdf). The first optimization collapses empty nodes into a fixed value; this is already defined above where the hash of an empty node is zero. The second optimization is to replace subtrees containing exactly one leaf with a single node. This reduces the tree size significantly to a depth of approximately *log2(n)*, where *n* is the number of leaves.
+
+Doing this violates the requirement that the starting point be deterministic; the verifier would have to know every occupied index to infer the starting point for the DID of interest. It also requires that non-updates be included, as it would otherwise be impossible to prove non-inclusion, and the nonce is still required so that non-updates are indistinguishable from updates.
+
+Mitigating the deterministic index issue is accomplished by including the index in the hash. The end result is this (note that the positions of nodes Hash1001 and Hash11 are reversed due to the Mermaid layout algorithm):
+
+```mermaid
+flowchart TD
+    classDef topHash color:#000000,fill:#fb8500
+    classDef intermediateHash color:#000000,fill:#219ebc
+    classDef leafHash color:#ffffff,fill:#023047
+    classDef dataBlock color:#000000,fill:#ffb703
+
+    TopHash["`Top Hash
+    *hash(Hash 0 + Hash 1)*`"]:::topHash
+
+    TopHash --> Hash0["`Hash 0
+    *hash(Hash 00 + Hash 0101)*`"]:::intermediateHash
+    TopHash --> Hash1["`Hash 1
+    *hash(Hash 1001 + Hash 11)*`"]:::intermediateHash
+
+    Hash0 --> Hash00["`Hash 00
+    *hash(Hash 0000 + Hash 0010)*`"]:::intermediateHash
+    Hash0 --> Hash0101["`Hash 0101
+    *hash(0101 + Nonce 0101 + 0)*`"]:::leafHash
+
+    Hash1 --> Hash1001["`Hash 1001
+    *hash(1001 + Nonce 1001 + hash(Data Block 1001))*`"]:::leafHash
+    Hash1 --> Hash11["`Hash 11
+    *hash(Hash 1101 + Hash 1110)*`"]:::intermediateHash
+
+    Hash00 --> Hash0000["`Hash 0000
+    *hash(0000 + Nonce 0000 + 0)*`"]:::leafHash
+    Hash00 --> Hash0010["`Hash 0010
+    *hash(0010 + Nonce 0010 + hash(Data Block 0010))*`"]:::leafHash
+
+    Hash11 --> Hash1101["`Hash 1101
+    *hash(1101 + Nonce 1101 + hash(Data Block 1101))*`"]:::leafHash
+    Hash11 --> Hash1110["`Hash 1110
+    *hash(1110 + Nonce 1110 + 0)*`"]:::leafHash
+
+    Hash0010 --> DataBlock0010[("Data Block 0010")]:::dataBlock
+    Hash1001 --> DataBlock1001[("Data Block 1001")]:::dataBlock
+    Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
+```
+
+Now, the presentation to the verifier for DID 13 includes the following:
+
+```json
+{
+  "nonce": "<< Hexadecimal of Nonce 1101 >>",
+  "peers": [
+    {
+      "direction": "right",
+      "hash": "<< Hexadecimal of Hash 1110 >>"
+    },
+    {
+      "direction": "left",
+      "hash": "<< Hexadecimal of Hash 1001 >>"
+    },
+    {
+      "direction": "left",
+      "hash": "<< Hexadecimal of Hash 0 >>"
+    }
+  ]
+}
+```
+
+The only thing the verifier can infer from any presentation is the depth of the tree and therefore an estimate of the number of DIDs using the Beacon.
+
 ## Options
 
 These are the options to consider for the SMTAggregateBeacon implementation. They assume the attack mitigation algorithms above.
