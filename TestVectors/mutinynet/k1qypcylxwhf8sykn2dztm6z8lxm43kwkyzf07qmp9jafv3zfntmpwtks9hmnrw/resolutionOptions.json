@@ -1,0 +1,45 @@
+{
+    "targetTime": 1748445840000,
+    "sidecarData": {
+        "did": "did:btc1:k1qypcylxwhf8sykn2dztm6z8lxm43kwkyzf07qmp9jafv3zfntmpwtks9hmnrw",
+        "signalsMetadata": {
+            "74de8650981e34ec3fe627a0ac289753a614499e2905e8a2e4f56475b6630b9b": {
+                "updatePayload": {
+                    "@context": [
+                        "https://w3id.org/security/v2",
+                        "https://w3id.org/zcap/v1",
+                        "https://w3id.org/json-ld-patch/v1"
+                    ],
+                    "patch": [
+                        {
+                            "op": "replace",
+                            "path": "/service/0",
+                            "value": {
+                                "id": "did:btc1:k1qypcylxwhf8sykn2dztm6z8lxm43kwkyzf07qmp9jafv3zfntmpwtks9hmnrw#initialP2PKH",
+                                "type": "SingletonBeacon",
+                                "serviceEndpoint": "bitcoin:n19usRiN4nihajeQCt2EYXXSehp4hMFdAX"
+                            }
+                        }
+                    ],
+                    "targetHash": "3gVCsXG1WCbxHngKo6yE74czmshbjh6tvfNd6DqXASiq",
+                    "targetVersionId": 2,
+                    "sourceHash": "CSAGnUTVviHe6Wb2d3LATrdDJgVrJQxX3JzNSmTigBHF",
+                    "proof": {
+                        "cryptosuite": "bip340-jcs-2025",
+                        "type": "DataIntegrityProof",
+                        "verificationMethod": "did:btc1:k1qypcylxwhf8sykn2dztm6z8lxm43kwkyzf07qmp9jafv3zfntmpwtks9hmnrw#initialKey",
+                        "proofPurpose": "capabilityInvocation",
+                        "capability": "urn:zcap:root:did%3Abtc1%3Ak1qypcylxwhf8sykn2dztm6z8lxm43kwkyzf07qmp9jafv3zfntmpwtks9hmnrw",
+                        "capabilityAction": "Write",
+                        "@context": [
+                            "https://w3id.org/security/v2",
+                            "https://w3id.org/zcap/v1",
+                            "https://w3id.org/json-ld-patch/v1"
+                        ],
+                        "proofValue": "zccdDHA7hcomGAgP5BPtERKuJGa7QGKgPadauESUNQ8u7eJFQwacm5KEK9sWMymGXK8YxgxPPdmgBZT3bGh4wp6q"
+                    }
+                }
+            }
+        }
+    }
+}
