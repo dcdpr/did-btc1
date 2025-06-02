@@ -169,25 +169,25 @@ This assumes that *hash(X + Y)* = *hash(Y + X)*, i.e., that the addition operati
 
 ### Misrepresented Proof of Inclusion/Non-Inclusion
 
-Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated position 2 (0010). At some point in time, NA gains access to the cryptographic material and the entire DID history for the legitimate actor (LA) in position 13 (1101). LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
+Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated position 2 (0010). At some point in time, NA gains access to the cryptographic material and the entire DID history for the DID in position 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the aggregate beacon, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
 
-NA makes a presentation with LA’s DID and, using the sidecar method, provides all the legitimate DID updates except the most recent one. In place of the most recent one, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for position 2 (0010), for which NA posted an update (for inclusion) or nothing (for non-inclusion). If the direction is not included, there is no way for the resolver to know that the path taken to the root is illegitimate, and it accepts the presentation by NA. If the direction is included, comparison to previous presentations could detect the breach by noting the changes in the direction, assuming that once allocated, the DID position is fixed.
+NA makes a presentation with LA’s DID and, using the sidecar method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for position 2 (0010), for which NA posted an update (for inclusion) or nothing (for non-inclusion). If the direction is not included, there is no way for the resolver to know that the path taken to the root is illegitimate, and it accepts the presentation by NA. If the direction is included, comparison to previous presentations could detect the breach by noting the changes in the direction, assuming that once allocated, the DID position is fixed.
 
 To mitigate this attack, a DID’s position must be fixed deterministically and the hashing operation most not be commutative, i.e., *hash(X + Y)* ≠ *hash(Y + X)*. The following algorithm meets these requirements:
 
-1. A DID’s position is the SHA256 hash of the DID.
+1. A DID’s position is the SHA-256 hash of the DID.
 2. The value at the DID’s position for the signal is the hash of the DID update payload file for that signal (0 if null).
 3. For any parent node:
     1. If the values of both child nodes are 0, the value of the parent node is 0.
     2. Otherwise, the value of the parent node is the hash of the concatenation of the 256-bit left child value and the 256-bit right child value.
 
-The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the hashes doesn't require direction, as the sequence of directions is determined by the DID's position.
+The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the peer hashes doesn't require direction, as the sequence of directions is determined by the DID's position.
 
 ### Information Leakage
 
-To prove inclusion or non-inclusion, it is necessary to present a list of hashes of the peer nodes from bottom to top. A verifier then takes the hash of the document (inclusion) or the hash of null (non-inclusion) and applies the algorithm above to walk up to the root. Most of the hashes of the peer nodes will be zero.
+To prove inclusion or non-inclusion, it is necessary to present a list of peer hashes from bottom to top. A verifier then takes the hash of the document (inclusion) or the hash of null (non-inclusion) and applies the algorithm above to walk up to the root. Most of the peer hashes will be zero.
 
-The list of hashes must be provided by the aggregator to the participant in the cohort. Changes in the values (from zero to non-zero or from non-zero to zero) indicate frequency of changes to other DIDs in the peer branch. Furthermore, assuming that a verifier has a DID from a past presentation with the same aggregator beacon address:
+The list of peer hashes must be provided by the aggregator to the participant in the cohort. Changes in the values (from zero to non-zero or from non-zero to zero) indicate frequency of changes to other DIDs in the peer branch. Furthermore, assuming that a verifier has a DID from a past presentation with the same aggregator beacon address:
 
 * a zero value in a node that encompasses the hash value of the DID is definitive proof that the DID document has not been updated; and
 * a non-zero value in a node that encompasses the hash value of the DID is statistically significant proof that the DID document has been updated.
@@ -269,7 +269,7 @@ From this, the verifier can infer that:
 
 To mitigate this, non-updates and updates should be indistinguishable, i.e., there should not be a reserved value of 0 indicating a null payload. It is still necessary to identify empty branches (otherwise the hash calculation time becomes impossibly large), so the reserved value of 0 is retained for that purpose. The following (revised) algorithm meets these requirements:
 
-* A DID’s position is the SHA256 hash of the DID.
+* A DID’s position is the SHA-256 hash of the DID.
 * A signal- and DID-specific 256-bit nonce shall be generated by the DID controller, regardless of non-update or update status.
 * The value at the DID’s position for the signal is the hash of the concatenation of the nonce and the hash of the DID update payload file for that signal (0 if null).
 * The value of the parent node is the hash of the concatenation of the 256-bit left child value (0 if the left branch is empty) and the 256-bit right child value (0 if the right branch is empty).
@@ -341,7 +341,7 @@ flowchart TD
     Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
 ```
 
-To prove inclusion or non-inclusion, the DID controller presents the nonce, the DID update payload or null, and the list of hashes of the peer nodes from bottom to top.
+Every DID is included, so there is no longer a proof of non-inclusion. Instead, what's being proved is the presence or absence of an update, where the absence of an update is a null document. To prove presence or absence of an update, the DID controller presents the nonce, the DID update payload or null, and the list of peer hashes from bottom to top.
 
 Now, the presentation to the verifier for DID 13 includes the following:
 
