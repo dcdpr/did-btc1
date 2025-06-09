@@ -40,7 +40,7 @@ Service Endpoints and ::Beacons:: that support aggregation.
 The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
 and an OPTIONAL `network`. The `intermediateDocument` MUST be a valid DID document
 except all places where the DID document requires the use of the identifier
-(e.g. the id field), this identifier MUST be the placeholder value
+(e.g., the id field), this identifier MUST be the placeholder value
 `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`.
 The DID document SHOULD include at least one verificationMethod and service of
 the type SingletonBeacon.
@@ -105,20 +105,20 @@ for that identifier.
 
 This algorithm deterministically generates an initial DID Document from a secp256k1
 public key.
-It takes in a **did:btc1** `identifier` and a `identifierComponents` object and
-returns a `initialDocument`.
+It takes in a **did:btc1** `identifier` and an `identifierComponents` object and
+returns an `initialDocument`.
 
 1. Set `keyBytes` to `identifierComponents.genesisBytes`.
-1. Initialize a `initialDocument` variable as an empty object.
+1. Initialize an `initialDocument` variable as an empty object.
 1. Set `initialDocument.id` to the `identifier`.
+1. Set `initialDocument.controller` to the `identifier`
 1. Initialize a `contextArray` to empty array:
-    1. Append the DID Core context "https://www.w3.org/ns/did/v1".
-    1. Append the Data Integrity context "https://w3id.org/security/data-integrity/v2".
+    1. Append the DID Core v1.1 context "https://www.w3.org/ns/did/v1.1".
     1. Append a **did:btc1** context.
     1. Set `initialDocument['@context]' to contextArray`.
 1. Create an initial verification method:
     1. Initialize `verificationMethod` to an empty object.
-    1. Set `verificationMethod.id` to "#initialKey".
+    1. Set `verificationMethod.id` to `{identifier}#initialKey`.
     1. Set `verificationMethod.type` to "Multikey".
     1. Set `verificationMethod.controller` to `identifier`.
     1. Set `verificationMethod.publicKeyMultibase` to the result of the TODO:
@@ -131,7 +131,7 @@ returns a `initialDocument`.
    `capabilityDelegation` properties in `initialDocument` to a copy of the `tempArray`
    variable.
 1. Set the `initialDocument.services` property in `initialDocument` to the
-   result of passing the `keyBytes` and `identifierComponents.network` to the
+   result of passing the `identifier`, `keyBytes` and `identifierComponents.network` to the
    [Deterministically Generate Beacon Services] algorithm.
 1. Return `initialDocument`.
 
@@ -146,19 +146,19 @@ through signatures from the `keyBytes`'s associated private key.
 Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `services` array.
 
 1. Initialize a `services` variable to an empty array.
-1. Set `serviceId` to `#initialP2PKH`.
+1. Set `serviceId` to `{identifier}#initialP2PKH`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Public-Key-Hash Bitcoin
    address from the `keyBytes` for the appropriate `network`.
 1. Set `p2pkhBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2pkhBeacon` to `services`.
-1. Set `serviceId` to `#initialP2WPKH`.
+1. Set `serviceId` to `{identifier}#initialP2WPKH`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Witness-Public-Key-Hash
    Bitcoin address from the `keyBytes` for the appropriate `network`.
 1. Set `p2wpkhBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2wpkhBeacon` to `services`.
-1. Set `serviceId` to `#initialP2TR`.
+1. Set `serviceId` to `{identifier}#initialP2TR`.
 1. Set `beaconAddress` to the result of generating a Pay-to-Taproot Bitcoin address
    from the `keyBytes` for the appropriate `network`.
 1. Set `p2trBeacon` to the result of passing `serviceId`, and
@@ -171,13 +171,13 @@ Each ::Beacon:: is of the type SingletonBeacon. The algorithm returns a `service
 This algorithm externally retrieves an `intermediateDocumentRepresentation`,
 either by retrieving it from ::Content Addressable Storage:: (CAS) or from the
 ::Sidecar Data:: provided as part of the resolution request. The algorithm
-takes in a **did:btc1** `identifier`, a `identifierComponents` object and a
+takes in a **did:btc1** `identifier`, an `identifierComponents` object and a
 `resolutionOptions` object.
 It returns an `initialDocument`, which is a conformant DID document validated
 against the `identifier`.
 
 1. If `resolutionOptions.sidecarData.initialDocument` is not null, set
-   `initialDocument` to the result of passing `identifier`, `identifierComponents`
+   `initialDocument` to the result of passing `identifier`, `identifierComponents`,
    and `resolutionOptions.sidecarData.initialDocument` into algorithm
    [Sidecar Initial Document Validation].
 1. Else set `initialDocument` to the result of passing `identifier` and
@@ -192,7 +192,7 @@ This algorithm validates an `initialDocument` against its `identifier`,
 by first constructing the `intermediateDocumentRepresentation` and verifying
 the hash of this document matches the bytes encoded within the `identifier`.
 The algorithm takes in a **did:btc1** `identifier`, `identifierComponents`
-and a `initialDocument`. The algorithm returns the `initialDocument` if validated,
+and an `initialDocument`. The algorithm returns the `initialDocument` if validated,
 otherwise it throws an error.
 
 1. Set `intermediateDocumentRepresentation` to a copy of the `initialDocument`.
@@ -231,7 +231,7 @@ The algorithm takes as inputs:
 - `initialDocument`: The DID document that was used to initiate the **did:btc1**
 identifier being resolved as verified by the [Resolve Initial Document] algorithm.
 A DID Core conformant DID document.
-- `resolutionOptions`: A set of optional parameters passed in to the resolve function
+- `resolutionOptions`: A set of optional parameters passed into the resolve function
 of the DID resolver.
 - `network`: The Bitcoin network of the **did:btc1** identifier.
 
@@ -346,9 +346,9 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
 ##### Find Next Signals
 
 This algorithm takes finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
-`beacons` and retuns all ::Beacon Signals:: within that block.
+`beacons` and returns all ::Beacon Signals:: within that block.
 
-Note: It is recommended that you use a Bitcoin indexer and API such as electers and Esplora to query the Bitcoin blockchain.
+Note: It is recommended that you use a Bitcoin indexer and API such as [electrs](https://github.com/romanz/electrs) or [Esplora](https://github.com/Blockstream/esplora) to query the Bitcoin blockchain.
 
 This algorithm takes in the following inputs:
 
@@ -357,7 +357,7 @@ This algorithm takes in the following inputs:
 - `beacons`: An array of ::Beacon:: services in the ::contemporary DID document::.
    Each Beacon is a structure with the following properties:
     - `id`: The id of the Beacon service in the DID document. A string.
-    - `type`: The type of the Beacon service in the DID document. A string whose values MUST be either SingletonBeacon, , CIDAggregateBeacon or SMTAggregateBeacon.
+    - `type`: The type of the Beacon service in the DID document. A string whose values MUST be either SingletonBeacon, CIDAggregateBeacon, or SMTAggregateBeacon.
     - `serviceEndpoint`: A BIP21 URI representing a Bitcoin address.
     - `address`: The Bitcoin address decoded from the `serviceEndpoint value.
 - `network`: A string identifying the Bitcoin network of the **did:btc1** identifier.
@@ -365,11 +365,12 @@ This algorithm MUST query the Bitcoin blockchain identified by the `network`.
   
 
 This algorithm returns a `nextSignals` array of `signal` structs with the following properties:
-   - `beaconId`: The id for the ::Beacon:: that the ::Beacon Signal:: was announced by.
-   - `beaconType`: The type of the ::Beacon:: that announced the ::Beacon Signal::.
-   - `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
-   - `blockheight`: The blockheight for the block that the Bitcoin transaction was included within.
-   - `blocktime`: The timestamp that the Bitcoin block was included into the blockchain.
+
+- `beaconId`: The id for the ::Beacon:: that the ::Beacon Signal:: was announced by.
+- `beaconType`: The type of the ::Beacon:: that announced the ::Beacon Signal::.
+- `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
+- `blockheight`: The blockheight for the block that the Bitcoin transaction was included within.
+- `blocktime`: The timestamp that the Bitcoin block was included into the blockchain.
 
 1. Set `signals` to an empty array.
 1. For each `beacon` in `beacons`:
@@ -461,7 +462,23 @@ DID document before returning it. This algorithm takes inputs
 1. Set `rootCapability` to the result of passing `capabilityId` to the [Dereference Root Capability Identifier] algorithm.
 1. If `rootCapability.invocationTarget` does not equal `contemporaryDIDDocument.id` and `rootCapability.controller` 
    does not equal  `contemporaryDIDDocument.id`, MUST throw an `invalidDidUpdate` error.
-1. Instantiate a `schnorr-secp256k1-2025` `cryptosuite` instance.
+1. Instantiate a [`bip340-jcs-2025` `cryptosuite`](https://dcdpr.github.io/data-integrity-schnorr-secp256k1/#instantiate-cryptosuite) instance using the key referenced by the `verificationMethod` field in the update.
+```json
+   {
+   "type": "DataIntegrityProof",
+   "cryptosuite": "bip340-jcs-2025",
+   "verificationMethod": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp#key-1",
+   "proofPurpose": "capabilityInvocation",
+   "capability": "urn:zcap:root:did%3Abtc1%3Ax1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp",
+   "capabilityAction": "Write",
+   "@context": [
+      "https://w3id.org/security/v2",
+      "https://w3id.org/zcap/v1",
+      "https://w3id.org/json-ld-patch/v1"
+   ],
+   "proofValue": "z3SvqrVEjVur24zh1vnYHB3SxQPMvxXP1XMxjtqBptezKASXtUUTsotQh2rabGLDyBf8riJkcL9wbHkZjDRSYRVYC"
+}
+```
 1. Set `expectedProofPurpose` to `capabilityInvocation`.
 1. Set `mediaType` to ???? TODO: is this just `application/json`?
 1. Set `documentBytes` to the bytes representation of `update`.
@@ -469,7 +486,7 @@ DID document before returning it. This algorithm takes inputs
    `cryptosuite`, and `expectedProofPurpose` into the
    [Verify Proof algorithm](https://w3c.github.io/vc-data-integrity/#verify-proof)
    defined in the VC Data Integrity specification.
-1. If `verificationResult.verified` equals False, MUST raise a `invalidUpdateProof` exception.
+1. If `verificationResult.verified` equals False, MUST raise an `invalidUpdateProof` exception.
 1. Set `targetDIDDocument` to a copy of `contemporaryDIDDocument`.
 1. Use JSON Patch to apply the `update.patch` to the `targetDIDDOcument`.
 1. Verify that `targetDIDDocument` is conformant with the data model specified
@@ -484,7 +501,7 @@ DID document before returning it. This algorithm takes inputs
 An update to a **did:btc1** document is an invoked capability using the ZCAP-LD
 data format, signed by a verificationMethod that has the authority to make the
 update as specified in the previous DID document. Capability invocations for
-updates MUST be authorized using Data Integrity following the schnorr-secp256k1-jcs-2025
+updates MUST be authorized using Data Integrity following the bip340-jcs-2025
 cryptosuite with a proofPurpose of `capabilityInvocation`.
 
 This algorithm takes as inputs a `btc1Identifier`, `sourceDocument`,
@@ -494,7 +511,7 @@ of `beaconIds`. The `sourceDocument` is the DID document being updated. The
 be applied to the `sourceDocument`. The result of these transformations MUST
 produce a DID document conformant to the DID Core specification. The
 `verificationMethodId` is an identifier for a verificationMethod within the
-`sourceDocument`. The verificationMethod identified MUST be a Schnorr secp256k1
+`sourceDocument`. The verificationMethod identified MUST be a BIP340
 Multikey. The `beaconIds` MUST identify service endpoints with one of the
 three ::Beacon Types:: `SingletonBeacon`, `CIDAggregateBeacon`, and
 `SMTAggregateBeacon`.
@@ -504,7 +521,7 @@ three ::Beacon Types:: `SingletonBeacon`, `CIDAggregateBeacon`, and
    algorithm.
 1. Set `verificationMethod` to the result of retrieving the verificationMethod from
    `sourceDocument` using the `verificationMethodId`.
-1. Validate the `verificationMethod` is a Schnorr secp256k1 Multikey:
+1. Validate the `verificationMethod` is a BIP340 Multikey:
     1. `verificationMethod.type` == `Multikey`
     1. `verificationMethod.publicKeyMultibase[4]` == `z66P`
 1. Set `didUpdateInvocation` to the result of passing `btc1Identifier`,
@@ -561,14 +578,14 @@ The algorithm returns the invoked ::DID Update Payload::.
    [Derive Root Capability from **did:btc1** Identifier] algorithm.
 1. Initialize `proofOptions` to an empty object.
 1. Set `proofOptions.type` to `DataIntegrityProof`.
-1. Set `proofOptions.cryptosuite` to `schnorr-secp256k1-jcs-2025`.
+1. Set `proofOptions.cryptosuite` to `bip340-jcs-2025`.
 1. Set `proofOptions.verificationMethod` to `verificationMethod.id`.
 1. Set `proofOptions.proofPurpose` to `capabilityInvocation`.
 1. Set `proofOptions.capability` to `rootCapability.id`.
 1. Set `proofOptions.capabilityAction` to `Write`. // Wonder if we actually need this.
    Aren't we always writing.
 1. Set `cryptosuite` to the result of executing the Cryptosuite Instantiation
-   algorithm from the Schnorr secp256k1 Data Integrity specification passing in
+   algorithm from the [BIP340 Data Integrity specification](https://dcdpr.github.io/data-integrity-schnorr-secp256k1) passing in
    `proofOptions`.
 1. // TODO: need to set up the proof instantiation such that it can resolve
    / dereference the root capability. This is deterministic from the DID.
