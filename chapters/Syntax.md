@@ -22,13 +22,13 @@ into a single byte as follows:
    1. `2` = regtest;
    1. `3` = testnet v3;
    1. `4` = testnet v4;
-   1. `5`-`7` = reserved for future use by the specification; or
-   1. `8`-`F` = user-defined index into a custom signet network.
+   1. `5` = mutinynet;
+   1. `6`-`B` = reserved for future use by the specification; or
+   1. `C`-`F` = user-defined index into a custom test network.
 
-The user-defined index into a custom signet network allows any user to stand up
-a custom signet network and create **did:btc1** identifiers on it. However,
-anyone encountering such an identifier would have to know the details of the
-network (challenge and seed node) to use it. This means that:
+The user-defined index allows any user to stand up a custom test network and create **did:btc1**
+identifiers on it. However, anyone encountering such an identifier would have to know the details
+of the network (e.g., challenge and seed node for signet) to use it. This means that:
 
 * The interpretation of a user-defined index is by mutual agreement between
   parties issuing **did:btc1** identifiers and those resolving them.
@@ -87,13 +87,13 @@ always represents the network and that the allowable values for the network
 don't change. The interpretation of the `version` and `network` would be as
 follows (spaces between bytes added for readability):
 
-| Decoded bytes     | Version | Network         |
-|-------------------|--------:|-----------------|
-| *00* 03 c7 ...    |       1 | bitcoin         |
-| *23* 03 c7 ...    |       3 | testnet v3      |
-| *C9* 03 c7 ...    |      13 | custom signet 2 |
-| *F2 90* 03 c7 ... |      18 | custom signet 2 |
-| *FF 72* 03 c7 ... |      38 | regtest         |
+| Decoded bytes     | Version | Network               |
+|-------------------|--------:|-----------------------|
+| *00* 03 c7 ...    |       1 | bitcoin               |
+| *23* 03 c7 ...    |       3 | testnet v3            |
+| *CD* 03 c7 ...    |      13 | custom test network 2 |
+| *F2 D0* 03 c7 ... |      18 | custom test network 2 |
+| *FF 72* 03 c7 ... |      38 | regtest               |
 
 ### **did:btc1** Identifier Encoding
 
@@ -109,6 +109,7 @@ Given:
   * "regtest"
   * "testnet3"
   * "testnet4"
+  * "mutinynet"
   * number
 * `genesisBytes` - required, byte array, one of:
   * a compressed secp256k1 public key if `idType` is "key"
@@ -119,7 +120,7 @@ Encode the **did:btc1** identifier as follows:
 1. If `idType` is not a valid value per above, raise `invalidDid` error.
 1. If `version` is greater than `1`, raise `invalidDid` error.
 1. If `network` is not a valid value per above, raise `invalidDid` error.
-1. if `network` is a number and is outside the range of 1-8, raise `invalidDid` error.
+1. if `network` is a number and is outside the range of 1-4, raise `invalidDid` error.
 1. If `idType` is "key" and `genesisBytes` is not a valid compressed secp256k1
    public key, raise `invalidDid` error.
 1. Map `idType` to `hrp` from the following:
@@ -136,7 +137,8 @@ Encode the **did:btc1** identifier as follows:
     1. "regtest" - `2`
     1. "testnet3" - `3`
     1. "testnet4" - `4`
-1. If `network` is a number, append `network + 7` to `nibbles`.
+    1. "mutinynet" - `5`
+1. If `network` is a number, append `network + 11` to `nibbles`.
 1. If the number of entries in `nibbles` is odd, append `0`.
 1. Create a `dataBytes` byte array from `nibbles`, where `index` is from `0` to
    `nibbles.length / 2 - 1` and `encodingBytes[index] =
@@ -185,8 +187,9 @@ Decode the **did:btc1** identifier as follows:
    1. `2` - "regtest"
    1. `3` - "testnet3"
    1. `4` - "testnet4"
-   1. `5`-`7` - raise `invalidDid` error
-   1. `8`-`F` - `networkValue - 7`
+   1. `5` - "mutinynet"
+   1. `6`-`B` - raise `invalidDid` error
+   1. `C`-`F` - `networkValue - 11`
 1. If the number of nibbles consumed is odd:
    1. Advance to the next nibble and set `fillerNibble` to its value.
    1. If `fillerNibble` is not `0`, raise `invalidDid` error.
