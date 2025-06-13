@@ -1,8 +1,8 @@
 {
   "sidecarData": {
-    "did": "did:btc1:k1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack",
+    "did": "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7",
     "signalsMetadata": {
-      "3e25a3c047a8a5339b9d84b80c95647a17c610d7ff34e64086cc4027705bc5ea": {
+      "11c3982983a2814005298ba20d0288b6dd514b0caaa62a9f429997e59df820e9": {
         "updatePayload": {
           "@context": [
             "https://w3id.org/security/v2",
@@ -14,32 +14,32 @@
               "op": "add",
               "path": "/service/3",
               "value": {
-                "id": "did:btc1:k1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack#service-3",
+                "id": "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7#service-3",
                 "type": "SingletonBeacon",
-                "serviceEndpoint": "bitcoin:bcrt1qktf6vtfunylcgg62ltwj60k5rp4kr9h5y7kvyc"
+                "serviceEndpoint": "bitcoin:bcrt1q44fxlt8zvcqx0djs59mt34k8g9axeupkwsa8fn"
               }
             }
           ],
-          "sourceHash": "5VyzaSL3x7ccqZD2DBUz6UqxHwSry72acuSBtd9qCeUh",
-          "targetHash": "4D8WshMpQT5YLe4jL8KKfzAkobkwTSo3B9cuJn3acNoF",
+          "sourceHash": "4HRDt7nTeuYHuvEAKEapXwiEpG99qWhFNAnoY1HaCowb",
+          "targetHash": "6KfRLV864beNBqMTrkLPqQGiTShtMP56Jh9XJeVdLFRr",
           "targetVersionId": 2,
           "proof": {
             "type": "DataIntegrityProof",
             "cryptosuite": "bip340-jcs-2025",
-            "verificationMethod": "did:btc1:k1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack#initialKey",
+            "verificationMethod": "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7#initialKey",
             "proofPurpose": "capabilityInvocation",
-            "capability": "urn:zcap:root:did%3Abtc1%3Ak1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack",
+            "capability": "urn:zcap:root:did%3Abtc1%3Ak1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7",
             "capabilityAction": "Write",
             "@context": [
               "https://w3id.org/security/v2",
               "https://w3id.org/zcap/v1",
               "https://w3id.org/json-ld-patch/v1"
             ],
-            "proofValue": "z257NSUxcuu4QhuQLviYgBWZJXZ5X2nN1vD9eVQKziFKah9cuiECQ8VQ7pQoxuLVCC8Aez8UziHv8JxTwPSWqFfKi"
+            "proofValue": "zhc2AiH4kToWFW1RpczkN9zxb6hrHLMW2vWCs7KRb3rT6fmr1WJrrFzDnTdUXzDoaf6k25TQEQAkJhoqHvV5dvFB"
           }
         }
       },
-      "ce82fc9767672a6c407a02f1583123b867738c1bd3510fba847a9d5a30f6eb4f": {
+      "2699aba93b7292159f99409a1cbee64bf4b96501c355de690a14ee6053cf6568": {
         "updatePayload": {
           "@context": [
             "https://w3id.org/security/v2",
@@ -51,29 +51,29 @@
               "op": "add",
               "path": "/verificationMethod/1",
               "value": {
-                "id": "did:btc1:k1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack#key-1",
+                "id": "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7#key-1",
                 "type": "Multikey",
-                "controller": "did:btc1:k1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack",
-                "publicKeyMultibase": "zQ3shcZoWPNt46dp9o7iCSjMrXrFTkftKezEGJpZdQNzxfkn3"
+                "controller": "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7",
+                "publicKeyMultibase": "zQ3shcVm41J4ZRa88vPbrn6peCSp61gpXzjM4q2gQs7ZX9U5y"
               }
             }
           ],
-          "sourceHash": "4D8WshMpQT5YLe4jL8KKfzAkobkwTSo3B9cuJn3acNoF",
-          "targetHash": "GWsfxFqgMJs29FakCXw7veGeUh1tE83GHGH4tyNLKdEA",
+          "sourceHash": "6KfRLV864beNBqMTrkLPqQGiTShtMP56Jh9XJeVdLFRr",
+          "targetHash": "3CwUEyHKuNdXHSR5M7kxQ5eaKh8cg3c9K6vKWwhWBmP6",
           "targetVersionId": 3,
           "proof": {
             "type": "DataIntegrityProof",
             "cryptosuite": "bip340-jcs-2025",
-            "verificationMethod": "did:btc1:k1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack#initialKey",
+            "verificationMethod": "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7#initialKey",
             "proofPurpose": "capabilityInvocation",
-            "capability": "urn:zcap:root:did%3Abtc1%3Ak1qgp6haekj3w5zgk56h92juynjl4ag4pt2p9wl4ajwu7yhklyp0ngcfskwzack",
+            "capability": "urn:zcap:root:did%3Abtc1%3Ak1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7",
             "capabilityAction": "Write",
             "@context": [
               "https://w3id.org/security/v2",
               "https://w3id.org/zcap/v1",
               "https://w3id.org/json-ld-patch/v1"
             ],
-            "proofValue": "z2yCtyRxcMH6XDmGNtzNUNaQf6AGjm1nPQjUtYG6bf6A4mmac6dCSw3pZdpEZGYfdSHHndyTVpfAvqDkjsRpPHnuf"
+            "proofValue": "zZHz4im1dAM7yMmQ4ZqMtxRAd3AcMmqWQjjDWa3cXFos8EM873qkFxTuv3nz5rQ2TNhACtUpw876pLHRhLshQnjJ"
           }
         }
       }

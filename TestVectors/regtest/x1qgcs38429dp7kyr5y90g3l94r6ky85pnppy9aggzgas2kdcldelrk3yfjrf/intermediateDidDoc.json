@@ -12,13 +12,13 @@
       "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-0",
       "type": "Multikey",
       "controller": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "publicKeyMultibase": "zQ3shtiWU2YmQJnwWBZ69DtWrLck6VWajEs64joMqRS5KXcZ5"
+      "publicKeyMultibase": "zQ3shUCLVPbzsZsj4rSRU39GXCU8Lf21wTg9v57eitS5smfJp"
     },
     {
       "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-1",
       "type": "Multikey",
       "controller": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-      "publicKeyMultibase": "zQ3shNmrN4M1vcMtT57dfyYvVPhSVnzo8QUgcz4E5ZzJSzi4w"
+      "publicKeyMultibase": "zQ3shramuDQWcRsvYDfTHLeoFxvCkWPDFDER6ntTTacVDtQfp"
     }
   ],
   "authentication": [
@@ -34,7 +34,7 @@
     {
       "id": "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#service-0",
       "type": "SingletonBeacon",
-      "serviceEndpoint": "bitcoin:bcrt1qser62ssp8n49yh5famt93m7tdgwqv76r3j9d5n"
+      "serviceEndpoint": "bitcoin:bcrt1qq8z7pfj4s3aelrwtrt8fk729744pv6qc47hxm3"
     }
   ]
 }
