@@ -1,0 +1,18 @@
+{
+  "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-0": {
+    "pk": "0264d123a7c93bc956092add62f754d8d69f4409a9a009f5a6b0e593fec2dd40a1",
+    "sk": "6bc8058dddf43ccc1dca7e44233d7fdbf1caebd83d58056f24bd99adbdf796cf"
+  },
+  "did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#key-1": {
+    "pk": "03b171c2f189c2c3e34d2baa9330d977e9e76c7f64ff15e57fd1e8abefc0e83e7f",
+    "sk": "51b27bf8433abf7c6e632c72abb60e7ae95a97c46d63184048bfb3deb7a3cfe3"
+  },
+  "did:btc1:x1qgcs38429dp7kyr5y90g3l94r6ky85pnppy9aggzgas2kdcldelrk3yfjrf#service-1": {
+    "pk": "0341171f2e1139abf76a9199674bfe9eadc8461fe1ed15a681be790c4b3d93b98e",
+    "sk": "52b2a1cf9c026664288b21502ed24ef6bc181383569ffae7addd738d6423ba27"
+  },
+  "did:btc1:x1qgcs38429dp7kyr5y90g3l94r6ky85pnppy9aggzgas2kdcldelrk3yfjrf#key-2": {
+    "pk": "037a9604d92494c1c0bd1ae8ace978128830d05588c378810fd76063304e4c2612",
+    "sk": "a950a67741d9a6afab43397b234f932dcc15d5c4dd3026ce30fcf73fd52f9414"
+  }
+}

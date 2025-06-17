@@ -1,0 +1,14 @@
+{
+  "genesisKey": {
+    "pk": "034bf8b0c32b0482c2eda88d10e56c091c01e16aa7c8438ac6e22926f3ae6ce1f3",
+    "sk": "067f3a41f3325a0c41673f4ceb5ad59a980eb4dad5d618ceb5b7179ab599fd12"
+  },
+  "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7#service-3": {
+    "pk": "0250fdaba5345d27a27f7124847f17f4ac1ae08118831162aa2cb925429f16e6d0",
+    "sk": "4642c6f88879cd8819a31761d6f69134c1b403b512c8728c57db7c5e0eb1ce1e"
+  },
+  "did:btc1:k1qgp5h79scv4sfqkzak5g6y89dsy3cq0pd2nussu2cm3zjfhn4ekwrucc4q7t7#key-1": {
+    "pk": "02e02547fa52a9db52f433c1397b79509e1c20857ce0e93d919b7b0c6fa6cb448c",
+    "sk": "c81c10fdadc0a41a7d90dd85e531818547bcc1411b510d0f1924b0661700b995"
+  }
+}
