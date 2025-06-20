@@ -74,7 +74,7 @@ This algorithm is called by the [Announce DID Update] algorithm as part of the [
 operation, if the ::Beacon:: being used is of the type SingletonBeacon. It takes as 
 input a Beacon `service` and a secured `didUpdatePayload`. The algorithm constructs a
 Bitcoin transaction that spends from the Beacon address identified in the `service` 
-and contains a transaction output of the format `[OP_RETURN, OP_PUSH32, <hashBytes>]`,
+and contains a transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`,
 where hashBytes is the SHA256 hash of the canonical `didUpdatePayload`. The Bitcoin 
 transaction is then signed and broadcast to the Bitcoin network, thereby publicly
 announcing a DID update in a ::Beacon Signal::.
@@ -91,7 +91,7 @@ signal announces a specific ::DID Update Payload::.
    [JSON Canonicalization and Hash] algorithm.
 1. Initialize `spendTx` to a Bitcoin transaction that spends a transaction controlled
    by the `bitcoinAddress` and contains at least one transaction output. This output
-   MUST have the following format `[OP_RETURN, OP_PUSH32, hashBytes]`
+   MUST have the following format `[OP_RETURN, OP_PUSHBYTES32, hashBytes]`
 1. Retrieve the cryptographic material, e.g., private key or signing capability, 
    associated with the `bitcoinAddress` or `service`. How this is done is left
    to the implementer.
@@ -398,7 +398,7 @@ sequenceDiagram
 #### Process SMTAggregate Beacon Signal
 
 A ::Beacon Signal:: from a SMTAggregate Beacon is a Bitcoin transaction with the 
-first transaction output of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`. The 32 bytes
+first transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <32bytes>]`. The 32 bytes
 of data contained within this transaction output represent the root of a ::Sparse Merkle Tree::
 (SMT). This SMT aggregates a set of hashes of ::DID Update payloads::. In order to process 
 these ::Beacon Signals::, the resolver MUST have been passed ::Sidecar data:: for this signal
