@@ -90,8 +90,10 @@ signal announces a specific ::DID Update Payload::.
 1. Set `hashBytes` to the result of passing `didUpdatePayload` to the 
    [JSON Canonicalization and Hash] algorithm.
 1. Initialize `spendTx` to a Bitcoin transaction that spends a transaction controlled
-   by the `bitcoinAddress` and contains at least one transaction output. This output
-   MUST have the following format `[OP_RETURN, OP_PUSHBYTES32, hashBytes]`
+   by the `bitcoinAddress` and contains at least one transaction output. This signal output
+   MUST have the following format `[OP_RETURN, OP_PUSHBYTES32, hashBytes]`. 
+   If the transaction contains multiple transaction outputs, the signal output MUST
+   be the last transaction output of the transaction.
 1. Retrieve the cryptographic material, e.g., private key or signing capability, 
    associated with the `bitcoinAddress` or `service`. How this is done is left
    to the implementer.
@@ -112,7 +114,7 @@ resolver for the ::Beacon Signal:: identified by the Bitcoin transaction identif
 The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signal:: or throws
 an error.
 
-1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Initialize a `txOut` variable to the last transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
@@ -299,7 +301,7 @@ The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signa
 for the ::did:btc1:: identifier being resolved or throws an error.
 
 
-1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Initialize a `txOut` variable to the last transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
@@ -417,7 +419,7 @@ The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signa
 for the ::did:btc1:: identifier being resolved or throws an error.
 
 
-1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Initialize a `txOut` variable to the last transaction output of the `tx`.
 1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. MAY identify the Beacon Signal
    to resolver and request additional ::Sidecar data:: be provided. 
 1. Set `smtProof` to `signalSidecarData.smtProof`.
