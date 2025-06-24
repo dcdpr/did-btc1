@@ -322,7 +322,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
        run the [Confirm Duplicate Update] Algorithm passing in `update`,
        `updateHashHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
-        1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
+        1.  Check that the base58 decoding of `update.sourceHash` equals `contemporaryHash`, else MUST
             raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
@@ -377,8 +377,8 @@ This algorithm returns a `nextSignals` array of `signal` structs with the follow
    1. Set `beaconSpends` to the set of all Bitcoin transactions on the specified 
    `network` that spend at least one transaction input controlled by the `beacon.address`
    with a blockheight greater than or equal to the `contemporaryBlockheight`.
-   1. Filter the `beaconSpends`, identifying all transactions whose 0th transaction output 
-   is of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`.
+   1. Filter the `beaconSpends`, identifying all transactions whose last transaction output 
+   is of the format `[OP_RETURN, OP_PUSHBYTES32, <32bytes>]`.
    1. For each of the filtered `beaconSpends` push the following `beaconSignal` object onto the `signals` array.
    ```{.json include="json/CRUD-Operations/Read-find-next-signals-tx.json"}
    ```
