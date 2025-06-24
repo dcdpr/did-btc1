@@ -322,7 +322,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
        run the [Confirm Duplicate Update] Algorithm passing in `update`,
        `updateHashHistory`, and `contemporaryHash`.
     1. If `update.targetVersionId` equals `currentVersionId + 1`:
-        1.  Check that `update.sourceHash` equals `contemporaryHash`, else MUST
+        1.  Check that the base58 decoding of `update.sourceHash` equals `contemporaryHash`, else MUST
             raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
