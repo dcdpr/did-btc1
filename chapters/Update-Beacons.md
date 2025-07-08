@@ -74,7 +74,7 @@ This algorithm is called by the [Announce DID Update] algorithm as part of the [
 operation, if the ::Beacon:: being used is of the type SingletonBeacon. It takes as 
 input a Beacon `service` and a secured `didUpdatePayload`. The algorithm constructs a
 Bitcoin transaction that spends from the Beacon address identified in the `service` 
-and contains a transaction output of the format `[OP_RETURN, OP_PUSH32, <hashBytes>]`,
+and contains a transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`,
 where hashBytes is the SHA256 hash of the canonical `didUpdatePayload`. The Bitcoin 
 transaction is then signed and broadcast to the Bitcoin network, thereby publicly
 announcing a DID update in a ::Beacon Signal::.
@@ -90,8 +90,10 @@ signal announces a specific ::DID Update Payload::.
 1. Set `hashBytes` to the result of passing `didUpdatePayload` to the 
    [JSON Canonicalization and Hash] algorithm.
 1. Initialize `spendTx` to a Bitcoin transaction that spends a transaction controlled
-   by the `bitcoinAddress` and contains at least one transaction output. This output
-   MUST have the following format `[OP_RETURN, OP_PUSH32, hashBytes]`
+   by the `bitcoinAddress` and contains at least one transaction output. This signal output
+   MUST have the following format `[OP_RETURN, OP_PUSHBYTES32, hashBytes]`. 
+   If the transaction contains multiple transaction outputs, the signal output MUST
+   be the last transaction output of the transaction.
 1. Retrieve the cryptographic material, e.g., private key or signing capability, 
    associated with the `bitcoinAddress` or `service`. How this is done is left
    to the implementer.
@@ -112,7 +114,7 @@ resolver for the ::Beacon Signal:: identified by the Bitcoin transaction identif
 The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signal:: or throws
 an error.
 
-1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Initialize a `txOut` variable to the last transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
@@ -299,7 +301,7 @@ The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signa
 for the ::did:btc1:: identifier being resolved or throws an error.
 
 
-1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Initialize a `txOut` variable to the last transaction output of the `tx`.
 1. Set `didUpdatePayload` to null.
 1. Set `hashBytes` to the 32 bytes in the `txOut`.
 1. If `signalSidecarData`:
@@ -398,7 +400,7 @@ sequenceDiagram
 #### Process SMTAggregate Beacon Signal
 
 A ::Beacon Signal:: from a SMTAggregate Beacon is a Bitcoin transaction with the 
-first transaction output of the format `[OP_RETURN, OP_PUSH32, <32bytes>]`. The 32 bytes
+first transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <32bytes>]`. The 32 bytes
 of data contained within this transaction output represent the root of a ::Sparse Merkle Tree::
 (SMT). This SMT aggregates a set of hashes of ::DID Update payloads::. In order to process 
 these ::Beacon Signals::, the resolver MUST have been passed ::Sidecar data:: for this signal
@@ -417,7 +419,7 @@ The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signa
 for the ::did:btc1:: identifier being resolved or throws an error.
 
 
-1. Initialize a `txOut` variable to the 0th transaction output of the `tx`.
+1. Initialize a `txOut` variable to the last transaction output of the `tx`.
 1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. MAY identify the Beacon Signal
    to resolver and request additional ::Sidecar data:: be provided. 
 1. Set `smtProof` to `signalSidecarData.smtProof`.
