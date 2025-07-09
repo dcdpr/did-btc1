@@ -329,7 +329,9 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
         1.  Increment `currentVersionId`
         1.  If `currentVersionId` equals `targetVersionId` return
             `contemporaryDIDDocument`.
-        1.  Set `updateHash` to the result of passing `update` into the [JSON Canonicalization and Hash]
+        1.  Set `unsecuredUpdate` to a copy of the `update` object.
+        1.  Remove the `proof` property from the `unsecuredUpdate` object.
+        1.  Set `updateHash` to the result of passing `unsecuredUpdate` into the [JSON Canonicalization and Hash]
             algorithm
         1.  Push `updateHash` onto `updateHashHistory`.
         1.  Set `contemporaryHash` to result of passing `contemporaryDIDDocument` into the 
@@ -441,7 +443,9 @@ The algorithm takes in an `update` and an array of hashes, `updateHashHistory`.
 It throws an error if the `update` is not a duplicate, otherwise it returns.
 TODO: does this algorithm need  `contemporaryHash` passed in?
 
-1. Let `updateHash` equal the result of passing `update` into the [JSON Canonicalization and Hash] algorithm.
+1. Let `unsecuredUpdate` be a copy of the `update` object.
+1. Remove the `proof` property from the `unsecuredUpdate` object. 
+1. Let `updateHash` equal the result of passing `unsecuredUpdate` into the [JSON Canonicalization and Hash] algorithm.
 1. Let `updateHashIndex` equal `update.targetVersionId - 2`.
 1. Let `historicalUpdateHash` equal `updateHashHistory[updateHashIndex]`.
 1. Assert `historicalUpdateHash` equals `updateHash`, if not MUST throw a
