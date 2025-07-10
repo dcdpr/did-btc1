@@ -14,8 +14,8 @@ and provided through a ::Sidecar:: mechanism at ::Resolution Time::.
 Since updates to DID documents are NOT REQUIRED to be public, neither are
 **did:btc1** DID documents. A **did:btc1** DID document is an initial document
 plus a series of updates to that DID document. To keep the DID document fully
-private, the DID controller can choose to use an externally resolved initial
-**did:btc1** and not place the initial DID document on a ::Content Addressable
+private, the DID controller can choose to use an externally resolvable initial
+**did:btc1** but not place the initial DID document on a ::Content Addressable
 Storage:: (CAS) system such as IPFS. The initial DID document can be provided
 at ::Resolution Time:: through a ::Sidecar:: mechanism along with the collection of
 updates that can be verified against the relevant ::Beacon Signals:: for the DID

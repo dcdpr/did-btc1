@@ -57,7 +57,7 @@ resistance. It has the following limitations:
 * It is prohibitively expensive to maintain many DIDs, because both creation and
   every update require a separate on-chain transaction.
 * It requires storing the data for the DID document somewhere public and exposed
-  via OP_RETURN: either at a URL, or accessible via content-addressed storage such
+  via OP_RETURN: either at a URL, or accessible via Content-addressable Storage such
   as IPFS.
 * Once a DID document has been revealed as connected to a transaction, it could
   be possible for colluding miners to target the controlling funds for censorship,
