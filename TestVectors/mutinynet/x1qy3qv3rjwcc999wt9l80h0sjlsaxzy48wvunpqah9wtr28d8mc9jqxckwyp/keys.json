@@ -1,0 +1,14 @@
+{
+    "did:btc1:x1qy3qv3rjwcc999wt9l80h0sjlsaxzy48wvunpqah9wtr28d8mc9jqxckwyp#key-0": {
+        "sk": "8c5700e3f7d37f04bfc978912ed73cf7048a8338b3262deec3619f38c8b2ca69",
+        "pk": "0237df92591cf30fd673c23ccf033204496ecbad6843846817c1a55cd14d688fe5"
+    },
+    "did:btc1:x1qy3qv3rjwcc999wt9l80h0sjlsaxzy48wvunpqah9wtr28d8mc9jqxckwyp#service-0": {
+        "sk": "b8e9cdde0453f6608df2dde9f4b0000416537361d08b8981ea0187455113c259",
+        "pk": "02758a24f154f35043e13f28fe337ea6617cd8ecc5a6fdfa827b35df8ee04727c2"
+    },
+    "did:btc1:x1qy3qv3rjwcc999wt9l80h0sjlsaxzy48wvunpqah9wtr28d8mc9jqxckwyp#service-1": {
+        "sk": "5e752dc481e0b426eb17ec4682c08494bdaae299fc77401995ac310569933c53",
+        "pk": "0274706fb3f0bd5e664076a2677f5cec7c11f42ff83ede5ff975129146231b4ab8"
+    }
+}

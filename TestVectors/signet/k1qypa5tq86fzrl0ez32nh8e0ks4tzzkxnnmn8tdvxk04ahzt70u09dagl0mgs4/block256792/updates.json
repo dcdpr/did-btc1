@@ -1,0 +1,38 @@
+[
+  {
+    "@context": [
+      "https://w3id.org/security/v2",
+      "https://w3id.org/zcap/v1",
+      "https://w3id.org/json-ld-patch/v1"
+    ],
+    "patch": [
+      {
+        "op": "add",
+        "path": "/verificationMethod/1",
+        "value": {
+          "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#key-1",
+          "type": "Multikey",
+          "controller": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4",
+          "publicKeyMultibase": "zQ3shnJ534uiR8xHXZuumXDDeAYwJhkTbiyYcaFSbwWxCnpXT"
+        }
+      }
+    ],
+    "sourceHash": "2JQZ5BGNrWD63ybsRLMNX3QCwF26Hz4oeSbyTJKbpXqF",
+    "targetHash": "Hin1Bqqf1doGPrdKGyMLJt6hEfoCMhS6yrT3meRxxKfv",
+    "targetVersionId": 2,
+    "proof": {
+      "type": "DataIntegrityProof",
+      "cryptosuite": "bip340-jcs-2025",
+      "verificationMethod": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialKey",
+      "proofPurpose": "capabilityInvocation",
+      "capability": "urn:zcap:root:did%3Abtc1%3Ak1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4",
+      "capabilityAction": "Write",
+      "@context": [
+        "https://w3id.org/security/v2",
+        "https://w3id.org/zcap/v1",
+        "https://w3id.org/json-ld-patch/v1"
+      ],
+      "proofValue": "z3X7gg4Kzxb1UDWdZspKy1gaSa5gB22cybBBn2BgCeobpnUrqjaSMdnwqD1jjRQ6NoQ8KMQecSKToiR9RyTfNuyWw"
+    }
+  }
+]
