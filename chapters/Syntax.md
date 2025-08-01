@@ -58,7 +58,7 @@ ABNF is defined by [IETF RFC5234](https://datatracker.ietf.org/doc/html/rfc5234)
 ### Version Interpretation
 
 The purpose of the `version` is to identify incompatible changes made in the
-specification (e.g., a change to the way ::Beacon signals:: are constructed and
+specification (e.g., a change to the way ::Beacon Signals:: are constructed and
 interpreted). The updated specification may also change the way that the
 **did:btc1** identifier is encoded.
 
