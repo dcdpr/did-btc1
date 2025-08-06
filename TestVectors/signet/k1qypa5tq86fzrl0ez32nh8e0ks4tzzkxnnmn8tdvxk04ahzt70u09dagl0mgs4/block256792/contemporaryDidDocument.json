@@ -1,0 +1,53 @@
+{
+  "@context": [
+    "https://www.w3.org/TR/did-1.1",
+    "https://did-btc1/TBD/context"
+  ],
+  "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4",
+  "controller": [
+    "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialKey",
+      "type": "Multikey",
+      "controller": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4",
+      "publicKeyMultibase": "zQ3shuKkwqUmqPcMXxP9bpDCyurRu5UfEy9nybzSXnPwvFLzY"
+    },
+    {
+      "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#key-1",
+      "type": "Multikey",
+      "controller": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4",
+      "publicKeyMultibase": "zQ3shnJ534uiR8xHXZuumXDDeAYwJhkTbiyYcaFSbwWxCnpXT"
+    }
+  ],
+  "authentication": [
+    "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialKey"
+  ],
+  "assertionMethod": [
+    "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialKey"
+  ],
+  "capabilityInvocation": [
+    "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialKey"
+  ],
+  "capabilityDelegation": [
+    "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialKey"
+  ],
+  "service": [
+    {
+      "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialP2PKH",
+      "type": "SingletonBeacon",
+      "serviceEndpoint": "bitcoin:mtA1SshFsJtD2Di1KBSTmyuD23eBqUekQ3"
+    },
+    {
+      "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialP2WPKH",
+      "type": "SingletonBeacon",
+      "serviceEndpoint": "bitcoin:tb1q323c0l0fapjeg4ux9ayumnpqh8xzqgk3wg82dy"
+    },
+    {
+      "id": "did:btc1:k1qypa5tq86fzrl0ez32nh8e0ks4tzzkxnnmn8tdvxk04ahzt70u09dagl0mgs4#initialP2TR",
+      "type": "SingletonBeacon",
+      "serviceEndpoint": "bitcoin:tb1pecc8w64wdvn6x2np8yr8qvsz2pclydkd9t5jde2gf0hy0musfxxsn23q20"
+    }
+  ]
+}

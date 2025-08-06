@@ -10,6 +10,14 @@ be invariant. This is achieved through requiring strict ordering of DID updates
 and complete coverage of all relevant ::Beacon Signals::. Resolvers MUST process all
 relevant ::Beacon Signals:: and enforce strict ordering.
 
+Additionally, when resolvers are passed resolution options specifying a versionId 
+they MUST process the full history of the signals up to the current time in order 
+to check for late publishing. Any update that specifies the same versionId but 
+contains different update operations MUST trigger a late publishing error. This 
+is not the case for versionTime. When a resolver is passed a versionTime option
+then the state of the DID document can be returned once the all the signals in 
+the blocks before this timestamp have been processed. 
+
 #### Invalidation Attacks
 
 Invalidation attacks are where adversaries are able to publish ::Beacon Signals::

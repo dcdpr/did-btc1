@@ -11,13 +11,16 @@ The full specification may be viewed at http://dcdpr.github.io/did-btc1/.
 
 ## Compiling the Specification Locally
 
-First, make sure you have 'pandoc' installed on your machine - https://pandoc.org/getting-started.html. Then you also need 'npm', a package manager for the JavaScript programming. Mac users can get both with homebrew: ```brew install npm pandoc``` 
+1. Install 'pandoc' locally - https://pandoc.org/getting-started.html.
+2. Install 'npm' locally - http://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 
-Then run:
+* Note: Mac users can get both with homebrew: ```brew install npm pandoc``` 
+
+3. Run the following commands
 
 * ```cd did-btc1```
 * ```npm install```
-* ```npm run pandoc-spec-local```
+* ```npm run pandoc-spec```
 
 The specification will be compiled and available in the `_site/index.html` file.
 

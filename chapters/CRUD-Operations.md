@@ -111,7 +111,6 @@ returns an `initialDocument`.
 1. Set `keyBytes` to `identifierComponents.genesisBytes`.
 1. Initialize an `initialDocument` variable as an empty object.
 1. Set `initialDocument.id` to the `identifier`.
-1. Set `initialDocument.controller` to the `identifier`
 1. Initialize a `contextArray` to empty array:
     1. Append the DID Core v1.1 context "https://www.w3.org/ns/did/v1.1".
     1. Append a **did:btc1** context.
@@ -247,6 +246,7 @@ The algorithm returns `targetDocument`, a DID Core conformant DID document or th
 1. Set `currentVersionId` to 1.
 1. If `currentVersionId` equals `targetVersionId` return `initialDocument`.
 1. Set `updateHashHistory` to an empty array.
+1. Set `didDocumentHistory` to an array containing the `initialDocument`.
 1. Set `contemporaryBlockheight` to 0.
 1. Set `contemporaryDIDDocument` to the `initialDocument`.
 1. Set `targetDocument` to the result of calling the [Traverse Blockchain History]
@@ -280,6 +280,8 @@ The algorithm takes the following inputs:
 - `targetTime`: A 64-bit UNIX timestamp that can be used to target specific historical states of a DID document. 
    Only ::Beacon Signals:: included in the Bitcoin blockchain before the `targetTime` are processed by the
    resolution algorithm.
+- `didDocumentHistory`: An ordered array of DID documents from version 1 up to the
+   current version.
 - `updateHashHistory`: An ordered array of SHA256 hashes of ::DID Update Payloads:: 
    that have been applied to the DID document by the resolution algorithm in order 
    to construct the `contemporaryDIDDocument`.
@@ -326,10 +328,11 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
             raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
+        1.  Push `contemporaryDIDDocument` onto 
         1.  Increment `currentVersionId`
-        1.  If `currentVersionId` equals `targetVersionId` return
-            `contemporaryDIDDocument`.
-        1.  Set `updateHash` to the result of passing `update` into the [JSON Canonicalization and Hash]
+        1.  Set `unsecuredUpdate` to a copy of the `update` object.
+        1.  Remove the `proof` property from the `unsecuredUpdate` object.
+        1.  Set `updateHash` to the result of passing `unsecuredUpdate` into the [JSON Canonicalization and Hash]
             algorithm
         1.  Push `updateHash` onto `updateHashHistory`.
         1.  Set `contemporaryHash` to result of passing `contemporaryDIDDocument` into the 
@@ -340,7 +343,9 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
 1. Set `targetDocument` to the result of calling the
    [Traverse Blockchain History] algorithm passing in `contemporaryDIDDocument`,
    `contemporaryBlockheight`, `currentVersionId`, `targetVersionId`,
-   `targetTime`, `updateHashHistory`, `signalsMetadata`, and `network`.
+   `targetTime`, `didDocumentHistory`, `updateHashHistory`, `signalsMetadata`, and `network`.
+1. If `targetVersionId` in not null, set `targetDocument` to the index at the `targetVersionId`
+   of the `didDocumentHistory` array.
 1. Return `targetDocument`.
 
 ##### Find Next Signals
@@ -441,7 +446,9 @@ The algorithm takes in an `update` and an array of hashes, `updateHashHistory`.
 It throws an error if the `update` is not a duplicate, otherwise it returns.
 TODO: does this algorithm need  `contemporaryHash` passed in?
 
-1. Let `updateHash` equal the result of passing `update` into the [JSON Canonicalization and Hash] algorithm.
+1. Let `unsecuredUpdate` be a copy of the `update` object.
+1. Remove the `proof` property from the `unsecuredUpdate` object. 
+1. Let `updateHash` equal the result of passing `unsecuredUpdate` into the [JSON Canonicalization and Hash] algorithm.
 1. Let `updateHashIndex` equal `update.targetVersionId - 2`.
 1. Let `historicalUpdateHash` equal `updateHashHistory[updateHashIndex]`.
 1. Assert `historicalUpdateHash` equals `updateHash`, if not MUST throw a

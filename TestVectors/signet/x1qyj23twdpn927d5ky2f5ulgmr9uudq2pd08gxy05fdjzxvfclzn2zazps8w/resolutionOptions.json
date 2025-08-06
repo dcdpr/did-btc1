@@ -1,0 +1,84 @@
+{
+  "sidecarData": {
+    "did": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w",
+    "initialDocument": {
+      "@context": [
+        "https://www.w3.org/TR/did-1.1",
+        "https://did-btc1/TBD/context"
+      ],
+      "id": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w",
+      "controller": [
+        "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w"
+      ],
+      "verificationMethod": [
+        {
+          "id": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#key-0",
+          "type": "Multikey",
+          "controller": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w",
+          "publicKeyMultibase": "zQ3shYVjp5v4rRtg62akCYSeKKDdpvvTLRJxuac8rJEW9n72b"
+        },
+        {
+          "id": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#key-1",
+          "type": "Multikey",
+          "controller": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w",
+          "publicKeyMultibase": "zQ3shhwxNrpzFpw2Xht1kdnupuUhgzVAbDiqjS9CZxtLg91jC"
+        }
+      ],
+      "authentication": [
+        "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#key-0"
+      ],
+      "capabilityInvocation": [
+        "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#key-1"
+      ],
+      "capabilityDelegation": [
+        "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#key-1"
+      ],
+      "service": [
+        {
+          "id": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#service-0",
+          "type": "SingletonBeacon",
+          "serviceEndpoint": "bitcoin:tb1qqaal7mrfmscef9deqaj26y9j33ttcvgsrde8g4"
+        }
+      ]
+    },
+    "signalsMetadata": {
+      "dbe7b8f9dda91fcce4b2e766d1905354840f915ab41371b0846d686113932c6d": {
+        "updatePayload": {
+          "@context": [
+            "https://w3id.org/security/v2",
+            "https://w3id.org/zcap/v1",
+            "https://w3id.org/json-ld-patch/v1"
+          ],
+          "patch": [
+            {
+              "op": "add",
+              "path": "/service/1",
+              "value": {
+                "id": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#service-1",
+                "type": "SingletonBeacon",
+                "serviceEndpoint": "bitcoin:tb1qxv6dl6v30yknzp25fg8m5mlvwxy9svyd73gqj8"
+              }
+            }
+          ],
+          "sourceHash": "9kRX86vwWSAkvPj9TdUxeY8WMt4JdKmvjWUjtKRv5uS7",
+          "targetHash": "59oWX4DGTX6GgnbD88ZLSMTRgqC2PU5axTAwtf8ycH3j",
+          "targetVersionId": 2,
+          "proof": {
+            "type": "DataIntegrityProof",
+            "cryptosuite": "bip340-jcs-2025",
+            "verificationMethod": "did:btc1:x1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w#key-1",
+            "proofPurpose": "capabilityInvocation",
+            "capability": "urn:zcap:root:did%3Abtc1%3Ax1qyj23twdpn927d5ky2f5ulgmr9uudq2pd08gxy05fdjzxvfclzn2zazps8w",
+            "capabilityAction": "Write",
+            "@context": [
+              "https://w3id.org/security/v2",
+              "https://w3id.org/zcap/v1",
+              "https://w3id.org/json-ld-patch/v1"
+            ],
+            "proofValue": "z4rBs1xqhfgrSmqH9PAwnHRyqr5sD4TfT5sfi7cHXd62sNrcHo9RKooAf1NCctEk2kFaeN2XZkmo3DSN6Funijmen"
+          }
+        }
+      }
+    }
+  }
+}
