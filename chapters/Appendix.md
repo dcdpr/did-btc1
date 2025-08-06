@@ -63,8 +63,7 @@ Note: Not sure if these algorithms should go here or in the appendix?
 
 #### Derive Root Capability from **did:btc1** Identifier
 
-This algorithm deterministically generates an Authorization Capabilities for Linked 
-Data (ZCAP-LD) root capability from a given **did:btc1** identifier. Each root 
+This algorithm deterministically generates an [Authorization Capabilities for Linked Data](https://w3c-ccg.github.io/zcap-spec/) (ZCAP-LD) root capability from a given **did:btc1** identifier. Each root 
 capability is unique to the identifier. This root capability is defined and understood 
 by the **did:btc1** specification as the root capability to authorize updates to the 
 specific **did:btc1** identifiers DID document.
@@ -106,8 +105,8 @@ This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
 1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
 1. Return `rootCapability`.
 
-Below is an example of a `didUpdatePayload`. An invoked ZCAP-LD capability
-containing a `patch` defining how the DID document for
+Below is an example of a `btc1Update`. An invoked [ZCAP-LD](https://w3c-ccg.github.io/zcap-spec/)
+capability containing a `patch` defining how the DID document for
 **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
 be mutated.
 
