@@ -5,7 +5,7 @@ DID documents, are identified by their SHA256 cryptographic hash calculated
 according to the [JSON Canonicalization and Hash] algorithm. As a resolver goes
 through the resolution process, it encounters one or more document hashes, which
 it uses to identify the files of interest. There are two ways in which these
-files may be shared.
+files may be shared: through a sidecar mechanism or using content-addressable storage.
 
 While it's possible for a single **did:btc1** identifier to mix the two file
 sharing mechanisms, it is not recommended.
