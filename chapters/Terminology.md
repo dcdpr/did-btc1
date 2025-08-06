@@ -8,24 +8,40 @@ BTC1 Beacons
 
 : ::BTC1 Beacon::
 
-
 : ::BTC1 Beacon::
 
-Beacon Address
-  
-: A Bitcoin address that has been included in the service of DID document as 
-  a service endpoint.
+Singleton Beacon
+
+: A Singleton Beacon enables a single entity to independently post a ::DID Update
+  Payload:: in a ::Beacon Signal::.
+
+Aggregate Beacon
+
+: An Aggregate Beacon enables multiple entities (possibly controlling multiple
+  DIDs and possibly posting multiple updates) to collectively announce a set of
+  ::BTC1 Updates:: in a ::Beacon Signal::.
+
+  There can only ever be one ::BTC1 Update:: per **did:btc1** in a ::Beacon
+  Signal:: from an Aggregate Beacon.
+
+Beacon Type
+
+: One of SingletonBeacon, CIDAggregateBeacon, or SMTAggregateBeacon.
+
+Beacon Types
+
+: ::Beacon Type::
 
 Beacon Signal
 
-: A Bitcoin transaction that spends from a ::Beacon Address:: 
-  and has been included within a Bitcoin block with a specified number of confirmations. 
-  Beacon Signals anchor in Bitcoin blocktime a small number of bytes, by including 
-  a transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <32_bytes>]` in the last transaction 
-  output of a Bitcoin transaction. The Beacon Signal bytes commit to one or more 
-  ::BTC1 Update Announcements::. The ::Beacon Type:: defines how these announcements are committed 
-  to by a Beacon Signal and the protocol by which these announcements can be validated 
-  against the Beacon Signal bytes.
+: Beacon Signals are Bitcoin transactions that spend from a ::BTC1 Beacon:: address and
+  include a transaction output of the format `[OP_RETURN, <32_bytes>]`. Beacon
+  Signals announce one or more ::BTC1 Updates:: and provide a means for these
+  payloads to be verified as part of the Beacon Signal.
+
+  The type of the ::BTC1 Beacon::  determines how these Beacon Signals SHOULD be
+  constructed and processed to validate a set of ::BTC1 Updates:: against the
+  32 bytes contained within the Beacon Signal.
 
 Beacon Signals
 
@@ -34,8 +50,8 @@ Beacon Signals
 
 Authorized Beacon Signal
 
-: A ::Beacon Signal:: from a ::BTC1 Beacon:: included 
-  in a ::Contemporary DID document:: from the perspective of a resolver executing a resolution request.
+: An Authorized Beacon Signal is a ::Beacon Signal:: from a ::BTC1 Beacon:: with a ::BTC1 Beacon::
+  address in a then-current DID document.
 
 BTC1 Update Announcement
 
@@ -45,10 +61,10 @@ BTC1 Update Announcement
 
 BTC1 Update Announcements
 
-: ::BTC1 Update Announcement::
+: ::BTC1 Update::
 
 
-BTC1 Update
+: ::BTC1 Update::
 
 : A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific **did:btc1** DID document. This capability invocation Data Integrity proof secures the ::Unsecured BTC1 Update:: document.
 
@@ -126,6 +142,9 @@ Beacon Participant
 : A member of a ::Beacon Cohort::, typically a DID controller, that controls cryptographic keys required 
 to partially authorize spends from a ::Beacon Address::.
 
+: A JSON object that maps **did:btc1** identifiers to ::Content Identifiers:: (CIDs)
+  that identify ::BTC1 Updates:: for the identified DID. DID Update Bundles
+  are announced by CIDAggregate Beacons.
 
 Merkle Tree
 
@@ -145,7 +164,7 @@ Sparse Merkle Tree
   This data structure enables proofs of both inclusion and non-inclusion of data
   at a given index. The instantiation in this specification has 2^256 leaves
   that are indexed by the SHA256 hash of a **did:btc1** identifier. The data
-  attested to at the leaves of the tree is the ::BTC1 Update Announcement:: for the
+  attested to at the leaves of the tree is the ::BTC1 Update:: for that
   **did:btc1** identifier that indexed to the leaf.
 
 SMT
@@ -154,7 +173,7 @@ SMT
 
 Invocation
 
-: See https://w3c-ccg.github.io/zcap-spec/#terminology
+: See [Authorization Capabilities for Linked Data v0.3](https://w3c-ccg.github.io/zcap-spec/#terminology)
 
 Schnorr Signature
 
@@ -280,14 +299,8 @@ Target Time
 Contemporary Blockheight
 
 : The blockheight of consideration when walking the provenance of a series of DID
-  updates. A DID document's contemporary time is the blockheight of the ::Beacon Signal::
+  updates. A DID document's contemporary time is the Signal Time of the ::Beacon Signal::
   that announced the last ::BTC1 Update:: applied to the DID document.
-
-Contemporary DID document
-
-: A DID document that is current at a specific ::Contemporary Blockheight::. DID Resolvers
-track the Contemporary DID document of a **did:btc1** identifier through Bitcoin block time
-during the process of resolution.
 
 Intermediate DID Document
 

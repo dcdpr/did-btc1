@@ -31,13 +31,13 @@ and externally resolvable DIDs.
 
 #### Beacon Coordinators do not Need to View or Validate DID Documents or Document Updates
 
-::Beacon:: coordinators in **did:btc1** are entities that coordinate ::Aggregate
+::BTC1 Beacon:: coordinators in **did:btc1** are entities that coordinate ::Aggregate
 Beacons:: and the corresponding ::Beacon Signals:: that announce and anchor an aggregated
-set of ::DID Update Payloads::. However, in **did:btc1,** Aggregators are able to
+set of ::BTC1 Updates::. However, in **did:btc1,** Aggregators are able to
 coordinate ::Beacon Signals:: without needing to view or validate DID documents or
 the updates. Instead, they are provided with a hash or ::Content Identifier:: (CID) 
 of the update for a specific DID which they include in the ::Beacon Signal:: 
-according to the type of the ::Beacon::.
+according to the type of the ::BTC1 Beacon::.
 
 #### Consensus Splits in Implementation can Destroy Non-Repudiation
 
@@ -61,7 +61,7 @@ Update payloads stored in ::Content Addressable Storage:: (CAS) such as IPFS SHO
 be considered public. Anyone MAY retrieve this information (assuming they have
 the ::CID::) and use it to track the DID over time. IPFS node operators would have
 access to all content stored on IPFS and could choose to index certain data like
-::DID Update Payloads::, including the updates posted by that DID's ::Beacon::. This MAY
+::BTC1 Updates::, including the updates posted by that DID's ::BTC1 Beacon::. This MAY
 advertise information about the DID that the controller wishes to remain private.
 
 Those parties most concerned about privacy SHOULD maintain their ::DID Update
@@ -71,21 +71,21 @@ necessary DID update data.
 
 #### Beacon Coordinators Know the DIDs Being Aggregated by a Cohort
 
-Within ::Sparse Merkle Tree:: (SMT) ::Beacons::, the DID is used as a path to a leaf
+Within ::Sparse Merkle Tree:: (SMT) ::BTC1 Beacons::, the DID is used as a path to a leaf
 node in the ::SMT::. The coordinator MUST know these paths for them to be able to
 construct the tree and generate the correct proof paths. Within ::Content Identifier::
-(CID)-based ::Beacons::, the coordinator MUST construct an aggregated bundle that
+(CID)-based ::BTC1 Beacons::, the coordinator MUST construct an aggregated bundle that
 includes all DIDs aggregated as a key to the ::CID:: for that ::DID's Update Payload::.
 This means that for both types of ::Aggregate Beacons::, the coordinator necessarily
 MUST know all DIDs being aggregated by a cohort.
 
 #### CIDAggregate Cohort Members Know All DIDs that are Updated
 
-Cohort members participating in a CIDAggregate ::Beacon:: learn all DIDs that are
+Cohort members participating in a CIDAggregate ::BTC1 Beacon:: learn all DIDs that are
 updated in each ::Beacon Signal::. This is because they SHOULD verify the contents
 of the ::Beacon Signal:: before authorizing it and a CIDAggregate ::Beacon Signal::
 contains a ::CID:: to an Update Bundle. An Update Bundle is a JSON object mapping
-**did:btc1** identifiers to ::CID:: values for individual ::DID Update Payloads::. Each
+**did:btc1** identifiers to ::CID:: values for individual ::BTC1 Updates::. Each
 DID controller SHOULD independently retrieve and verify the contents of the
 Update Bundle to ensure it contains the expected update for their DID.
 

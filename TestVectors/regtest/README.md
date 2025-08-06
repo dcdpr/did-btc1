@@ -34,7 +34,7 @@ Alternatively, the zip file can be dragged into the [lighting polar](https://lig
 
 ## Running the test
 
-Using a did:btc1 Resolver, you should be able to resolve the test vectors under the `regtest` folder. At the moment, each test vectors is expected to succeed. 
+Using a **did:btc1** Resolver, you should be able to resolve the test vectors under the `regtest` folder. At the moment, each test vectors is expected to succeed. 
 
 You should configure your resolver to query the electrs API at `http://localhost:3000.
 
