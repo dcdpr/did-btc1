@@ -88,4 +88,4 @@ The stringified version of the CIDv1 is accomplished using
 is “ipfs://&lt;stringified CIDv1&gt;”.
 
 A resolver retrieves a file associated with a SHA256 hash by constructing the
-IPFS CIDv1 per the above algorithm and pulling the file from IPFS.
+IPFS CIDv1 per the above algorithm and requesting the file from an IPFS node.
