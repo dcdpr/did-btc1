@@ -25,8 +25,7 @@ resolution fails.
 
 ### Content-Addressable Storage (CAS)
 
-Content-Addressable Storage (CAS) is a mechanism by which a file is stored
-based on its content, not its name or location. The content address is
+Content-Addressable Storage (CAS) is a mechanism by which a file stored is addressed by its content, not its name or location. The content address is
 determined by a cryptographic hash of the file. The hash is then passed into a
 retrieval function specific to the type of CAS to retrieve the file.
 
