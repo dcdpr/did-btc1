@@ -27,11 +27,14 @@ Kate Sills    <katelynsills@gmail.com>
 ------------- ------------------------ ---------------------------------------------------
 :::
 
-### Publication Date: 20th September 2024 {.unnumbered .unlisted}
+### Publication Date: {.unnumbered .unlisted}
+
+20th September 2024
+
+### Licence Statement: {.unnumbered .unlisted}
+TODO
 
 ### Copyright &copy; 2024 Digital Contract Design {.unnumbered .unlisted}
-
-### Licence Statement: TODO {.unnumbered .unlisted}
 
 ### Abstract {.unnumbered .unlisted}
 
