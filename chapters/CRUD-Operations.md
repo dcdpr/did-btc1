@@ -16,9 +16,14 @@ interact with the Bitcoin network to create their DID.
 For deterministic creation, the **did:btc1** identifier encodes a secp256k1 public key.
 The key is then used to deterministically generate the initial DID document.
 
-The algorithm takes in `pubKeyBytes`, a compressed SEC encoded secp256k1
-public key and optional `version` and `network` values. The algorithm returns a
-**did:btc1** identifier and corresponding initial DID document.
+The algorithm takes the following inputs:
+
+* `pubKeyBytes`, a compressed SEC encoded secp256k1 public key
+* `version`: the identifier version, optional, defaults to 1.
+* `network`: the bitcoin network where the DID and DID Document can be resolved,
+   optional, defaults to `bitcoin`.
+
+The algorithm returns a **did:btc1** identifier and corresponding initial DID document.
 
 1. Set `idType` to "key".
 1. Set `version` to `1`.
@@ -37,13 +42,17 @@ It is possible to create a **did:btc1** from some initiating arbitrary DID docum
 This allows for more complex initial DID documents, including the ability to include
 Service Endpoints and ::Beacons:: that support aggregation.
 
-The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
-and an OPTIONAL `network`. The `intermediateDocument` MUST be a valid DID document
-except all places where the DID document requires the use of the identifier
-(e.g., the id field), this identifier MUST be the placeholder value
-`did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`.
-The DID document SHOULD include at least one verificationMethod and service of
-the type SingletonBeacon.
+The algorithm takes the following inputs:
+* `intermediateDocument`: any arbitrary, valid DID Document with all `identifier`
+   fields (e.g., the id field) replaced with the placeholder value
+   `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`. It
+   should include at least one verificationMethod and service of the type
+   [SingletonBeacon].
+* `version`: the identifier version, optional, defaults to 1.
+* `network`: the bitcoin network where the DID and DID Document can be resolved,
+   optional, defaults to `bitcoin`.
+
+The algorithm returns the newly created `did` and `initialDocument`.
 
 1. Set `idType` to "external".
 1. Set `version` to `1`.
@@ -86,10 +95,18 @@ To do so it executes the following algorithm:
 #### Resolve Initial Document
 
 This algorithm specifies how to resolve an initial DID document and validate
-it against the `identifier` for a specific **did:btc1**. The algorithm takes as
-inputs a **did:btc1** `identifier`, `identifierComponents` object and a
-`resolutionsOptions` object. This algorithm returns a valid `initialDocument`
-for that identifier.
+it against the `identifier` for a specific **did:btc1**.
+
+The algorithm takes as inputs:
+* `identifier`: A valid **did:btc1** identifier
+* `identifierComponents`: An object containing the following properties
+  * `idType`: the type of identifier (KEY or EXTERNAL)
+  * `version`: the identifier version
+  * `network`: the identifier bitcoin network
+  * `genesisBytes`: the originating public key bytes
+* `resolutionsOptions`: 
+
+This algorithm returns a valid `initialDocument` for that identifier.
 
 1. If `identifierComponents.idType` value is "key", then set the `initialDocument`
    to the result of running the algorithm in
