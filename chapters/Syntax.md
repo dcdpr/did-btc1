@@ -58,7 +58,7 @@ ABNF is defined by [IETF RFC5234](https://datatracker.ietf.org/doc/html/rfc5234)
 ### Version Interpretation
 
 The purpose of the `version` is to identify incompatible changes made in the
-specification (e.g., a change to the way ::Beacon signals:: are constructed and
+specification (e.g., a change to the way ::Beacon Signals:: are constructed and
 interpreted). The updated specification may also change the way that the
 **did:btc1** identifier is encoded.
 
@@ -132,12 +132,12 @@ Encode the **did:btc1** identifier as follows:
 1. Append `(version - 1) mod 15` to `nibbles`.
 1. If `network` is a string, append the numeric value from the following map to
    `nibbles`:
-    1. "bitcoin" - `0`
-    1. "signet" - `1`
-    1. "regtest" - `2`
-    1. "testnet3" - `3`
-    1. "testnet4" - `4`
-    1. "mutinynet" - `5`
+   1. "bitcoin" - `0`
+   1. "signet" - `1`
+   1. "regtest" - `2`
+   1. "testnet3" - `3`
+   1. "testnet4" - `4`
+   1. "mutinynet" - `5`
 1. If `network` is a number, append `network + 11` to `nibbles`.
 1. If the number of entries in `nibbles` is odd, append `0`.
 1. Create a `dataBytes` byte array from `nibbles`, where `index` is from `0` to
