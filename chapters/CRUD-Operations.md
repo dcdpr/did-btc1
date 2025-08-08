@@ -505,10 +505,10 @@ DID document before returning it. This algorithm takes inputs
 
 ### Update
 
-An update to a **did:btc1** document is an invoked capability using the ZCAP-LD
-data format, signed by a verificationMethod that has the authority to make the
-update as specified in the previous DID document. Capability invocations for
-updates MUST be authorized using Data Integrity following the bip340-jcs-2025
+An update to a **did:btc1** document is an invoked capability using the Authorization 
+Capabilities for Linked Data (ZCAP-LD) data format, signed by a verificationMethod that 
+has the authority to make the update as specified in the previous DID document. Capability 
+invocations for updates MUST be authorized using Data Integrity following the bip340-jcs-2025
 cryptosuite with a proofPurpose of `capabilityInvocation`.
 
 This algorithm takes as inputs a `btc1Identifier`, `sourceDocument`,
@@ -573,8 +573,8 @@ it constructs and returns an unsigned ::DID Update Payload::.
 This algorithm takes in a `btc1Identifier`, an unsigned `didUpdatePayload`, and a
 `verificationMethod`. The algorithm retrieves the `privateKeyBytes` for the
 `verificationMethod` and adds a capability invocation in the form of a Data
-Integrity proof following the Authorization Capabilities (ZCAP-LD) and
-VC Data Integrity specifications.
+Integrity proof following the Authorization Capabilities for Linked Data (ZCAP-LD) and
+Verifiable Credentials (VC) Data Integrity specifications.
 
 The algorithm returns the invoked ::DID Update Payload::.
 
