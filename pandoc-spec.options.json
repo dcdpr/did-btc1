@@ -6,6 +6,7 @@
   "inputFiles": [
     "Index.md",
     "Introduction-and-Motivation.md",
+    "Conformance.md",
     "Terminology.md",
     "Syntax.md",
     "CRUD-Operations.md",
