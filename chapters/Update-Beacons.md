@@ -1,16 +1,17 @@
 ## Update Beacons
 
-::Beacons:: are the mechanism by which a DID controller announces an update to their
-DID document by broadcasting an attestation to this update onto the public Bitcoin
-network. ::Beacons:: are identified by a Bitcoin address and emit ::Beacon Signals:: by
-broadcasting a valid Bitcoin transaction that spends from this ::Beacon:: address.
-These transactions include attestations to a set of `didUpdatePayload`s, either
-in the form of ::Content Identifiers:: (CIDs) or ::Sparse Merkle Tree:: (SMT)
-roots. ::Beacons:: are included as a service in DID documents, with the Service Endpoint
-identifying a Bitcoin address to watch for ::Beacon Signals::. All ::Beacon Signals::
-broadcast from this ::Beacon:: MUST be processed as part of resolution
-(see [Read]). The type of the ::Beacon:: service in the DID document
-defines how ::Beacon Signals:: SHOULD be processed.
+::Beacons:: are the mechanism by which a Decentralized Identifier (DID) controller
+announces an update to their DID document by broadcasting an attestation to this update 
+onto the public Bitcoin network. ::Beacons:: are identified by a Bitcoin 
+address and emit ::Beacon Signals:: by broadcasting a valid Bitcoin transaction 
+that spends from this ::Beacon:: address. These transactions include attestations 
+to a set of `didUpdatePayload`s, either in the form of ::Content Identifiers:: (CIDs) 
+or ::Sparse Merkle Tree:: (SMT) roots. ::Beacons:: are included as a service 
+in DID documents, with the service endpoint identifying a Bitcoin address
+to watch for ::Beacon Signals::. All ::Beacon Signals:: broadcast from 
+this ::Beacon:: MUST be processed as part of resolution (see [Read]). The 
+type of the ::Beacon:: service in the DID document defines how ::Beacon Signals:: 
+SHOULD be processed.
 
 **did:btc1** supports different ::Beacon Types::, with each type defining a set of
 algorithms for:
@@ -32,7 +33,7 @@ time. Resolution of a DID MUST process signals from all ::Beacons:: identified i
 latest DID document and apply them in the order determined by the version specified
 by the `didUpdatePayload`.
 
-All resolvers of **did:btc1** DIDs MUST support the core Beacon Types defined in
+All resolvers of **did:btc1** DIDs MUST support the core ::Beacon Types:: defined in
 this specification.
 
 ### Singleton Beacon
@@ -41,7 +42,7 @@ this specification.
 
 A ::Singleton Beacon:: is a ::Beacon:: that can be used to publish a single ::DID Update
 Payload:: targeting a single DID document. The `serviceEndpoint` for this ::Beacon Type::
-is a Bitcoin address represented as a URI following the
+is a Bitcoin address represented as a Uniform Resource Identifier (URI) following the
 [BIP21 scheme](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki).
 It is RECOMMENDED that this Bitcoin address be under the sole control of the
 DID controller. 
@@ -72,8 +73,8 @@ This algorithm takes in a Bitcoin `address` and a `serviceId` and returns a ::Si
 
 This algorithm is called by the [Announce DID Update] algorithm as part of the [Update] 
 operation, if the ::Beacon:: being used is of the type SingletonBeacon. It takes as 
-input a Beacon `service` and a secured `didUpdatePayload`. The algorithm constructs a
-Bitcoin transaction that spends from the Beacon address identified in the `service` 
+input a ::Beacon:: `service` and a secured `didUpdatePayload`. The algorithm constructs a
+Bitcoin transaction that spends from the ::Beacon:: address identified in the `service` 
 and contains a transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`,
 where hashBytes is the SHA256 hash of the canonical `didUpdatePayload`. The Bitcoin 
 transaction is then signed and broadcast to the Bitcoin network, thereby publicly
@@ -126,7 +127,7 @@ an error.
 1. Else:
    1. Set `didUpdatePayload` to the result of passing `hashBytes` into the 
       [Fetch Content from Addressable Storage] algorithm.
-   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. MAY identify Beacon Signal
+   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. MAY identify ::Beacon Signal::
       to resolver and request additional ::Sidecar data:: be provided.
 1. Return `didUpdatePayload`.
 
