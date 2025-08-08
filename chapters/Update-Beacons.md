@@ -346,10 +346,10 @@ in a signal, then they MUST provide a proof of non-inclusion for that signal.
 
 #### Establish Beacon
 
-This algorithm is essentially the same as for the CIDAggregate Beacon in
+This algorithm is essentially the same as for the CIDAggregate ::Beacon:: in
 [Establish CIDAggregate Beacon]. A cohort of DID controllers
 need to coordinate to produce a Bitcoin address that will act as the ::Beacon::.
-It is RECOMMENDED this is an n-of-n P2TR address, with n being the set of DID
+It is RECOMMENDED this is an n-of-n Pay-to-Taproot (P2TR) address, with n being the set of DID
 controllers in the cohort. Once the address has been created, and all parties in
 the cohort acknowledge their intention to participate in that ::Beacon::, each DID
 controller SHOULD add the ::Beacon:: as a service to their DID document.
@@ -399,12 +399,12 @@ sequenceDiagram
 
 #### Process SMTAggregate Beacon Signal
 
-A ::Beacon Signal:: from a SMTAggregate Beacon is a Bitcoin transaction with the 
+A ::Beacon Signal:: from a SMTAggregate ::Beacon:: is a Bitcoin transaction with the 
 first transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <32bytes>]`. The 32 bytes
 of data contained within this transaction output represent the root of a ::Sparse Merkle Tree::
-(SMT). This SMT aggregates a set of hashes of ::DID Update payloads::. In order to process 
+(SMT). This ::SMT:: aggregates a set of hashes of ::DID Update Payloads::. In order to process 
 these ::Beacon Signals::, the resolver MUST have been passed ::Sidecar data:: for this signal
-containing either the ::DID Update payload:: object and a ::SMT:: proof that the hash of
+containing either the ::DID Update Payload:: object and a ::SMT:: proof that the hash of
 this object is in the ::SMT:: at the leaf indexed by the **did:btc1** identifier being resolved.
 Or the ::Sidecar data:: MUST contain a proof that the leaf indexed by the **did:btc1** identifier 
 is empty, thereby proving that the ::SMT:: does not contain an update for their identifier.
@@ -412,7 +412,7 @@ is empty, thereby proving that the ::SMT:: does not contain an update for their 
 This algorithm is called by the [Process Beacon Signals] algorithm as part of the
 [Read] operation. It takes as inputs a **did:btc1** identifier, `btc1Identifier`, a 
 ::Beacon Signal::, `tx`, and an optional object, `signalSidecarData`, containing any 
-sidecar data provided to the resolver for the ::Beacon Signal:: identified by the 
+::Sidecar Data:: provided to the resolver for the ::Beacon Signal:: identified by the 
 Bitcoin transaction identifier.
 
 The algorithm returns the ::DID Update payload:: announced by the ::Beacon Signal::
@@ -420,7 +420,7 @@ for the ::did:btc1:: identifier being resolved or throws an error.
 
 
 1. Initialize a `txOut` variable to the last transaction output of the `tx`.
-1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. MAY identify the Beacon Signal
+1. If no `signalSidecarData`, MUST raise an `incompleteSidecarData` error. MAY identify the ::Beacon Signal::
    to resolver and request additional ::Sidecar data:: be provided. 
 1. Set `smtProof` to `signalSidecarData.smtProof`.
 1. If no `smtProof`, MUST raise a `latePublishing` error.
@@ -431,4 +431,4 @@ for the ::did:btc1:: identifier being resolved or throws an error.
 1. Set `identifierBytes` to the result of converting `btc1Identifier` to bytes.
 1. Verify the ::SMT:: proof against the `smtRoot` with the key as `identifierBytes` and the value `updateHashBytes. 
    // TODO: Need to define algorithm(s) for SMT properly.
-1. Return `didUpdatePayload`
+1. Return `didUpdatePayload`.
