@@ -2,8 +2,8 @@
 
 Beacon
 
-: A Beacon is the mechanism by which updates to DID documents are announced and
-  discovered.
+: A Beacon is the mechanism by which updates to Decentralized Identifier (DID)
+  documents are announced and discovered.
 
   Beacons are identified by a Bitcoin address which is included as a
   service endpoint in a DID document along with a specific ::Beacon Type::. By spending
@@ -65,7 +65,8 @@ DID Update Payload
 
 : A capability invocation secured using Data Integrity that invokes the root 
   capability to update a specific **did:btc1**. The signed payload includes a
-  JSON Patch object defining a set of mutations to the DID document being updated.
+  JavaScript Object Notation (JSON) Patch object defining a set of mutations to 
+  the DID document being updated.
 
 DID Update Payloads
 
@@ -112,9 +113,9 @@ Invocation
 
 Schnorr Signature
 
-: An alternative to ECDSA signatures with some major advantages, such as being able
-  to combine digital signatures from multiple parties to form a single digital
-  signature for the composite public key.
+: An alternative to Elliptic Curve Digital Signature Algorithm (ECDSA) signatures 
+  with some major advantages, such as being able  to combine digital signatures 
+  from multiple parties to form a single digital signature for the composite public key.
 
   Bitcoin Schnorr signatures are still over the secp256k1 curve, so the same
   keypairs can be used to produce both Schnorr signatures and ECDSA signatures.
@@ -167,7 +168,7 @@ CIDs
 Content Addressable Storage
 
 : Content Addressable Storage (CAS) is a data storage system where content is
-  addressable using ::Content Identifiers:: (CIDs). The Interplanetary File System
+  addressable using ::Content Identifiers:: (CIDs). The InterPlanetary File System
   (IPFS) is an example of CAS.
 
 CAS
@@ -176,10 +177,10 @@ CAS
 
 Non-Repudiation
 
-: Non-Repudiation is a feature of DID Methods that can clearly state that all data
+: Non-Repudiation is a feature of DID methods that can clearly state that all data
   is available to present one canonical history for a DID.
 
-  If some data is needed but not available, the DID Method MUST NOT allow DID
+  If some data is needed but not available, the DID method MUST NOT allow DID
   resolution to complete. Any changes to the history, such as may occur if a website
   edits a file, MUST be detected and disallowed. The ::Late Publishing:: problem
   breaks Non-Repudiation.
@@ -209,7 +210,7 @@ Sidecar
 
 : To explain the metaphor, a sidecar on a motorcycle brings along a second passenger
   in a transformed vehicle, the same way the DID controller MUST bring along the
-  DID Document history to transform the situation into one that is verifiable.
+  DID document history to transform the situation into one that is verifiable.
 
 Sidecar Data
 
@@ -222,7 +223,8 @@ Signal Blockheight
 
 Resolution Time
 
-: A UTC timestamp of when the client makes a resolution request of the controller.
+: A Coordinated Universal Time (UTC) timestamp of when the client makes a resolution 
+  request of the controller.
 
 Target Time
 
