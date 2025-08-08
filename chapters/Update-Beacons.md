@@ -135,15 +135,15 @@ an error.
 A ::Beacon:: of the type CIDAggregateBeacon is a ::Beacon:: that publishes Bitcoin
 transactions containing a ::Content Identifier:: (CID) announcing an Aggregated
 ::DID Update Bundle::. An Aggregated ::DID Update Bundle:: is a JSON object that maps
-**did:btc1** identifiers to CID values for the individual ::DID Update Payloads::.
+**did:btc1** identifiers to ::CID:: values for the individual ::DID Update Payloads::.
 The Aggregated ::DID Update Bundle:: ::CID:: (bundleCID) SHOULD be resolvable against a
-::Content Addressable Storage:: (CAS) system such as IPFS, while the ::CID:: for the ::DID
-Update Payload:: (payloadCID) MAY be resolvable against a ::CAS:: or provided through
-a ::Sidecar:: mechanism. It is RECOMMENDED that this type of ::Beacon:: is only included
-in a DID document if the DID controller is REQUIRED to participate in authorizing
-Bitcoin transactions from this ::Beacon::. In other words, this ::Beacon:: SHOULD identify
-an n-of-n P2TR Bitcoin address where n is the number of unique DID controllers
-submitting updates through the ::Beacon::.
+::Content Addressable Storage:: (CAS) system such as the InterPlanetary File System (IPFS), 
+while the ::CID:: for the ::DID Update Payload:: (payloadCID) MAY be resolvable against 
+a ::CAS:: or provided through a ::Sidecar:: mechanism. It is RECOMMENDED that this type 
+of ::Beacon:: is only included in a DID document if the DID controller is REQUIRED 
+to participate in authorizing Bitcoin transactions from this ::Beacon::. In other words, 
+this ::Beacon:: SHOULD identify an n-of-n Pay-to-Taproot (P2TR) Bitcoin address where n 
+is the number of unique DID controllers submitting updates through the ::Beacon::.
 
 ```mermaid
 flowchart LR
@@ -165,7 +165,7 @@ produce valid signatures.
 
 To establish a ::Beacon:: there are two roles. One is the cohort participant, they
 want to join a ::Beacon:: cohort and submit a request to do so with a key and proof
-of control over that key. The other is the Beacon coordinator, they advertise
+of control over that key. The other is the ::Beacon:: coordinator, they advertise
 and curate ::Beacon:: cohorts by combining ::Beacon:: participants into cohorts, verifying
 proofs of control, and producing ::Beacon:: addresses.
 
@@ -199,8 +199,8 @@ included in the cohort, then calculates the P2TR ::Beacon:: address for themselv
 and verifies it matches the address provided. They MAY wait until the ::Beacon::
 address is funded before adding the ::Beacon:: as a service in the DID document.
 The following is an example of the ::Beacon:: service endpoint the DID controller
-adds into their DID document, the ::Beacon:: address is converted into a URI following
-BIP21:
+adds into their DID document, the ::Beacon:: address is converted into a Uniform 
+Resource Identifier (URI) following BIP21:
 
 ```{.json include="json/Update-Beacons/CIDAggregator-add-beacon-service.json"}
 ```
@@ -261,7 +261,7 @@ DID document.
 ##### Aggregate DID Updates
 
 A set of DID updates are aggregated together to create an update bundle. This
-bundle is published to the ::CAS:: (e.g., IPFS) and the CID for the bundle is included
+bundle is published to the ::CAS:: (e.g., IPFS) and the ::CID:: for the bundle is included
 in a Partially Signed Bitcoin Transaction (PSBT). This PSBT is the broadcast to all
 ::Beacon:: cohort participants for authorization.
 
@@ -285,9 +285,9 @@ be broadcast to the network.
 A ::Beacon Signal:: from a CIDAggregate Beacon is a Bitcoin transaction that contains
 the `hashBytes` of a ::DID Update Bundle:: in its first transaction output.
 The corresponding ::DID Update Bundle:: MUST either be provided through ::Sidecar Data::
-or by converting `hashBytes` into a IPFS v1 ::Content Identifier:: and attempting to 
-retrieve it from ::Content Addressable Storage::. The ::DID Update Bundle:: maps from 
-**did:btc1** identifiers to hashes of ::DID Update payloads:: applicable for that identifier.
+or by converting `hashBytes` into a IPFS v1 ::Content Identifier:: (CID) and attempting to 
+retrieve it from ::Content Addressable Storage:: (CAS). The ::DID Update Bundle:: maps from 
+**did:btc1** identifiers to hashes of ::DID Update Payloads:: applicable for that identifier.
 Again this algorithm attempts to retrieve and validate the ::DID Update Payload:: identified 
 for the identifier being resolved. If successful, the ::DID Update Payload:: is returned.
 
@@ -309,26 +309,26 @@ for the ::did:btc1:: identifier being resolved or throws an error.
    1. Set `bundleHashBytes` to the result of passing `didUpdateBundle` to the 
       [JSON Canonicalization and Hash] algorithm.
    1. If `bundleHashBytes` does not equal `hashBytes`, MUST raise an `invalidSidecarData` error. 
-      MAY identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
+      MAY identify ::Beacon Signal:: to resolver and request additional ::Sidecar data:: be provided.
    1. Set `signalUpdateHashBytes` to `didUpdateBundle.get(btc1Identifier)`
-   1. If `signalUpdateHashBytes` is null, MUST raise an `incompleteSidecarData` error. MAY identify Beacon Signal
+   1. If `signalUpdateHashBytes` is null, MUST raise an `incompleteSidecarData` error. MAY identify ::Beacon Signal::
       to resolver and request additional ::Sidecar data:: be provided.
    1. Set `didUpdatePayload` to `signalSidecarData.updatePayload`.
    1. Set `updateHashBytes` to the result of passing `didUpdatePayload` to the 
       [JSON Canonicalization and Hash] algorithm.
    1. If `signalUpdateHashBytes` does not equal `updateHashBytes`,  MUST raise an `invalidSidecarData` error. 
-      MAY identify Beacon Signal to resolver and request additional ::Sidecar data:: be provided.
+      MAY identify Beacon Signal to resolver and request additional ::Sidecar Data:: be provided.
 1. Else:
    1. Set `didUpdateBundle` to the result of calling the [Fetch From Content Addressable Storage] algorithm passing 
       in `hashBytes`.
-   1. If `didUpdateBundle` is null, MUST raise a `latePublishingError`. MAY identify Beacon Signal
+   1. If `didUpdateBundle` is null, MUST raise a `latePublishingError`. MAY identify ::Beacon Signal::
       to resolver and request additional ::Sidecar data:: be provided.
    1. Set `signalUpdateHashBytes` to the `didUpdateBundle.get(btc1Identifier)` 
    // TODO: Will need to decode this. Bundle is not going to store raw bytes
    1. Set `didUpdatePayload` to the result of calling the [Fetch From Content Addressable Storage] algorithm 
       passing in `signalUpdateHashBytes`.
-   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. MAY identify Beacon Signal
-      to resolver and request additional ::Sidecar data:: be provided.
+   1. If `didUpdatePayload` is null, MUST raise a `latePublishingError`. MAY identify ::Beacon Signal::
+      to resolver and request additional ::Sidecar Data:: be provided.
 1. Return `didUpdatePayload` 
 
 
