@@ -5,20 +5,21 @@ for the **did:btc1** method.
 
 ### Create
 
-A **did:btc1** identifier and associated DID document can either be created
-deterministically from a cryptographic seed, or it can be created from an arbitrary
-genesis intermediate DID document representation. In both cases, DID creation can
-be undertaken in an offline manner, i.e., the DID controller does not need to
-interact with the Bitcoin network to create their DID.
+A **did:btc1** identifier and associated Decentralized Identifier (DID) document can 
+either be created deterministically from a cryptographic seed, or it can be created 
+from an arbitrary genesis intermediate DID document representation. In both cases, 
+DID creation can be undertaken in an offline manner, i.e., the DID controller 
+does not need to interact with the Bitcoin network to create their DID.
 
 #### Deterministic Key-based Creation
 
 For deterministic creation, the **did:btc1** identifier encodes a secp256k1 public key.
 The key is then used to deterministically generate the initial DID document.
 
-The algorithm takes in `pubKeyBytes`, a compressed SEC encoded secp256k1
-public key and optional `version` and `network` values. The algorithm returns a
-**did:btc1** identifier and corresponding initial DID document.
+The algorithm takes in `pubKeyBytes`, a compressed Standards for Efficent 
+Cryptography (SEC) encoded secp256k1 public key and optional `version` and 
+`network` values. The algorithm returns a **did:btc1** identifier and 
+corresponding initial DID document.
 
 1. Set `idType` to "key".
 1. Set `version` to `1`.
@@ -35,7 +36,7 @@ public key and optional `version` and `network` values. The algorithm returns a
 
 It is possible to create a **did:btc1** from some initiating arbitrary DID document.
 This allows for more complex initial DID documents, including the ability to include
-Service Endpoints and ::Beacons:: that support aggregation.
+service endpoints and ::Beacons:: that support aggregation.
 
 The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
 and an OPTIONAL `network`. The `intermediateDocument` MUST be a valid DID document
@@ -58,8 +59,8 @@ the type SingletonBeacon.
 1. Replace all `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
    values in the `initialDocument` with the `did`.
 1. Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
-   system like IPFS. If doing so, implementations MUST use ::CIDs:: generated following
-   the IPFS v1 algorithm.
+   system like the InterPlanetary File System (IPFS). If doing so, implementations
+   MUST use ::Content Identifiers:: (::CIDs::) generated following the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
 
 ### Read
