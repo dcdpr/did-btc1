@@ -328,7 +328,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
             raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
-        1.  Push `contemporaryDIDDocument` onto 
+        1.  Push `contemporaryDIDDocument` onto `didDocumentHistory`.
         1.  Increment `currentVersionId`
         1.  Set `unsecuredUpdate` to a copy of the `update` object.
         1.  Remove the `proof` property from the `unsecuredUpdate` object.
