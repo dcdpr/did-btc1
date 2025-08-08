@@ -251,8 +251,8 @@ The algorithm returns `targetDocument`, a DID Core conformant DID document or th
 1. Set `contemporaryDIDDocument` to the `initialDocument`.
 1. Set `targetDocument` to the result of calling the [Traverse Blockchain History]
    algorithm passing in `contemporaryDIDDocument`, `contemporaryBlockheight`,
-   `currentVersionId`, `targetVersionId`, `targetTime`, `updateHashHistory`, 
-   `signalsMetadata`, and `network`.
+   `currentVersionId`, `targetVersionId`, `targetTime`, `didDocumentHistory`,
+   `updateHashHistory`, `signalsMetadata`, and `network`.
 1. Return `targetDocument`.
 
 ##### Traverse Blockchain History
