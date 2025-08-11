@@ -51,7 +51,7 @@ affects some other DID methods.
 
 #### did:btcr
 
-BTCR is the original Bitcoin DID method.  It kept its focus on censorship
+The Bitcoin Reference DID method (BTCR) is the original Bitcoin based DID method.  It kept its focus on censorship
 resistance. It has the following limitations:
 
 * It is prohibitively expensive to maintain many DIDs, because both creation and
