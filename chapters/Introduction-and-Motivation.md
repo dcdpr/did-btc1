@@ -102,7 +102,7 @@ provide. In summary its main limitations are:
 
 #### did:btc1
 
-### Features
+##### Features
 
 * There is no proprietary blockchain, only the Bitcoin blockchain.
 * ::Offline Creation:: allows creating DIDs without any on-chain transactions.
@@ -119,7 +119,7 @@ provide. In summary its main limitations are:
 * Any kind of key can be included in a DID Document, using an update.
 * Simple deterministic DIDs can be recovered from typical Bitcoin seed words.
 
-### Limitations
+##### Limitations
 
 * Resolvers require read-only view of all blocks arriving at the Bitcoin blockchain.
 * DID controllers are responsible for providing the data referenced in their
@@ -131,7 +131,7 @@ provide. In summary its main limitations are:
   Bitcoin scripts that allow every DID controller a veto, although given current
   ::UTXO::-sharing technology, this impedes availability.
 
-### Future Directions
+##### Future Directions
 
 * ZCAPs delegation of the right to update only part of a DID Document;
 * More scalable Aggregate Beacons will be possible with a "transaction introspection"
