@@ -85,7 +85,7 @@ possible mechanism is outlined in “MuSig2 3-of-3 Multisig with Coordinator
 Facilitation” at
 [MuSig2 Sequence Diagrams](https://developer.blockchaincommons.com/musig/sequence/#musig2-3-of-3-multisig-with-coordinator-facilitation).
 
-When defining a cohort set, the aggregator may define the conditions for the
+When defining a Beacon Cohort, the Beacon Aggregator may define the conditions for the
 cohort, including but not limited to:
 
 * Automatic publication to ::CAS:: (Map Beacon only)
