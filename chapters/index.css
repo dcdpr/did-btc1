@@ -14,7 +14,7 @@ html {
     font-size: 1.7em;
 }
 
-.toc ul, .toc ul ul, .toc ul ul ul {
+.toc ul {
     list-style: none;
 }
 
@@ -41,12 +41,12 @@ html {
     background: rgba(0, 0, 0, .1);
 }
 
-#content {
+.content {
     box-sizing: border-box;
     padding: .5em 2em 1.5em 2em;
 }
 
-#content h1:first-of-type {
+.content h1:first-of-type {
     margin: 1em 0 .5em;
 }
 

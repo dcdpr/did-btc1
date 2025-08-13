@@ -252,8 +252,8 @@ The algorithm returns `targetDocument`, a DID Core conformant DID document or th
 1. Set `contemporaryDIDDocument` to the `initialDocument`.
 1. Set `targetDocument` to the result of calling the [Traverse Blockchain History]
    algorithm passing in `contemporaryDIDDocument`, `contemporaryBlockheight`,
-   `currentVersionId`, `targetVersionId`, `targetTime`, `updateHashHistory`, 
-   `signalsMetadata`, and `network`.
+   `currentVersionId`, `targetVersionId`, `targetTime`, `didDocumentHistory`,
+   `updateHashHistory`, `signalsMetadata`, and `network`.
 1. Return `targetDocument`.
 
 ##### Traverse Blockchain History
@@ -329,7 +329,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
             raise `latePublishing` error.
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
-        1.  Push `contemporaryDIDDocument` onto 
+        1.  Push `contemporaryDIDDocument` onto `didDocumentHistory`.
         1.  Increment `currentVersionId`.
         1.  Set `unsecuredUpdate` to a copy of the `update` object.
         1.  Remove the `proof` property from the `unsecuredUpdate` object.
