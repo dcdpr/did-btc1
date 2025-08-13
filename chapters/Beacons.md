@@ -78,9 +78,9 @@ Actors in signaling are as follows:
 
 ### Aggregation
 
-Three types of ::Beacons:: are defined, with two of them aggregating multiple
-DID update payloads into a single transaction. How coordination between an
-aggregator and multiple DID controllers is managed is out of scope, but one
+Three types of ::Beacons:: are defined: SingletonBeacon, MapBeacon and SMTBeacon. 
+Two of them, MapBeacon and SMTBeacon, support aggregation, i.e. the act of 
+committing to multiple DID update payloads into a single transaction.
 possible mechanism is outlined in “MuSig2 3-of-3 Multisig with Coordinator
 Facilitation” at
 [MuSig2 Sequence Diagrams](https://developer.blockchaincommons.com/musig/sequence/#musig2-3-of-3-multisig-with-coordinator-facilitation).
