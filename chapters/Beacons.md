@@ -91,7 +91,7 @@ cohort, including but not limited to:
 * Automatic publication to ::CAS:: (Map Beacon only)
 * Minimum and/or maximum number of DID controllers
 * Minimum and/or maximum number of DIDs per DID controller
-* Cost of enrolment
+* Cost of enrollment
 * Cost per signal per DID or DID controller
 * Minimum and/or maximum time between signals
 * Number of pending updates that trigger a signal
