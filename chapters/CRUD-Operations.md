@@ -412,9 +412,9 @@ the [Find Next Signals] algorithm. Each struct contains the follow properties:
    to a struct containing ::Sidecar Data:: for that signal provided as part of the
    resolutionOptions. This struct contains the following properties:
    - `updatePayload`: A ::DID Update Payload:: which should match the update announced
-      by the ::Beacon Signal::. In the case of a ::Sparse Merkle Tree:: (::SMT::) proof of non-inclusion no
+      by the ::Beacon Signal::. In the case of a ::Sparse Merkle Tree:: (SMT) proof of non-inclusion no
       ::DID Update Payload:: may be provided.
-   - `proofs`: A ::Sparse Merkle Tree:: (::SMT::) proof that the provided `updatePayload` value is
+   - `proofs`: A ::SMT:: proof that the provided `updatePayload` value is
       the value at the leaf indexed by the **did:btc1** being resolved. TODO: What exactly this
       structure is needs to be defined.
 
