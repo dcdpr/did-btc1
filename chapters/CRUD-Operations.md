@@ -5,20 +5,21 @@ for the **did:btc1** method.
 
 ### Create
 
-A **did:btc1** identifier and associated DID document can either be created
-deterministically from a cryptographic seed, or it can be created from an arbitrary
-genesis intermediate DID document representation. In both cases, DID creation can
-be undertaken in an offline manner, i.e., the DID controller does not need to
-interact with the Bitcoin network to create their DID.
+A **did:btc1** identifier and associated Decentralized Identifier (DID) document can 
+either be created deterministically from a cryptographic seed, or it can be created 
+from an arbitrary genesis intermediate DID document representation. In both cases, 
+DID creation can be undertaken in an offline manner, i.e., the DID controller 
+does not need to interact with the Bitcoin network to create their DID.
 
 #### Deterministic Key-based Creation
 
 For deterministic creation, the **did:btc1** identifier encodes a secp256k1 public key.
 The key is then used to deterministically generate the initial DID document.
 
-The algorithm takes in `pubKeyBytes`, a compressed SEC encoded secp256k1
-public key and optional `version` and `network` values. The algorithm returns a
-**did:btc1** identifier and corresponding initial DID document.
+The algorithm takes in `pubKeyBytes`, a compressed Standards for Efficent 
+Cryptography (SEC) encoded secp256k1 public key and optional `version` and 
+`network` values. The algorithm returns a **did:btc1** identifier and 
+corresponding initial DID document.
 
 1. Set `idType` to "key".
 1. Set `version` to `1`.
@@ -35,7 +36,7 @@ public key and optional `version` and `network` values. The algorithm returns a
 
 It is possible to create a **did:btc1** from some initiating arbitrary DID document.
 This allows for more complex initial DID documents, including the ability to include
-Service Endpoints and ::Beacons:: that support aggregation.
+service endpoints and ::Beacons:: that support aggregation.
 
 The algorithm takes in an `intermediateDocument` struct, an OPTIONAL `version`,
 and an OPTIONAL `network`. The `intermediateDocument` MUST be a valid DID document
@@ -58,13 +59,13 @@ the type SingletonBeacon.
 1. Replace all `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
    values in the `initialDocument` with the `did`.
 1. Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
-   system like IPFS. If doing so, implementations MUST use ::CIDs:: generated following
-   the IPFS v1 algorithm.
+   system like the InterPlanetary File System (IPFS). If doing so, implementations
+   MUST use ::Content Identifiers:: (::CIDs::) generated following the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
 
 ### Read
 
-The read operation is executed by a resolver after a resolution request identifying
+The Read operation is executed by a resolver after a resolution request identifying
 a specific **did:btc1** `identifier` is received from a client at ::Resolution Time::.
 The request MAY contain a `resolutionOptions` object containing additional information
 to be used in resolution. The resolver then attempts to resolve the DID document
@@ -103,7 +104,7 @@ for that identifier.
 
 ##### Deterministically Generate Initial DID Document
 
-This algorithm deterministically generates an initial DID Document from a secp256k1
+This algorithm deterministically generates an initial DID document from a secp256k1
 public key.
 It takes in a **did:btc1** `identifier` and an `identifierComponents` object and
 returns an `initialDocument`.
@@ -285,12 +286,12 @@ The algorithm takes the following inputs:
 - `updateHashHistory`: An ordered array of SHA256 hashes of ::DID Update Payloads:: 
    that have been applied to the DID document by the resolution algorithm in order 
    to construct the `contemporaryDIDDocument`.
-- `signalsMetadata`: A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
+- `signalsMetadata`: A map from Bitcoin transaction identifiers of ::Beacon Signals:: 
    to a struct containing ::Sidecar Data:: for that signal provided as part of the
    resolutionOptions. This struct contains the following properties:
    - `updatePayload`: A ::DID Update Payload:: which should match the update announced
-      by the ::Beacon Signal::. In the case of a ::SMT:: proof of non-inclusion no
-      DID Update Payload may be provided.
+      by the ::Beacon Signal::. In the case of a ::Sparse Merkle Tree:: (::SMT::) proof of non-inclusion no
+      ::DID Update Payload:: may be provided.
    - `proofs`: A ::Sparse Merkle Tree:: proof that the provided `updatePayload` value is
       the value at the leaf indexed by the **did:btc1** being resolved. TODO: What exactly this
       structure is needs to be defined.
@@ -305,7 +306,7 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
 [JSON Canonicalization and Hash] algorithm.
 1. Find all `beacons` in `contemporaryDIDDocument`: All `service` in
    `contemporaryDIDDocument.service` where `service.type` equals one of
-   `SingletonBeacon`, `CIDAggregateBeacon` and `SMTAggregateBeacon` Beacon.
+   `SingletonBeacon`, `CIDAggregateBeacon` and `SMTAggregateBeacon` ::Beacon::.
 1. For each `beacon` in `beacons` convert the `beacon.serviceEndpoint` to a Bitcoin
    address following
    **[BIP21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)**.
@@ -329,11 +330,11 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
         1.  Set `contemporaryDIDDocument` to the result of calling [Apply DID Update]
             algorithm passing in `contemporaryDIDDocument`, `update`.
         1.  Push `contemporaryDIDDocument` onto `didDocumentHistory`.
-        1.  Increment `currentVersionId`
+        1.  Increment `currentVersionId`.
         1.  Set `unsecuredUpdate` to a copy of the `update` object.
         1.  Remove the `proof` property from the `unsecuredUpdate` object.
         1.  Set `updateHash` to the result of passing `unsecuredUpdate` into the [JSON Canonicalization and Hash]
-            algorithm
+            algorithm.
         1.  Push `updateHash` onto `updateHashHistory`.
         1.  Set `contemporaryHash` to result of passing `contemporaryDIDDocument` into the 
             [JSON Canonicalization and Hash] algorithm.
@@ -353,16 +354,18 @@ The algorithm returns the `contemporaryDIDDocument` once either the `targetTime`
 This algorithm takes finds the next Bitcoin block containing ::Beacon Signals:: from one or more of the
 `beacons` and returns all ::Beacon Signals:: within that block.
 
-Note: It is recommended that you use a Bitcoin indexer and API such as [electrs](https://github.com/romanz/electrs) or [Esplora](https://github.com/Blockstream/esplora) to query the Bitcoin blockchain.
+Note: It is recommended that you use a Bitcoin indexer and Application Programming Interface 
+(API) such as [electrs](https://github.com/romanz/electrs) or [Esplora](https://github.com/Blockstream/esplora) 
+to query the Bitcoin blockchain.
 
 This algorithm takes in the following inputs:
 
 - `contemporaryBlockheight`: The height of the block this function is looking for 
    ::Beacon Signals:: in. An integer greater or equal to 0.
 - `beacons`: An array of ::Beacon:: services in the ::contemporary DID document::.
-   Each Beacon is a structure with the following properties:
-    - `id`: The id of the Beacon service in the DID document. A string.
-    - `type`: The type of the Beacon service in the DID document. A string whose values MUST be either SingletonBeacon, CIDAggregateBeacon, or SMTAggregateBeacon.
+   Each ::Beacon:: is a structure with the following properties:
+    - `id`: The id of the ::Beacon:: service in the DID document. A string.
+    - `type`: The type of the ::Beacon:: service in the DID document. A string whose values MUST be either SingletonBeacon, CIDAggregateBeacon, or SMTAggregateBeacon.
     - `serviceEndpoint`: A BIP21 URI representing a Bitcoin address.
     - `address`: The Bitcoin address decoded from the `serviceEndpoint value.
 - `network`: A string identifying the Bitcoin network of the **did:btc1** identifier.
@@ -405,13 +408,13 @@ the [Find Next Signals] algorithm. Each struct contains the follow properties:
    - `beaconId`: The id for the ::Beacon:: that the `signal` was announced by.
    - `beaconType`: The type of the ::Beacon:: that announced the `signal`.
    - `tx`: The Bitcoin transaction that is the ::Beacon Signal::.
-- `signalsMetadata`: A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
+- `signalsMetadata`: A map from Bitcoin transaction identifiers of ::Beacon Signals:: 
    to a struct containing ::Sidecar Data:: for that signal provided as part of the
    resolutionOptions. This struct contains the following properties:
    - `updatePayload`: A ::DID Update Payload:: which should match the update announced
-      by the ::Beacon Signal::. In the case of a ::SMT:: proof of non-inclusion no
-      DID Update Payload may be provided.
-   - `proofs`: A ::Sparse Merkle Tree:: proof that the provided `updatePayload` value is
+      by the ::Beacon Signal::. In the case of a ::Sparse Merkle Tree:: (SMT) proof of non-inclusion no
+      ::DID Update Payload:: may be provided.
+   - `proofs`: A ::SMT:: proof that the provided `updatePayload` value is
       the value at the leaf indexed by the **did:btc1** being resolved. TODO: What exactly this
       structure is needs to be defined.
 
@@ -457,7 +460,7 @@ TODO: does this algorithm need  `contemporaryHash` passed in?
 
 ##### Apply DID Update
 
-This algorithm attempts to apply a DID Update to a DID document, it first
+This algorithm attempts to apply a DID update to a DID document, it first
 verifies the proof on the update is a valid capabilityInvocation of the root
 authority over the DID being resolved. Then it applies the JSON patch
 transformation to the DID document, checks the transformed DID document
@@ -492,7 +495,7 @@ DID document before returning it. This algorithm takes inputs
 1. Set `verificationResult` to the result of passing `mediaType`, `documentBytes`,
    `cryptosuite`, and `expectedProofPurpose` into the
    [Verify Proof algorithm](https://w3c.github.io/vc-data-integrity/#verify-proof)
-   defined in the VC Data Integrity specification.
+   defined in the Verifiable Credentials (VC) Data Integrity specification.
 1. If `verificationResult.verified` equals False, MUST raise an `invalidUpdateProof` exception.
 1. Set `targetDIDDocument` to a copy of `contemporaryDIDDocument`.
 1. Use JSON Patch to apply the `update.patch` to the `targetDIDDOcument`.
