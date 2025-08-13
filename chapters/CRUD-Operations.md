@@ -573,7 +573,7 @@ it constructs and returns an unsigned ::DID Update Payload::.
 This algorithm takes in a `btc1Identifier`, an unsigned `didUpdatePayload`, and a
 `verificationMethod`. The algorithm retrieves the `privateKeyBytes` for the
 `verificationMethod` and adds a capability invocation in the form of a Data
-Integrity proof following the Authorization Capabilities for Linked Data (ZCAP-LD) and
+Integrity proof following the ZCAP-LD and
 Verifiable Credentials (VC) Data Integrity specifications.
 
 The algorithm returns the invoked ::DID Update Payload::.
