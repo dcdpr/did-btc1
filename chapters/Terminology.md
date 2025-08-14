@@ -237,3 +237,17 @@ Contemporary Blockheight
 : The blockheight of consideration when walking the provenance of a series of DID
   updates. A DID document's contemporary time is the Signal Time of the ::Beacon Signal::
   that announced the last ::DID Update Payload:: applied to the DID document.
+
+Intermediate DID Document
+
+: A representation of a DID document that it not yet fully conformant with the DID Core
+  specification. Intermediate DID documents for the did:btc1 DID method are DID documents
+  whose identifier values have been replaced with a placeholder value.
+
+Initial DID Document
+
+: The canonical, conformant version 1 of a DID document for a specific did:btc1 identifier.
+
+Initial DID Documents
+
+: ::Initial DID Document::
