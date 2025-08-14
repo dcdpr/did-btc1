@@ -1,0 +1,14 @@
+{
+    "type": "DataIntegrityProof",
+    "cryptosuite": "bip340-jcs-2025",
+    "verificationMethod": "did:btc1:x1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp#key-1",
+    "proofPurpose": "capabilityInvocation",
+    "capability": "urn:zcap:root:did%3Abtc1%3Ax1q20n602dgh7awm6akhgne0mjcmfpnjpc9jrqnrzuuexglrmklzm6u98hgvp",
+    "capabilityAction": "Write",
+    "@context": [
+        "https://w3id.org/security/v2",
+        "https://w3id.org/zcap/v1",
+        "https://w3id.org/json-ld-patch/v1"
+    ],
+    "proofValue": "z3SvqrVEjVur24zh1vnYHB3SxQPMvxXP1XMxjtqBptezKASXtUUTsotQh2rabGLDyBf8riJkcL9wbHkZjDRSYRVYC"
+}
