@@ -114,7 +114,7 @@ returns an `initialDocument`.
 1. Set `initialDocument.id` to the `identifier`.
 1. Initialize a `contextArray` to empty array:
     1. Append the DID Core v1.1 context "https://www.w3.org/ns/did/v1.1".
-    1. Append a **did:btc1** context.
+    1. Append the **did:btc1** context "https://btc1.dev/context/v1".
     1. Set `initialDocument['@context]' to contextArray`.
 1. Create an initial verification method:
     1. Initialize `verificationMethod` to an empty object.
@@ -552,9 +552,9 @@ it constructs and returns an unsigned ::DID Update Payload::.
 1. Check that `sourceDocument.id` equals `btc1Identifier` else MUST raise
    `invalidDidUpdate` error.
 1. Initialize `didUpdatePayload` to an empty object.
-1. Set `didUpdatePayload.@context` to the following list // TODO: Need to add btc1 context.
+1. Set `didUpdatePayload.@context` to the following list.
    `["https://w3id.org/zcap/v1", "https://w3id.org/security/data-integrity/v2", 
-   "https://w3id.org/json-ld-patch/v1"]`
+   "https://w3id.org/json-ld-patch/v1", "https://btc1.dev/context/v1"]`
 1. Set `didUpdatePayload.patch` to `documentPatch`.
 1. Set `targetDocument` to the result of applying the `documentPatch` to the
    `sourceDocument`, following the JSON Patch specification.
