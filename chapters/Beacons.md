@@ -163,19 +163,18 @@ selected network:
 
 A Map Beacon creates a ::Beacon Signal:: that commits to multiple DID update
 payloads, each identified by a **did:btc1** identifier. To do so, it constructs
-a new document of key-value pairs, where the key is the **did:btc1** identifier
-and the value is the hash of the corresponding DID update payload, and publishes
-a hash of the consolidated document.
+a map, where the key is the **did:btc1** identifier and the value is the hash
+of the corresponding DID update payload, and publishes a hash of the map.
 
 If a DID update payload is not publicly discoverable (i.e., is not published to
 a ::CAS:: under its hash), the only parties that are aware of it are the DID
 controller and any parties provided it by the DID controller. However, any party
-that has access to or is provided the consolidated key-value pair document is at
-least aware of the existence of all **did:btc1** identifiers in the document and
-the existence of their DID update payloads.
+that has access to or is provided the map is at least aware of the existence of
+all **did:btc1** identifiers in the map and the existence of their DID update
+payloads.
 
 For a Map Beacon, proof of non-inclusion of a **did:btc1** identifier is simply
-its absence from the consolidated key-value pair document.
+its absence from the map.
 
 The `type` of the `service` for a Map Beacon is "MapBeacon".
 
@@ -221,22 +220,22 @@ sequenceDiagram
     actor A as Aggregator
     actor C as DID controller<br/>(multiple)
 
-    A ->> A: Initialize empty documents map<br/>(keyed by DID)
+    A ->> A: Initialize empty unnormalized<br/>map (keyed by DID)
 
     loop Until signal conditions met...
         C ->> A: Send DID and update
         note left of C: Update is<br/>payload or hash
         A ->> A: Validate DID against DID<br/>controller's authorized list
-        A ->> A: Add DID and update<br/>to documents map
+        A ->> A: Add DID and update<br/>to unnormalized map
         note right of A: Duplicate DID replaces<br/>existing update content
     end
 
-    A ->> A: Construct map document (*)
+    A ->> A: Create normalized map (*)
     A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
 
     loop For each DID controller...
-        A ->> C: Send map document and<br/>unsigned Bitcoin transaction
-        C ->> C: Validate map document and<br/>unsigned Bitcoin transaction (*)
+        A ->> C: Send normalized map and<br/>unsigned Bitcoin transaction
+        C ->> C: Validate normalized map and<br/>unsigned Bitcoin transaction (*)
         C ->> C: Sign Bitcoin transaction<br/>as PSBT
         C ->> A: Send PSBT
         A ->> A: Validate PSBT
@@ -252,39 +251,41 @@ sequenceDiagram
     end
 
     alt CAS defined
-        A ->> A: Publish map document to CAS
+        A ->> A: Publish JSON representation<br/>of normalized map to CAS
 
-        loop For each DID in documents map...
+        loop For each DID in unnormalized map...
             alt Payload provided
-                A ->> A: Publish DID update payload to CAS
+                A ->> A: Publish DID update<br/>payload to CAS
             end
         end
     end
 ```
 
-##### Construct Map Document
+##### Create Normalized Map
 
 Given:
 
-* `documentsMap` - required, a map of key-value pairs consisting of:
+* `unnormalizedMap` - required, a map of key-value pairs consisting of:
     * `did` - required, a unique **did:btc1** identifier (key)
     * One and only one of, required (value):
-        * `didUpdatePayload` - the DID update payload whose SHA256 hash is to be
-          included in the consolidated key-value pair document
-        * `didUpdateHashBytes` - the SHA256 hash in binary form of the DID
-          update payload to be included in the consolidated key-value pair
-          document
+        * `didUpdatePayload` - a DID update payload
+        * `didUpdateHashBytes` - the SHA256 hash in binary form of a DID
+          update payload
 
-Construct the map document as follows:
+Create a normalized map as follows:
 
-1. If `documentsMap` contains a duplicate `did`, raise InvalidParameter error.
-1. Set `mapDocument` to the JSON representation of `documentsMap` in the form
-   `{"<did1>": "<hashString1>", "<did2>": "<hashString2>",...}` where:
-   1. `didN` is the *N*th `did` in `documentsMap`;
-   1. `hashBytesN` is the *N*th `didUpdateHashBytes` in `documentsMap` if
-      defined or the result of passing the *N*th `didUpdatePayload` in
-      `documentsMap` to the [JSON Canonicalization and Hash] algorithm; and
-   1. `hashStringN` is the hexadecimal string representation of `hashBytesN`.
+1. If `unnormalizedMap` contains a duplicate `did`, raise InvalidParameter
+   error.
+1. For each `did` in `unnormalizedMap`:
+   1. If the value is a DID update payload:
+      1. Set `hashBytes` to the result of passing `didUpdatePayload` to the
+         [JSON Canonicalization and Hash] algorithm.
+      1. Set `hashString` to the hexadecimal string representation of
+         `hashBytes`.
+   1. If the value is a SHA256 hash in binary form:
+       1. Set `hashString` to the hexadecimal string representation of
+          `didUpdateHashBytes`.
+   1. Add `did` (key) and `hashString` (value) to `normalizedMap`.
 
 ##### Construct Unsigned Bitcoin Transaction
 
@@ -299,7 +300,7 @@ Given:
     * "mutinynet"
     * number
 * `serviceEndpoint` - required, a Bitcoin address represented as a URI
-* `mapDocument` - required, map document constructed as above
+* `normalizedMap` - required, normalized map created as above
 
 Construct a Bitcoin transaction that spends from the Beacon address on the
 selected network:
@@ -309,8 +310,8 @@ selected network:
    InvalidParameter error.
 1. Set `bitcoinAddress` to the decoding of `serviceEndpoint` following BIP21.
 1. Ensure `bitcoinAddress` is funded; if not, fund this address.
-1. Set `hashBytes` to the result of passing `mapDocument` to the
-   [JSON Canonicalization and Hash] algorithm.
+1. Set `hashBytes` to the result of passing JSON representation of
+   `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Initialize `unsignedSpendTx` to a Bitcoin transaction that spends a
    transaction controlled by the `bitcoinAddress` and contains at least one
    transaction output. This signal output MUST have the format
@@ -318,21 +319,21 @@ selected network:
    multiple transaction outputs, the signal output MUST be the last transaction
    output.
 
-##### Validate Document and Unsigned Bitcoin Transaction
+##### Validate Normalized Map and Unsigned Bitcoin Transaction
 
 Given:
 
-* `mapDocument` - required, map document constructed as above
+* `normalizedMap` - required, normalized map created as above
 * `unsignedSpendTx` - required, unsigned Bitcoin transaction constructed as
   above
 
-Validate the document and the unsigned Bitcoin transaction:
+Validate the normalized map and the unsigned Bitcoin transaction:
 
-1. Validate that `mapDocument` contains each DID previously sent and that the
+1. Validate that `normalizedMap` contains each DID previously sent and that the
    value associated with each DID is either the hash previously sent or the hash
    of the payload previously sent.
-1. Set `hashBytes` to the result of passing `mapDocument` to the
-   [JSON Canonicalization and Hash] algorithm.
+1. Set `hashBytes` to the result of passing JSON representation of
+   `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Validate that `unsignedSpendTx` is spending from the correct Bitcoin address.
 1. Validate that the last transaction output of `unsignedSpendTx` is
    `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`.
@@ -341,8 +342,8 @@ Validate the document and the unsigned Bitcoin transaction:
 
 Given:
 
-* `mapDocument` - required, map document constructed as above
-* `documentsMap` - required, as above
+* `normalizedMap` - required, normalized map created as above
+* `unnormalizedMap` - required, as above
 * `psbts` - required, partially signed Bitcoin transactions
 * `cas` - optional, one of:
     * "ipfs"
@@ -356,8 +357,9 @@ Spend the transaction and publish to CAS:
 1. Broadcast `spendTx` on the Bitcoin network.
 1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
 1. If `cas` is defined:
-   1. Publish `mapDocument` to the ::CAS:: network defined by `cas`.
-   1. For each `did` with a `didUpdatePayload` in `documentsMap`, publish
+   1. Publish JSON representation of `normalizedMap` to the ::CAS:: network
+      defined by `cas`.
+   1. For each `did` with a `didUpdatePayload` in `unnormalizedMap`, publish
       `didUpdatePayload` to the ::CAS:: network defined by `cas`.
 1. Return `signalId`.
 
