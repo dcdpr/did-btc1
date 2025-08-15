@@ -133,12 +133,12 @@ Encode the **did:btc1** identifier as follows:
 1. Append `(version - 1) mod 15` to `nibbles`.
 1. If `network` is a string, append the numeric value from the following map to
    `nibbles`:
-    1. "bitcoin" - `0`
-    1. "signet" - `1`
-    1. "regtest" - `2`
-    1. "testnet3" - `3`
-    1. "testnet4" - `4`
-    1. "mutinynet" - `5`
+   1. "bitcoin" - `0`
+   1. "signet" - `1`
+   1. "regtest" - `2`
+   1. "testnet3" - `3`
+   1. "testnet4" - `4`
+   1. "mutinynet" - `5`
 1. If `network` is a number, append `network + 11` to `nibbles`.
 1. If the number of entries in `nibbles` is odd, append `0`.
 1. Create a `dataBytes` byte array from `nibbles`, where `index` is from `0` to

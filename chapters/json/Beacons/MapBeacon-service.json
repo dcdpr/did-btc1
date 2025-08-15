@@ -1,0 +1,5 @@
+{
+  "type": "MapBeacon",
+  "id": "did:btc1:k1qgpgwtp2dpe3thqny6jngl5eg6p4wghd04yj70jcp8qe4nh75hd4dhc8f08q4#initialP2WPKH",
+  "serviceEndpoint": "bitcoin:bcrt1qvcgtvk08lx52apzxxd0c663l6274u4muchq7qg"
+}
