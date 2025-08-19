@@ -11,31 +11,32 @@
 
 ### Overview
 
-::Beacons:: are the mechanism by which a commitment to zero or more DID update payloads is made by broadcasting it on a Bitcoin network. A ::Beacon:: is identified by a Bitcoin address and emits ::Beacon Signals:: by broadcasting valid Bitcoin transactions that spend from this address.
+A ::BCT1 Beacon:: is an abstract mechanism, identified by a Bitcoin address, that is included as a service in a DID document to indicate to resolvers that spends from the address, called ::Beacon Signals::, should be checked for ::BTC1 Beacon Announcements::.
 
-A ::Beacon:: is included as a service in DID documents, with the Service Endpoint identifying a Bitcoin address to watch for ::Beacon Signals::. All ::Beacon Signals:: broadcast from this ::Beacon:: MUST be processed as part of resolution. The type of the ::Beacon:: service in the DID document defines how ::Beacon Signals:: MUST be processed.
+A ::BTC1 Beacon:: is included as a service in DID documents, with the service endpoint identifying a Bitcoin address to watch for ::Beacon Signals::. All ::Beacon Signals:: broadcast from this ::BTC1 Beacon:: MUST be processed as part of DID document resolution. The Beacon type in the service defines how ::Beacon Signals:: MUST be processed.
 
 **did:btc1** supports different ::Beacon Types::, with each type defining a set of algorithms for:
 
-1. How a ::Beacon:: can be established and added as a service to a DID document.
-1. How attestations to DID updates are broadcast within ::Beacon Signals::.
-1. How a resolver processes a ::Beacon Signal::, identifying, verifying, and applying the authorized mutations to a DID document for a specific DID.
+1. How a ::BTC1 Beacon:: can be established and added as a service to a DID document.
+1. How ::BTC1 Beacon Announcements:: are broadcast within ::Beacon Signals::.
+1. How a resolver processes ::Beacon Signals::, identifying, verifying, and applying the authorized mutations to a DID document for a specific DID.
 
 This is an extensible mechanism, such that in the future new ::Beacon Types:: could be added.
 
-The current, active ::Beacons:: of a DID document are specified in the document's `service` property. By updating the DID document, a DID controller can change the set of ::Beacons:: they use to broadcast updates to their DID document over time. Resolution of a DID MUST process signals from all ::Beacons:: identified in the latest DID document and apply them in the order determined by the version specified by the `didUpdatePayload`.
+The current, active ::BTC1 Beacons:: of a DID document are specified in the document's `service` property. By updating the DID document, a DID controller can change the set of ::BTC1 Beacons:: they use to broadcast updates to their DID document over time. Resolution of a DID MUST process signals from all ::BTC1 Beacons:: identified in the latest DID document and apply them in the order determined by the version specified by the `didUpdatePayload`.
 
-All resolvers of **did:btc1** DIDs MUST support the Beacon Types defined in this specification.
+All resolvers of **did:btc1** DIDs MUST support the ::Beacon Types:: defined in this specification.
 
-The commitment is a SHA256 hash that represents one of the following:
+The ::BTC1 Beacon Announcement:: is a SHA256 hash that represents one of the following:
 
 * the hash of a single DID update payload associated with a **did:btc1** identifier;
-* the hash of a document of key-value pairs, where each key is a **did:btc1** identifier and the value is the hash of a DID update payload or null for that key; or
-* the hash of a [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
+* the hash of a set of key-value pairs, where each key is a **did:btc1** identifier and the value is the hash of a DID update payload; or
+* the hash of an optimized sparse [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
 
-When defining a service for a ::Beacon:::
+When defining a service for a ::BTC1 Beacon:::
 
-* `type` is one of "SingletonBeacon", "MapBeacon", or "SMTBeacon"
+* `type` is "BTC1Beacon"
+* `beaconType` is one of "SingletonBeacon", "MapBeacon", or "SMTBeacon"
 * `serviceEndpoint` is a Bitcoin address represented as a URI following the [BIP21 scheme](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)
 
 How the Bitcoin address and the cryptographic material that controls it are generated is left to the implementation.
@@ -44,32 +45,35 @@ How the Bitcoin address and the cryptographic material that controls it are gene
 
 Actors in signaling are as follows:
 
-* DID controller - a party that controls one or more **did:btc1** identifiers participating in a ::Beacon::
-* cohort - a set of DID controllers participating in a ::Beacon:: and in the construction of the n-of-n P2TR Bitcoin address for the ::Beacon::
-* aggregator - the party responsible for aggregating updates from all DID controllers and creating the ::Beacon Signals::
-* verifier - a party verifying a **did:btc1** identifier presentation
+* DID controller - A party that controls one or more **did:btc1** identifiers participating in a ::BTC1 Beacon::.
+* Beacon Cohort - The set of unique cryptographic keys participating in a ::BTC1 Beacon:: that make up its n-of-n MuSig2 Bitcoin address.
+* Beacon Aggregator - The entity that coordinates the protocols of an aggregate ::BTC1 Beacon::, specifically the "Create Beacon Cohort" and "Announce Beacon Signal" protocols.
+* Beacon Participant - A member of a Beacon Cohort, typically a DID controller, that controls cryptographic keys required to partially authorize the broadcasting of a Beacon Signal to the Bitcoin blockchain.
+* Verifier - A party verifying a **did:btc1** identifier presentation.
 
 ### Aggregation
 
-Three types of ::Beacons:: are defined: SingletonBeacon, MapBeacon and SMTBeacon.  Two of them, MapBeacon and SMTBeacon, support aggregation, i.e. the act of  committing to multiple DID update payloads into a single transaction. possible mechanism is outlined in “MuSig2 3-of-3 Multisig with Coordinator Facilitation” at [MuSig2 Sequence Diagrams](https://developer.blockchaincommons.com/musig/sequence/#musig2-3-of-3-multisig-with-coordinator-facilitation).
+Three types of ::BTC1 Beacons:: are defined: SingletonBeacon, MapBeacon and SMTBeacon.  Two of them, MapBeacon and SMTBeacon, support aggregation, i.e. the act of  committing to multiple ::BTC1 Beacon Announcements:: in a single transaction.
+
+How coordination between an aggregator and multiple ::Beacon participants:: is managed is out of scope, but one possible mechanism is outlined in “MuSig2 3-of-3 Multisig with Coordinator Facilitation” at [MuSig2 Sequence Diagrams](https://developer.blockchaincommons.com/musig/sequence/#musig2-3-of-3-multisig-with-coordinator-facilitation).
 
 When defining a Beacon Cohort, the Beacon Aggregator may define the conditions for the cohort, including but not limited to:
 
 * Automatic publication to ::CAS:: (Map Beacon only)
-* Minimum and/or maximum number of DID controllers
-* Minimum and/or maximum number of DIDs per DID controller
+* Minimum and/or maximum number of ::Beacon participants::
+* Minimum and/or maximum number of DIDs per ::Beacon participant::
 * Cost of enrollment
-* Cost per signal per DID or DID controller
+* Cost per signal per DID or ::Beacon participant::
 * Minimum and/or maximum time between signals
 * Number of pending updates that trigger a signal
 
 ### Singleton Beacon
 
-A ::Singleton Beacon:: is a ::Beacon:: that can be used to commit to a single ::DID Update Payload:: targeting a single DID document. It creates a ::Beacon Signal:: that commits to a single DID update payload. This is done directly by the DID controller, and there is no cohort or aggregator.
+A ::Singleton Beacon:: is a ::BTC1 Beacon:: that can be used to commit to a single ::DID Update Payload:: targeting a single DID document. It creates a ::Beacon Signal:: that commits to a single ::BTC1 Beacon Announcement::. This is typically done directly by the DID controller, as there is no ::Beacon cohort::.
 
-If the DID update payload is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller.
+If the DID update payload associated with the ::BTC1 Beacon Announcement:: is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller.
 
-The `type` of the `service` for a Singleton Beacon is "SingletonBeacon".
+The `beaconType` of the `service` for a Singleton Beacon is "SingletonBeacon".
 
 #### Construct and Send Beacon Signal
 
@@ -85,8 +89,8 @@ Given:
     * number
 * `serviceEndpoint` - required, a Bitcoin address represented as a URI
 * One and only one of, required:
-    * `didUpdatePayload` - the DID update payload whose SHA256 hash is to be broadcast in the ::Beacon Signal::
-    * `didUpdateHashBytes` - the SHA256 hash in binary form of the DID update payload to be broadcast in the ::Beacon Signal::
+    * `didUpdatePayload` - the DID update payload whose SHA256 hash is the ::BTC1 Beacon Announcement:: to be broadcast in the ::Beacon Signal::
+    * `didUpdateHashBytes` - the ::BTC1 Beacon Announcement:: to be broadcast in the ::Beacon Signal::
 * `cas` - optional, one of:
     * "ipfs"
 
@@ -108,44 +112,44 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 
 ### Map Beacon
 
-A Map Beacon creates a ::Beacon Signal:: that commits to multiple DID update payloads, each identified by a **did:btc1** identifier. To do so, it constructs a map, where the key is the **did:btc1** identifier and the value is the hash of the corresponding DID update payload, and publishes a hash of the map.
+A Map Beacon creates a ::Beacon Signal:: that commits to multiple ::BTC1 Beacon Announcements::. To do so, it constructs a map where the key is the **did:btc1** identifier and the value is the hash of the corresponding DID update payload, and publishes a hash of the map.
 
-If a DID update payload is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller. However, any party that has access to or is provided the map is at least aware of the existence of all **did:btc1** identifiers in the map and the existence of their DID update payloads.
+If a DID update payload is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller. However, any party that has access to or is provided the map is at least aware of the existence of all **did:btc1** identifiers in the map and the existence of their ::BTC1 Beacon Announcements::.
 
 For a Map Beacon, proof of non-inclusion of a **did:btc1** identifier is simply its absence from the map.
 
-The `type` of the `service` for a Map Beacon is "MapBeacon".
+The `beaconType` of the `service` for a Map Beacon is "MapBeacon".
 
-#### Create Cohort
+#### Create Beacon Cohort
 
 ```mermaid
 sequenceDiagram
     autonumber
-    title Map Beacon - Create Cohort
+    title Map Beacon - Create Beacon Cohort
 
-    actor A as Aggregator
+    actor A as Beacon Aggregator
     participant P as Public
-    actor C as DID controller
+    actor R as Beacon Participant
 
-    A ->> A: Define conditions for cohort
-    A ->> A: Initialize empty cohort
+    A ->> A: Define conditions for<br/>Beacon cohort
+    A ->> A: Initialize empty<br/>Beacon cohort
 
-    loop Until cohort conditions met...
-        A ->> P: Advertise cohort and conditions
-        C ->> A: Enrol in cohort
-        note left of C: Includes public key
-        A ->> A: Add DID controller to cohort
+    loop Until Beacon cohort conditions met...
+        A ->> P: Advertise Beacon cohort<br/>and conditions
+        R ->> A: Enrol in Beacon cohort
+        note left of R: Includes public key
+        A ->> A: Add Beacon participant<br/>to Beacon cohort
 
         loop For each DID...
-            C ->> A: Add DID
-            note left of C: Includes proof of control
-            A ->> A: Add DID to DID controller's authorized list
+            R ->> A: Add DID
+            note left of R: Includes proof of control
+            A ->> A: Add DID to Beacon<br/>participant's authorized list
         end
     end
 
     A ->> P: Close enrolment
-    A ->> A: Generate the n-of-n P2TR Bitcoin address
-    A ->> C: Share P2TR Bitcoin address and cohort public keys
+    A ->> A: Generate n-of-n P2TR<br/>Bitcoin address
+    A ->> R: Share P2TR Bitcoin address<br/>and cohort public keys
 ```
 
 #### Construct and Send Beacon Signal
@@ -155,15 +159,15 @@ sequenceDiagram
     autonumber
     title Map Beacon - Construct and Send Beacon Signal
 
-    actor A as Aggregator
-    actor C as DID controller<br/>(multiple)
+    actor A as Beacon Aggregator
+    actor R as Beacon Participant<br/>(multiple)
 
     A ->> A: Initialize empty unnormalized<br/>map (keyed by DID)
 
     loop Until signal conditions met...
-        C ->> A: Send DID and update
-        note left of C: Update is<br/>payload or hash
-        A ->> A: Validate DID against DID<br/>controller's authorized list
+        R ->> A: Send DID and update
+        note left of R: Update is<br/>payload or hash
+        A ->> A: Validate DID against Beacon<br/>participant's authorized list
         A ->> A: Add DID and update<br/>to unnormalized map
         note right of A: Duplicate DID replaces<br/>existing update content
     end
@@ -171,11 +175,11 @@ sequenceDiagram
     A ->> A: Create normalized map (*)
     A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
 
-    loop For each DID controller...
-        A ->> C: Send normalized map and<br/>unsigned Bitcoin transaction
-        C ->> C: Validate normalized map and<br/>unsigned Bitcoin transaction (*)
-        C ->> C: Sign Bitcoin transaction<br/>as PSBT
-        C ->> A: Send PSBT
+    loop For each Beacon participant...
+        A ->> R: Send normalized map and<br/>unsigned Bitcoin transaction
+        R ->> R: Validate normalized map and<br/>unsigned Bitcoin transaction (*)
+        R ->> R: Sign Bitcoin transaction<br/>as PSBT
+        R ->> A: Send PSBT
         A ->> A: Validate PSBT
     end
     
@@ -184,8 +188,8 @@ sequenceDiagram
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
     A ->> A: Broadcast signed transaction
 
-    loop For each DID controller...
-        A ->> C: Send signal ID
+    loop For each Beacon participant...
+        A ->> R: Send signal ID
     end
 
     alt CAS defined
@@ -241,7 +245,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. if `network` is a number and is outside the range of 1-4, raise InvalidParameter error.
 1. Set `bitcoinAddress` to the decoding of `serviceEndpoint` following BIP21.
 1. Ensure `bitcoinAddress` is funded; if not, fund this address.
-1. Set `hashBytes` to the result of passing JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
+1. Set `hashBytes` to the result of passing the JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Initialize `unsignedSpendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
 
 ##### Validate Normalized Map and Unsigned Bitcoin Transaction
@@ -254,7 +258,7 @@ Given:
 Validate the normalized map and the unsigned Bitcoin transaction:
 
 1. Validate that `normalizedMap` contains each DID previously sent and that the value associated with each DID is either the hash previously sent or the hash of the payload previously sent.
-1. Set `hashBytes` to the result of passing JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
+1. Set `hashBytes` to the result of passing the JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Validate that `unsignedSpendTx` is spending from the correct Bitcoin address.
 1. Validate that the last transaction output of `unsignedSpendTx` is `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`.
 
@@ -281,42 +285,42 @@ Spend the transaction and publish to CAS:
 
 ### SMT Beacon
 
-An SMT Beacon creates a ::Beacon Signal:: that commits to multiple DID update payloads, each identified by a **did:btc1** identifier. To do so, it constructs an optimized Sparse Merkle Tree as defined in [Appendix - Optimized Sparse Merkle Tree Implementation] and publishes the Merkle root.
+An SMT Beacon creates a ::Beacon Signal:: that commits to multiple ::BTC1 Beacon Announcements::, each identified by a **did:btc1** identifier. To do so, it constructs an optimized sparse Merkle tree as defined in [Appendix - Optimized Sparse Merkle Tree Implementation] and publishes the Merkle root.
 
 An SMT Beacon provides maximum privacy for the DID controller, as the DID controller never has to reveal their DIDs or DID update payloads to the aggregator. This introduces a small risk, as the DID controller is not required to prove control over a DID in order to participate.
 
-The `type` of the `service` for an SMT Beacon is "SMTBeacon".
+The `beaconType` of the `service` for an SMT Beacon is "SMTBeacon".
 
-#### Create Cohort
+#### Create Beacon Cohort
 
 ```mermaid
 sequenceDiagram
     autonumber
-    title SMT Beacon - Create Cohort
+    title SMT Beacon - Create Beacon Cohort
 
-    actor A as Aggregator
+    actor A as Beacon Aggregator
     participant P as Public
-    actor C as DID controller
+    actor R as Beacon Participant
 
-    A ->> A: Define conditions for cohort
-    A ->> A: Initialize empty cohort
+    A ->> A: Define conditions for<br/>Beacon cohort
+    A ->> A: Initialize empty<br/>Beacon cohort
 
-    loop Until cohort conditions met...
-        A ->> P: Advertise cohort and conditions
-        C ->> A: Enrol in cohort
-        note left of C: Includes public key
-        A ->> A: Add DID controller to cohort
+    loop Until Beacon cohort conditions met...
+        A ->> P: Advertise Beacon cohort<br/>and conditions
+        R ->> A: Enrol in Beacon cohort
+        note left of R: Includes public key
+        A ->> A: Add Beacon participant<br/>to Beacon cohort
 
         loop For each DID...
-            C ->> C: Calculate index = hash(DID)
-            C ->> A: Add index
-            A ->> A: Add index to DID controller's authorized list
+            R ->> R: Calculate index = hash(DID)
+            R ->> A: Add index
+            A ->> A: Add index to Beacon<br/>participant's authorized list
         end
     end
 
     A ->> P: Close enrolment
-    A ->> A: Generate the n-of-n P2TR Bitcoin address
-    A ->> C: Share P2TR Bitcoin address and cohort public keys
+    A ->> A: Generate n-of-n P2TR<br/>Bitcoin address
+    A ->> R: Share P2TR Bitcoin address<br/>and cohort public keys
 ```
 
 #### Construct and Send Beacon Signal
@@ -326,35 +330,35 @@ sequenceDiagram
     autonumber
     title SMT Beacon - Construct and Send Beacon Signal
 
-    actor A as Aggregator
-    actor C as DID controller<br/>(multiple)
+    actor A as Beacon Aggregator
+    actor R as Beacon Participant<br/>(multiple)
 
     A ->> A: Initialize empty<br/>optimized SMT
 
     loop Until signal conditions met...
-        C ->> C: Calculate index = hash(DID)
-        C ->> C: Generate nonce
-        C ->> C: Calculate update = hash(nonce ^<br/>hash(DID update payload))
-        C ->> A: Send index and update
-        A ->> A: Validate index against DID<br/>controller's authorized list
+        R ->> R: Calculate index = hash(DID)
+        R ->> R: Generate nonce
+        R ->> R: Calculate update = hash(nonce ^<br/>hash(DID update payload))
+        R ->> A: Send index and update
+        A ->> A: Validate index against Beacon<br/>participant's authorized list
         A ->> A: Calculate value = hash(index +<br/>update)
         A ->> A: Set optimized SMT leaf<br/>for index to value
         note right of A: Duplicate index replaces<br/>existing value
     end
 
-    loop For each DID controller...
-        A ->> C: Request missing indexes
-        C ->> C: Initialize empty updates array
+    loop For each Beacon participant...
+        A ->> R: Request missing indexes
+        R ->> R: Initialize empty updates array
         
         loop For each missing index...
-            C ->> C: Validate that index is the<br/>hash of a DID expected to<br/>be in the signal and that<br/>DID has no update
-            C ->> C: Generate nonce
-            C ->> C: Calculate update = hash(nonce)
-            C ->> C: Add update to updates array
+            R ->> R: Validate that index is the<br/>hash of a DID expected to<br/>be in the signal and that<br/>DID has no update
+            R ->> R: Generate nonce
+            R ->> R: Calculate update = hash(nonce)
+            R ->> R: Add update to updates array
         end
         
-        C ->> A: Send updates
-        note left of C: Updates must be in the<br/>same order as missing indexes
+        R ->> A: Send updates
+        note left of R: Updates must be in the<br/>same order as missing indexes
         
         loop For each missing index...
             A ->> A: Calculate value = hash(index +<br/>update)
@@ -365,7 +369,7 @@ sequenceDiagram
     A ->> A: Fill optimized SMT
     A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
 
-    loop For each DID controller...
+    loop For each Beacon participant...
         A ->> A: Initialize empty peers array<br/>map (keyed by index)
 
         loop For each index...
@@ -373,10 +377,10 @@ sequenceDiagram
             A ->> A: Add index and peers array<br/>to peers array map
         end
         
-        A ->> C: Send peers array map and<br/>unsigned Bitcoin transaction
-        C ->> C: Validate peers array map<br/>and unsigned Bitcoin transaction (*)
-        C ->> C: Sign Bitcoin transaction<br/>as PSBT
-        C ->> A: Send PSBT
+        A ->> R: Send peers array map and<br/>unsigned Bitcoin transaction
+        R ->> R: Validate peers array map<br/>and unsigned Bitcoin transaction (*)
+        R ->> R: Sign Bitcoin transaction<br/>as PSBT
+        R ->> A: Send PSBT
         A ->> A: Validate PSBT
     end
     
@@ -385,8 +389,8 @@ sequenceDiagram
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
     A ->> A: Broadcast signed transaction
 
-    loop For each DID controller...
-        A ->> C: Send signal ID
+    loop For each Beacon participant...
+        A ->> R: Send signal ID
     end
 ```
 
@@ -475,9 +479,9 @@ Given:
 * `did` - required, the **did:btc1** identifier whose signals are to be processed
 * `sidecarDocuments` - required, array of documents required for resolution not stored on a ::CAS::,including:
   * Initial DID document, if `did` was constructed with `idType` of "external" (`did` has the form "did:btc1:x1...")
-  * Map documents for ::Beacons:: with services of `type` "MapBeacon".
-  * DID update payloads for each ::Beacon Signal::
-* `smtProofs` - required for services of `type` "SMTBeacon", array of SMT proofs of inclusion or non-inclusion
+  * Map documents for ::BTC1 Beacons:: with services of `beaconType` "MapBeacon".
+  * DID update payloads for each ::BTC1 Beacon Announcement::
+* `smtProofs` - required for services of `beaconType` "SMTBeacon", array of SMT proofs of inclusion or non-inclusion
 * `cas` - optional, one of:
     * "ipfs"
 * `targetVersionId` - optional, DID document version ID required
@@ -502,14 +506,15 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
    1. Update placeholder values in `didDocument` with `did` as required.
 1. Until terminated:
    1. Set `didUpdatePayload` to null.
-   1. For each `service` in `didDocument.service` where `service.type` is "SingletonBeacon", "Map Beacon", or "SMT Beacon":
+   1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
       1. Get the next transaction from the Bitcoin address at `service.serviceEnpoint`.
       1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
       1. If the last output transaction is not of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, skip to next `service`.
       1. Extract `hashBytes` from the last output transaction.
-      1. If `service.type` is "SingletonBeacon", set `tempDidUpdatePayload` to the result of [Process Singleton Beacon Signal]. 
-      1. If `service.type` is "MapBeacon", set `tempDidUpdatePayload` to the result of [Process Map Beacon Signal].
-      1. If `service.type` is "SMTBeacon", set `tempDidUpdatePayload` to the result of [Process SMT Beacon Signal].
+      1. If `service.beaconType` is not "SingletonBeacon", "MapBeacon", or "SMTBeacon", raise InvalidParameter error.
+      1. If `service.beaconType` is "SingletonBeacon", set `tempDidUpdatePayload` to the result of [Process Singleton Beacon Signal].
+      1. If `service.beaconType` is "MapBeacon", set `tempDidUpdatePayload` to the result of [Process Map Beacon Signal].
+      1. If `service.beaconType` is "SMTBeacon", set `tempDidUpdatePayload` to the result of [Process SMT Beacon Signal].
       1. If `tempDidUpdatePayload` is null, skip to next `service`.
       1. Set `tempDidDocument` to transformation of `didDocument` with `tempDidUpdatePayload`.
       1. If `tempDidDocument.versionId` ≠ `didDocument.versionId + 1`, skip to next `service`.
@@ -520,7 +525,7 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
    1. If `targetVersionId` is defined and `didDocument.versionId` = `targetVersionId`, terminate.
 1. If `targetVersionId` is defined and `didDocument.versionId` ≠ `targetVersionId`, raise InvalidDidUpdate error.
 1. If `targetVersionId` is not defined:
-   1. For each `service` in `didDocument.service` where `service.type` is "SingletonBeacon", "Map Beacon", or "SMT Beacon":
+   1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
       1. Get the next transaction from the Bitcoin address at `service.serviceEnpoint`.
       1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
       1. If the last output transaction is of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, raise InvalidDidUpdate error.
@@ -534,20 +539,20 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. Set `didUpdatePayload`
 1. Return `didUpdatePayload`.
 
-> *NOTE**: The act of retrieving from `sidecarDocumentsMap` or ::CAS:: validates the document hash.
+> **NOTE**: The act of retrieving from `sidecarDocumentsMap` or ::CAS:: validates the document hash.
 
 #### Process Map Beacon Signal
 
 1. Set `id` to the hexadecimal string representation of `hashBytes`.
-1. Get `mapDocument` from `sidecarDocumentsMap` by its `id` if available, or from ::CAS:: by its `id` if not and `cas` is defined.
-1. If `mapDocument` is undefined, raise InvalidDidUpdate error.
-1. Set `payloadId` to the value of `mapDocument.<did>`.
+1. Get `map` from `sidecarDocumentsMap` by its `id` if available, or from ::CAS:: by its `id` if not and `cas` is defined.
+1. If `map` is undefined, raise InvalidDidUpdate error.
+1. Set `payloadId` to the value of `map.<did>`.
 1. If `payloadId` is undefined, return null.
 1. Get `didUpdatePayload` from `sidecarDocumentsMap` by its `payloadId` if available, or from ::CAS:: by its `payloadId` if not and `cas` is defined.
 1. If `didUpdatePayload` is undefined, raise InvalidDidUpdate error.
 1. Return `didUpdatePayload`.
 
-> *NOTE**: The act of retrieving from `sidecarDocumentsMap` or ::CAS:: validates the document hash.
+> **NOTE**: The act of retrieving from `sidecarDocumentsMap` or ::CAS:: validates the document hash.
 
 #### Process SMT Beacon Signal
 
@@ -568,4 +573,4 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. If `didUpdatePayload` is undefined, raise InvalidDidUpdate error.
 1. Return `didUpdatePayload`.
 
-> *NOTE**: The act of retrieving from `sidecarDocumentsMap` validates the document hash.
+> **NOTE**: The act of retrieving from `sidecarDocumentsMap` validates the document hash.
