@@ -37,7 +37,7 @@ will be published.
 
 ### Copyright &copy; 2024 Digital Contract Design {.unnumbered .unlisted}
 
-### Licence Statement: TODO {.unnumbered .unlisted}
+### Licence Statement: This specification is covered by the [Mozilla Public License Version 2.0](https://github.com/dcdpr/did-btc1/blob/main/LICENSE).
 
 ### Abstract {.unnumbered .unlisted}
 
