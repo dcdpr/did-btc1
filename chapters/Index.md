@@ -29,9 +29,15 @@ Kate Sills    <katelynsills@gmail.com>
 
 ### Publication Date: 20th September 2024 {.unnumbered .unlisted}
 
+---
+WARNING: This specification is still under active development and may be subject to breaking
+changes. Once we have finalized the specification text a stable v1.0 of the specification 
+will be published.
+---
+
 ### Copyright &copy; 2024 Digital Contract Design {.unnumbered .unlisted}
 
-### Licence Statement: TODO {.unnumbered .unlisted}
+### Licence Statement: This specification is covered by the [Mozilla Public License Version 2.0](https://github.com/dcdpr/did-btc1/blob/main/LICENSE).
 
 ### Abstract {.unnumbered .unlisted}
 
