@@ -8,7 +8,6 @@ BTC1 Beacons
 
 : ::BTC1 Beacon::
 
-BTC1 Beacon's
 
 : ::BTC1 Beacon::
 
@@ -86,7 +85,7 @@ Beacon Type
 
 Singleton Beacon
 
-: A type of ::BTC1 Beacon:: whose ::Beacon Signals:: contain a single ::BTC1 Beacon Announcement::.
+: A type of ::BTC1 Beacon:: whose ::Beacon Signals:: each contain a single ::BTC1 Beacon Announcement::.
 
 Map Beacon
 
@@ -123,7 +122,7 @@ Beacon Participant
 to partially authorize spends from a ::Beacon Address::.
 
 
-Merkle Tree
+Sparse Merkle Tree
 
 : A tree data structure in which the leaves are a hash of a data block and every
   node that is not a leaf is a hash of its child node values.
