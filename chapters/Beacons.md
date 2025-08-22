@@ -233,7 +233,7 @@ Create a normalized map as follows:
        1. Set `hashString` to the hexadecimal string representation of `didUpdateHashBytes`.
    1. Add `did` (key) and `hashString` (value) to `normalizedMap`.
 
-##### Construct Unsigned Bitcoin Transaction
+##### Construct Unsigned Beacon Signal
 
 Given:
 
@@ -257,14 +257,14 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. Set `hashBytes` to the result of passing the JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Initialize `unsignedSpendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
 
-##### Validate Normalized Map and Unsigned Bitcoin Transaction
+##### Validate Normalized Map and Unsigned Beacon Signal
 
 Given:
 
 * `normalizedMap` - required, normalized map created as above
-* `unsignedSpendTx` - required, unsigned Bitcoin transaction constructed as above
+* `unsignedSpendTx` - required, unsigned Beacon signal constructed as above
 
-Validate the normalized map and the unsigned Bitcoin transaction:
+Validate the normalized map and the unsigned Beacon signal:
 
 1. Validate that `normalizedMap` contains each DID previously sent and that the value associated with each DID is either the hash previously sent or the hash of the payload previously sent.
 1. Set `hashBytes` to the result of passing the JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
@@ -394,8 +394,8 @@ sequenceDiagram
             A ->> A: Add index and peers array<br/>to peers array map
         end
         
-        A ->> R: Send peers array map and<br/>unsigned Bitcoin transaction
-        R ->> R: Validate peers array map<br/>and unsigned Bitcoin transaction (*)
+        A ->> R: Send peers array map and<br/>unsigned Beacon signal
+        R ->> R: Validate peers array map<br/>and unsigned Beacon signal (*)
         R ->> R: Sign Bitcoin transaction<br/>as PSBT
         R ->> A: Send PSBT
         A ->> A: Validate PSBT
@@ -411,7 +411,7 @@ sequenceDiagram
     end
 ```
 
-##### Construct Unsigned Bitcoin Transaction
+##### Construct Unsigned Beacon Signal
 
 Given:
 
@@ -451,14 +451,14 @@ Calculate the path to the root for the index:
    1. If `node` is right of `parentNode`, add `{left: <leftHashString>}` to `peers`, where `leftHashString` is the hexadecimal string representation of the value at `parentNode.leftNode`.
 1. Return `peers`. 
 
-##### Validate Peers Array Map and Unsigned Bitcoin Transaction
+##### Validate Peers Array Map and Unsigned Beacon Signal
 
 Given:
 
 * `peersMap` - required, peers array map constructed as above
-* `unsignedSpendTx` - required, unsigned Bitcoin transaction constructed as above
+* `unsignedSpendTx` - required, unsigned Beacon signal constructed as above
 
-Validate the peers array map and the unsigned Bitcoin transaction:
+Validate the peers array map and the unsigned Beacon signal:
 
 1. Validate that `unsignedSpendTx` is spending from the correct Bitcoin address.
 1. For each `did` expected to be in the ::Beacon Signal:::
