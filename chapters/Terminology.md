@@ -2,7 +2,7 @@
 
 BTC1 Beacon
 
-: A abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called Beacon Signals, should be discovered and checked for ::BTC1 Beacon Announcements::. 
+: A abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called Beacon Signals, should be discovered and checked for ::BTC1 Update Announcements::. 
 
 BTC1 Beacons
 
@@ -23,7 +23,7 @@ Beacon Signal
   Beacon Signals anchor in Bitcoin blocktime a small number of bytes, by including 
   a transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <32_bytes>]` in the last transaction 
   output of a Bitcoin transaction. The Beacon Signal bytes commit to one or more 
-  ::BTC1 Beacon Announcements::. The ::Beacon Type:: defines how these announcements are committed 
+  ::BTC1 Update Announcements::. The ::Beacon Type:: defines how these announcements are committed 
   to by a Beacon Signal and the protocol by which these announcements can be validated 
   against the Beacon Signal bytes.
 
@@ -37,20 +37,24 @@ Authorized Beacon Signal
 : A ::Beacon Signal:: from a ::BTC1 Beacon:: included 
   in a ::Contemporary DID document:: from the perspective of a resolver executing a resolution request.
 
-BTC1 Beacon Announcement
+BTC1 Update Announcement
 
 : A 32 byte SHA256 hash committing to a ::BTC1 Update:: that has been broadcast by a ::BTC1 Beacon:: in an 
-  ::Authorized Beacon Signal::. ::Beacon Signals:: can include one or more BTC1 Beacon Announcements. 
+  ::Authorized Beacon Signal::. ::Beacon Signals:: can include one or more BTC1 Update Announcements. 
   How Beacon Signals include announcements is defined by the ::Beacon Type::.
 
-BTC1 Beacon Announcements
+BTC1 Update Announcements
 
-: ::BTC1 Beacon Announcement::
+: ::BTC1 Update Announcement::
 
 
 BTC1 Update
 
 : A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific **did:btc1** DID document. This capability invocation Data Integrity proof secures the ::Unsecured BTC1 Update:: document.
+
+BTC1 Updates
+
+: ::BTC1 Update::
 
 Unsecured BTC1 Update
 
@@ -58,10 +62,6 @@ A ::BTC1 Update:: without a proof attached to it invoking the capability to appl
 An Usecured BTC1 Update contains the JSON Patch object that defines the set of mutations to be applied to a DID document, 
 along with the new version of the DID document and the source and target hashes of the DID document
 identifying the source DID document that the patch should be applied to and the target DID document that results from appliying the patch.
-
-BTC1 Updates
-
-: ::BTC1 Update::
 
 Pending BTC1 Update
 
@@ -82,31 +82,31 @@ Announced BTC1 Updates
 
 Beacon Type
 
-: The type of a ::BTC1 Beacon::. The Beacon Type defines how ::BTC1 Beacon Announcements:: 
+: The type of a ::BTC1 Beacon::. The Beacon Type defines how ::BTC1 Update Announcements:: 
   are included within a ::Beacon Signal:: broadcast on the Bitcoin network. It also defines 
-  how the content committed within ::BTC1 Beacon Announcements:: can be verified 
+  how the content committed within ::BTC1 Update Announcements:: can be verified 
   against the ::Beacon Signal::.
 
 
 Singleton Beacon
 
-: A type of ::BTC1 Beacon:: whose ::Beacon Signals:: each contain a single ::BTC1 Beacon Announcement::.
+: A type of ::BTC1 Beacon:: whose ::Beacon Signals:: each contain a single ::BTC1 Update Announcement::.
 
 Map Beacon
 
-: A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Beacon Announcements::. 
+: A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Update Announcements::. 
   A ::Beacon Signal:: from a Map Beacon commits to a ::Beacon Announcement Map::.
 
 
 Beacon Announcement Map
 
-: A document that maps **did:btc1** identifiers to ::BTC1 Beacon Announcements::. 
-  This is used to distinguish which ::BTC1 Beacon Announcement:: applies to which 
+: A document that maps **did:btc1** identifiers to ::BTC1 Update Announcements::. 
+  This is used to distinguish which ::BTC1 Update Announcement:: applies to which 
   **did:btc1** identifier.
 
 SMT Beacon
 
-: A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Beacon Announcements::.  
+: A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Update Announcements::.  
   A Beacon Signal from an SMT Beacon contains the root of an optimized sparse Merkle tree.
 
 Beacon Cohort
@@ -145,7 +145,7 @@ Sparse Merkle Tree
   This data structure enables proofs of both inclusion and non-inclusion of data
   at a given index. The instantiation in this specification has 2^256 leaves
   that are indexed by the SHA256 hash of a **did:btc1** identifier. The data
-  attested to at the leaves of the tree is the ::BTC1 Beacon Announcement:: for the
+  attested to at the leaves of the tree is the ::BTC1 Update Announcement:: for the
   **did:btc1** identifier that indexed to the leaf.
 
 SMT
@@ -286,18 +286,18 @@ Contemporary Blockheight
 Contemporary DID document
 
 : A DID document that is current at a specific ::Contemporary Blockheight::. DID Resolvers
-track the Contemporary DID document of a did:btc1 identifier through Bitcoin block time
+track the Contemporary DID document of a **did:btc1** identifier through Bitcoin block time
 during the process of resolution.
 
 Intermediate DID Document
 
 : A representation of a DID document that it not yet fully conformant with the DID Core
-  specification. Intermediate DID documents for the did:btc1 DID method are DID documents
+  specification. Intermediate DID documents for the **did:btc1** DID method are DID documents
   whose identifier values have been replaced with a placeholder value.
 
 Initial DID Document
 
-: The canonical, conformant version 1 of a DID document for a specific did:btc1 identifier.
+: The canonical, conformant version 1 of a DID document for a specific **did:btc1** identifier.
 
 Initial DID Documents
 
