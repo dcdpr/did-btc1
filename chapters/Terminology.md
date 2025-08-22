@@ -18,10 +18,10 @@ Beacon Address
 
 Beacon Signal
 
-: A Bitcoin transaction that spend froms a ::Beacon Address:: 
+: A Bitcoin transaction that spends from a ::Beacon Address:: 
   and has been included within a Bitcoin block with a specified number of confirmations. 
   Beacon Signals anchor in Bitcoin blocktime a small number of bytes, by including 
-  a transaction output of the format `[OP_RETURN, <32_bytes>]` in the last transaction 
+  a transaction output of the format `[OP_RETURN, OP_PUSHBYTES32, <32_bytes>]` in the last transaction 
   output of a Bitcoin transaction. The Beacon Signal bytes commit to one or more 
   ::BTC1 Beacon Announcements::. The ::Beacon Type:: defines how these announcements are committed 
   to by a Beacon Signal and the protocol by which these announcements can be validated 
@@ -34,7 +34,7 @@ Beacon Signals
 
 Authorized Beacon Signal
 
-: An Authorized Beacon Signal is a ::Beacon Signal:: from a ::BTC1 Beacon:: included 
+: A ::Beacon Signal:: from a ::BTC1 Beacon:: included 
   in a ::Contemporary DID document:: from the perspective of a resolver executing a resolution request.
 
 BTC1 Beacon Announcement
@@ -54,7 +54,7 @@ BTC1 Update
 
 Unsecured BTC1 Update
 
-A ::BTC1 Update:: without a proof attached to it invoking the capability to apply the update to a **did:btc1:: DID document. 
+A ::BTC1 Update:: without a proof attached to it invoking the capability to apply the update to a **did:btc1** DID document. 
 An Usecured BTC1 Update contains the JSON Patch object that defines the set of mutations to be applied to a DID document, 
 along with the new version of the DID document and the source and target hashes of the DID document
 identifying the source DID document that the patch should be applied to and the target DID document that results from appliying the patch.
@@ -100,9 +100,9 @@ Map Beacon
 
 Beacon Announcement Map
 
-: A document that maps did:btc1 identifiers to ::BTC1 Beacon Announcements::. 
+: A document that maps **did:btc1** identifiers to ::BTC1 Beacon Announcements::. 
   This is used to distinguish which ::BTC1 Beacon Announcement:: applies to which 
-  did:btc1 identifier.
+  **did:btc1** identifier.
 
 SMT Beacon
 
