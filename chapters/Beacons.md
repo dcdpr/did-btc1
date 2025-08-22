@@ -1,19 +1,18 @@
 ## Beacons
 
-> **TODO**:
-> 
-> * Ensure that all `sidecarDocuments` and `smtProofs` have been used if `targetVersionId` is not defined.
-> * Review exception names.
-> * Replace "Validate that..." with explicit test and exception.
-> * Review need for anything more than signal ID to be shared after signaling.
-> * Review format of `service` entry, determine if `cas` should be supported.
-> * Review change from CIDAggregateBeacon to MapBeacon.
-
 ### Overview
 
 A ::BCT1 Beacon:: is an abstract mechanism, identified by a Bitcoin address, that is included as a service in a DID document to indicate to resolvers that spends from the address, called ::Beacon Signals::, should be checked for ::BTC1 Beacon Announcements::.
 
-A ::BTC1 Beacon:: is included as a service in DID documents, with the service endpoint identifying a Bitcoin address to watch for ::Beacon Signals::. All ::Beacon Signals:: broadcast from this ::BTC1 Beacon:: MUST be processed as part of DID document resolution. The Beacon type in the service defines how ::Beacon Signals:: MUST be processed.
+All ::Beacon Signals:: broadcast from a ::BTC1 Beacon:: MUST be processed as part of DID document resolution. The Beacon type in the service defines how ::Beacon Signals:: MUST be processed.
+
+When defining a service for a ::BTC1 Beacon:::
+
+* `type` is "BTC1Beacon"
+* `beaconType` is one of "SingletonBeacon", "MapBeacon", or "SMTBeacon"
+* `serviceEndpoint` is a Bitcoin address represented as a URI following the [BIP21 scheme](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)
+
+How the Bitcoin address and the cryptographic material that controls it are generated is left to the implementation.
 
 **did:btc1** supports different ::Beacon Types::, with each type defining a set of algorithms for:
 
@@ -31,15 +30,7 @@ The ::BTC1 Beacon Announcement:: is a SHA256 hash that represents one of the fol
 
 * the hash of a single DID update payload associated with a **did:btc1** identifier;
 * the hash of a set of key-value pairs, where each key is a **did:btc1** identifier and the value is the hash of a DID update payload; or
-* the hash of an optimized sparse [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
-
-When defining a service for a ::BTC1 Beacon:::
-
-* `type` is "BTC1Beacon"
-* `beaconType` is one of "SingletonBeacon", "MapBeacon", or "SMTBeacon"
-* `serviceEndpoint` is a Bitcoin address represented as a URI following the [BIP21 scheme](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki)
-
-How the Bitcoin address and the cryptographic material that controls it are generated is left to the implementation.
+* the hash of an optimized ::sparse Merkle tree:: root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
 
 ### Actors
 
@@ -69,11 +60,14 @@ When defining a Beacon Cohort, the Beacon Aggregator may define the conditions f
 
 ### Singleton Beacon
 
-A ::Singleton Beacon:: is a ::BTC1 Beacon:: that can be used to commit to a single ::DID Update Payload:: targeting a single DID document. It creates a ::Beacon Signal:: that commits to a single ::BTC1 Beacon Announcement::. This is typically done directly by the DID controller, as there is no ::Beacon cohort::.
+A ::Singleton Beacon:: is a ::BTC1 Beacon:: that can be used to announce commitments to a single ::DID Update Payload:: targeting a single DID document. It creates a ::Beacon Signal:: that commits to a single ::BTC1 Beacon Announcement::. This is typically done directly by the DID controller, as there is no ::Beacon cohort::.
 
 If the DID update payload associated with the ::BTC1 Beacon Announcement:: is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller.
 
 The `beaconType` of the `service` for a Singleton Beacon is "SingletonBeacon".
+
+```{.json include="json/Beacons/SingletonBeacon-service.json"}
+```
 
 #### Construct and Send Beacon Signal
 
@@ -524,7 +518,7 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. Until terminated:
    1. Set `didUpdatePayload` to null.
    1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
-      1. Get the next transaction from the Bitcoin address at `service.serviceEnpoint`.
+      1. Get the next transaction from the Bitcoin address at `service.serviceEndpoint`.
       1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
       1. If the last output transaction is not of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, skip to next `service`.
       1. Extract `hashBytes` from the last output transaction.
@@ -543,7 +537,7 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. If `targetVersionId` is defined and `didDocument.versionId` ≠ `targetVersionId`, raise InvalidDidUpdate error.
 1. If `targetVersionId` is not defined:
    1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
-      1. Get the next transaction from the Bitcoin address at `service.serviceEnpoint`.
+      1. Get the next transaction from the Bitcoin address at `service.serviceEndpoint`.
       1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
       1. If the last output transaction is of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, raise InvalidDidUpdate error.
 1. Return `didDocument`.
