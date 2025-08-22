@@ -2,7 +2,7 @@
 
 BTC1 Beacon
 
-: A BTC1 Beacon is an abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called Beacon Signals, should be checked for ::BTC1 Beacon Announcements::. 
+: A abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called Beacon Signals, should be discovered and checked for ::BTC1 Beacon Announcements::. 
 
 BTC1 Beacons
 
@@ -13,18 +13,18 @@ BTC1 Beacons
 
 Beacon Address
   
-: A Beacon Address is a Bitcoin address that has been included in the service of DID document as 
+: A Bitcoin address that has been included in the service of DID document as 
   a service endpoint.
 
 Beacon Signal
 
-: Beacon Signals are Bitcoin transactions that spend from a ::Beacon Address:: 
-  and have been included in the Bitcoin blockchain for a specified ::confirmation time::. 
+: A Bitcoin transaction that spend froms a ::Beacon Address:: 
+  and has been included within a Bitcoin block with a specified number of confirmations. 
   Beacon Signals anchor in Bitcoin blocktime a small number of bytes, by including 
   a transaction output of the format `[OP_RETURN, <32_bytes>]` in the last transaction 
   output of a Bitcoin transaction. The Beacon Signal bytes commit to one or more 
-  ::BTC1 Beacon Announcements::. The ::Beacon Type:: defines how these announcementsa are committed 
-  to by a Beacon Signal and the protocol by which these announcements can be verified 
+  ::BTC1 Beacon Announcements::. The ::Beacon Type:: defines how these announcements are committed 
+  to by a Beacon Signal and the protocol by which these announcements can be validated 
   against the Beacon Signal bytes.
 
 Beacon Signals
@@ -39,10 +39,9 @@ Authorized Beacon Signal
 
 BTC1 Beacon Announcement
 
-: BTC1 Beacon Announcements are broadcast by ::BTC1 Beacon::. A BTC1 Beacon Announcement is a SHA256 hash committing 
-  to a ::BTC1 Update:: that has been broadcast in an ::Authorized Beacon Signal::. ::Beacon Signals:: 
-  can include one or more BTC1 Beacon Announcements. How Beacon Signals include Beacon Announcements
-  is defined by the ::Beacon Type::.
+: A 32 byte SHA256 hash committing to a ::BTC1 Update:: that has been broadcast by a ::BTC1 Beacon:: in an 
+  ::Authorized Beacon Signal::. ::Beacon Signals:: can include one or more BTC1 Beacon Announcements. 
+  How Beacon Signals include announcements is defined by the ::Beacon Type::.
 
 BTC1 Beacon Announcements
 
@@ -60,7 +59,7 @@ BTC1 Updates
 
 Pending BTC1 Update
 
-: A Pending BTC1 Update is a ::BTC1 Update:: that has not yet been announced in an ::Authorized Beacon Signal::.
+: A ::BTC1 Update:: that has not yet been announced in an ::Authorized Beacon Signal::.
 
 Pending BTC1 Updates
 
@@ -68,7 +67,7 @@ Pending BTC1 Updates
 
 Announced BTC1 Update
 
-: An Announced BTC1 Update is a ::BTC1 Update:: that has been announced in an ::Authorized Beacon Signal:: 
+: A ::BTC1 Update:: that has been announced in an ::Authorized Beacon Signal:: 
 which has met the specified threshold for confirmation.
 
 Announced BTC1 Updates
@@ -122,7 +121,7 @@ Beacon Participant
 to partially authorize spends from a ::Beacon Address::.
 
 
-Sparse Merkle Tree
+Merkle Tree
 
 : A tree data structure in which the leaves are a hash of a data block and every
   node that is not a leaf is a hash of its child node values.
@@ -134,13 +133,13 @@ Sparse Merkle Tree
 
 Sparse Merkle Tree
 
-: A Sparse Merkle Tree (SMT) is a ::Merkle Tree:: where each data point included
+: A ::Merkle Tree:: data structure where each data point included
   at the leaf of the tree is indexed.
 
   This data structure enables proofs of both inclusion and non-inclusion of data
   at a given index. The instantiation in this specification has 2^256 leaves
   that are indexed by the SHA256 hash of a **did:btc1** identifier. The data
-  attested to at the leaves of the tree is the ::BTC1 Update:: for that
+  attested to at the leaves of the tree is the ::BTC1 Beacon Announcement:: for the
   **did:btc1** identifier that indexed to the leaf.
 
 SMT
