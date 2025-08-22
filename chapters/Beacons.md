@@ -122,6 +122,8 @@ The `beaconType` of the `service` for a Map Beacon is "MapBeacon".
 
 #### Create Beacon Cohort
 
+Creating a ::Beacon Cohort:: requires that the ::Beacon Aggregator:: define the conditions for it, advertise it, and accept enrolment by ::Beacon Participants::. The process flow involves the exchange of data between the ::Beacon Aggregator:: and ::Beacon Participants::, most notably the DIDs involved and the public keys for creating the n-of-n MuSig2 Bitcoin address. A detailed specification is out of scope, but most implementations operate as shown below.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -142,7 +144,7 @@ sequenceDiagram
 
         loop For each DID...
             R ->> A: Add DID
-            note left of R: Includes proof of control
+            note left of R: May include proof of control
             A ->> A: Add DID to Beacon<br/>participant's authorized list
         end
     end
@@ -153,6 +155,13 @@ sequenceDiagram
 ```
 
 #### Construct and Send Beacon Signal
+
+Constructing and sending a Map Beacon signal operates roughly as follows:
+
+* ::Beacon Participants:: submit their updates to the ::Beacon Aggregator::.
+* When the signal conditions are met, the ::Beacon Aggregator:: initiates the construction of the ::Beacon Signal:: and passes to the ::Beacon Participants:: for verification and signing.
+* Once all ::Beacon Participants:: have approved and partially signed the transaction, the final signed transaction is constructed and broadcast on the Bitcoin network.
+* If a ::CAS:: is defined for the ::Beacon::, the ::Beacon Aggregator:: publishes all files to the CAS.
 
 ```mermaid
 sequenceDiagram
@@ -293,6 +302,8 @@ The `beaconType` of the `service` for an SMT Beacon is "SMTBeacon".
 
 #### Create Beacon Cohort
 
+Creating a ::Beacon Cohort:: requires that the ::Beacon Aggregator:: define the conditions for it, advertise it, and accept enrolment by ::Beacon Participants::. The process flow involves the exchange of data between the ::Beacon Aggregator:: and ::Beacon Participants::, most notably the DIDs or indexes (hashes of DIDs) involved and the public keys for creating the n-of-n MuSig2 Bitcoin address. A detailed specification is out of scope, but most implementations operate as shown below.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -311,8 +322,8 @@ sequenceDiagram
         note left of R: Includes public key
         A ->> A: Add Beacon participant<br/>to Beacon cohort
 
-        loop For each DID...
-            R ->> R: Calculate index = hash(DID)
+        loop For each DID or index...
+            R ->> R: If DID provided,<br/>calculate index = hash(DID)
             R ->> A: Add index
             A ->> A: Add index to Beacon<br/>participant's authorized list
         end
@@ -324,6 +335,12 @@ sequenceDiagram
 ```
 
 #### Construct and Send Beacon Signal
+
+Constructing and sending an SMT Beacon signal operates roughly as follows:
+
+* ::Beacon Participants:: submit their updates to the ::Beacon Aggregator::.
+* When the signal conditions are met, the ::Beacon Aggregator:: requests missing entries from ::Beacon Participants::, initiates the construction of the ::Beacon Signal::, and passes data to the ::Beacon Participants:: for verification and signing.
+* Once all ::Beacon Participants:: have approved and partially signed the transaction, the final signed transaction is constructed and broadcast on the Bitcoin network.
 
 ```mermaid
 sequenceDiagram
