@@ -50,8 +50,14 @@ BTC1 Beacon Announcements
 
 BTC1 Update
 
-: A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific did:btc1 DID document. 
-  The signed payload includes a JavaScript Object Notation (JSON) Patch object defining a set of mutations to the DID document being updated.
+: A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific **did:btc1** DID document. This capability invocation Data Integrity proof secures the ::Unsecured BTC1 Update:: document.
+
+Unsecured BTC1 Update
+
+A ::BTC1 Update:: without a proof attached to it invoking the capability to apply the update to a **did:btc1:: DID document. 
+An Usecured BTC1 Update contains the JSON Patch object that defines the set of mutations to be applied to a DID document, 
+along with the new version of the DID document and the source and target hashes of the DID document
+identifying the source DID document that the patch should be applied to and the target DID document that results from appliying the patch.
 
 BTC1 Updates
 
