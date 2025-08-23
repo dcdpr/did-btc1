@@ -27,6 +27,30 @@ The specification will be compiled and available in the `_site/index.html` file.
 After editing the markdown files for the specification, see the `chapters` folder, 
 you will need to rerun the script `npm run pandoc-spec-local` to see the changes.
 
+# History and Evolution of the did:btc1 DID method
+
+```mermaid
+timeline
+    title did:btc1 — A Timeline of Development
+    section RWOT Origins
+      RWOT5 Boston  : Oct 2017
+      RWOT7 Toronto — BTCR v0.1 Design Decensions : Sep 2018
+    section Foundations
+      Taproot & Schnorr activated : Nov 2021
+      DID Core 1.0 Recommendation : Jul 2022
+      BTCR v2 work (→ btc1) starts : 2022
+    section Specification Work
+      Programming Bitcoin course : Mar 2023
+      btc1 spec drafting begins : Summer 2023
+      DID WG recharter (DID Resolution focus) : April 2024
+    section Exploration and Experimentation
+      POC - Sparse Merkle Tree aggregation : Feb 2024
+      Schnorr cryptosuite (bip340-2025) work starts : Dec 2024
+    section Implementation and Adoption
+      Implementations across Python/JS/Rust/Java : 2025
+      bip340-2025 cryptosuite adopted (CCG Work Item) : Aug 2025
+```
+
 
 ## Jupyter Notebooks
 
