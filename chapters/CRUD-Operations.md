@@ -19,11 +19,13 @@ as a **did:btc1** identifier. The public key is then used to deterministically
 generate the initial DID document.
 
 It takes the following inputs:
+
 * `pubKeyBytes`: a compressed SEC encoded secp256k1 public key
 * `version`: the identifier version, optional, defaults to 1.
 * `network`: the bitcoin network used for the identifier, optional, defaults to `bitcoin`.
 
 It returns the following outputs:
+
 * `did`: a newly created **did:btc1** identifier
 * `initialDocument`: a valid DID document for the given identifier
 
@@ -46,6 +48,7 @@ more complex ::Initial DID Document::, including the ability to include
 Service Endpoints and ::Beacons:: that support aggregation.
 
 It takes the following inputs:
+
 * `intermediateDocument`: any arbitrary, valid DID document with the `identifier`
    replaced with the placeholder value throughout all fields (e.g. the id field)
    `did:btc1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`. It
@@ -56,6 +59,7 @@ It takes the following inputs:
    optional, defaults to `bitcoin`.
 
 It returns the following outputs:
+
 * `did`: a newly created **did:btc1** identifier
 * `initialDocument`: a valid DID document for the given identifier
 
@@ -89,6 +93,7 @@ DID document of the `identifier` at a specific ::Target Time::. The
 ::Resolution Time:: of the request.
 
 It takes the following inputs:
+
 * `identifier`: a valid **did:btc1** identifier
 * `resolutionOptions`: an optional object containing the following options
    * `versionId`: the version of the identifier and/or DID document
@@ -98,6 +103,7 @@ It takes the following inputs:
    * `network`: the bitcoin network used for resolution
 
 It returns the following output:
+
 * `targetDocument`: a DID Core conformant DID document after all updates have
    been found, validated and applied
 
@@ -117,6 +123,7 @@ The Resolve ::Initial DID Document:: algorithm specifies how to resolve an ::Ini
 DID Document:: and validate it against the `identifier` for a specific **did:btc1**.
 
 It takes the following inputs:
+
 * `identifier`: A valid **did:btc1** identifier
 * `identifierComponents`: An object containing the following properties
   * `idType`: the type of identifier (KEY or EXTERNAL)
@@ -126,6 +133,7 @@ It takes the following inputs:
 * `resolutionsOptions`: 
 
 It returns the following output:
+
 * `initialDocument`: a valid DID document for the given identifier.
 
 1. If `identifierComponents.idType` value is "key", then set the `initialDocument`
@@ -144,6 +152,7 @@ The Deterministically Generate ::Initial DID document:: algorithm generates an
 ::Initial DID Document:: from a secp256k1 public key.
 
 It takes the following inputs:
+
 * `identifier`: A valid **did:btc1** identifier
 * `identifierComponents`: An object containing the following properties
   * `idType`: the type of identifier (KEY or EXTERNAL)
@@ -152,6 +161,7 @@ It takes the following inputs:
   * `genesisBytes`: the originating public key bytes
 
 It returns the following output:
+
 * `initialDocument`: a valid DID document for the given identifier.
 
 1. Set `keyBytes` to `identifierComponents.genesisBytes`.
@@ -192,11 +202,13 @@ these three addresses can be produced only through signatures from the
 SingletonBeacon.
 
 It takes the following inputs:
+
 * `identifier`: A valid **did:btc1** identifier
 * `keyBytes`: a compressed SEC encoded secp256k1 public key
 * `network`: the bitcoin network used for the identifier
 
 It returns the following output:
+
 * `services`: an array of beacon services objects containing the following properties
    * `type`: a string signaling the type of beacon, default='SingletonBeacon'
    * `id`: the **did:btc1** identifier controlling the beacon plus the DID fragment pointing
@@ -234,6 +246,7 @@ as an `intermediateDocumentRepresentation`, either by retrieving it from
 part of the resolution request.
 
 It takes the following inputs:
+
 * `identifier`: A valid **did:btc1** identifier
 * `identifierComponents`: An object containing the following properties
   * `idType`: the type of identifier (KEY or EXTERNAL)
@@ -243,6 +256,7 @@ It takes the following inputs:
 * `resolutionOptions`: A set of optional parameters used for resolution
 
 It returns the following output:
+
 * `initialDocument`: a valid DID document for the given identifier.
 
 1. If `resolutionOptions.sidecarData.initialDocument` is not null, set
@@ -263,6 +277,7 @@ The Sidecar ::Initial DID Document:: Validation algorithm validates an
 `intermediateDocumentRepresentation` matches the bytes encoded within the `identifier`.
 
 It takes the following inputs:
+
 * `identifier`: A valid **did:btc1** identifier
 * `identifierComponents`: An object containing the following properties
   * `idType`: the type of identifier (KEY or EXTERNAL)
@@ -289,6 +304,7 @@ from a ::Content Addressable Storage:: (CAS) system by converting the bytes in
 the `identifier` into a ::Content Identifier:: (CID).
 
 It takes the following inputs:
+
 * `identifier`: A valid **did:btc1** identifier
 * `identifierComponents`: An object containing the following properties
   * `idType`: the type of identifier (KEY or EXTERNAL)
@@ -297,6 +313,7 @@ It takes the following inputs:
   * `genesisBytes`: the originating public key bytes
 
 It returns the following output:
+
 * `initialDocument`: a valid DID document for the given identifier
 
 1. Set `hashBytes` to `identifierComponents.genesisBytes`.
@@ -317,6 +334,7 @@ announce ::DID Update Payloads:: applicable to the **did:btc1** identifier being
 resolved. 
 
 It takes the following inputs:
+
 * `initialDocument`: The DID document that was used to initiate the **did:btc1**
    identifier being resolved as verified by the [Resolve Initial DID Document] algorithm.
    A DID Core conformant DID document.
@@ -358,6 +376,7 @@ reached, or the blockchain history passes the supplied `targetTime`. At this
 point the current `contemporaryDIDDocument` is returned.
 
 It takes the following inputs:
+
 * `contemporaryDIDDocument`: The DID document for the **did:btc1** identifier 
    being resolved that is current at the blockheight of the `contemporaryBlockheight`. 
    A DID Core conformant DID document.
@@ -449,6 +468,7 @@ Note: It is recommended that you use a Bitcoin indexer and API to query the Bitc
 * [Esplora](https://github.com/Blockstream/esplora)
 
 It takes the following inputs:
+
 * `contemporaryBlockheight`: The height of the block this function is looking for 
    ::Beacon Signals:: in. An integer greater or equal to 0.
 * `beacons`: An array of ::Beacon:: services in the ::contemporary DID document::.
@@ -461,6 +481,7 @@ It takes the following inputs:
    The algorithm **MUST** query the Bitcoin blockchain identified by the `network`.
   
 It returns the following output:
+
 * `nextSignals`: an array of `signal` objects with the following properties:
     * `beaconId`: The id for the ::Beacon:: that the ::Beacon Signal:: was announced by.
     * `beaconType`: The type of the ::Beacon:: that announced the ::Beacon Signal::.
@@ -490,6 +511,7 @@ The Process Beacon Signals algorithm processes each ::Beacon Signal:: by attempt
 ::DID Update Payload:: for that signal according to the type of the ::Beacon::.
 
 It takes the following inputs:
+
 * `beaconSignals`: An array of struct representing ::Beacon Signals:: retrieved through executing
    the [Find Next Signals] algorithm. Each struct contains the follow properties:
    * `beaconId`: The id for the ::Beacon:: that the `signal` was announced by.
@@ -505,6 +527,7 @@ It takes the following inputs:
       the value at the leaf indexed by the **did:btc1** being resolved.
 
 It returns the following output:
+
 * `updates`: an array of ::DID Update Payloads::
 
 1. Set `updates` to an empty array.
@@ -557,12 +580,14 @@ matches the targetHash specified by the update and validates it is a conformant
 DID document before returning it.
 
 It takes the following inputs:
+
 * `contemporaryDIDDocument`: The DID document for the **did:btc1** identifier 
    being resolved that is current at the blockheight of the `contemporaryBlockheight`. 
    A DID Core conformant DID document.
 * `update`: the ::DID Update Payload:: to apply to the `contemporaryDIDDocument`
 
 It returns the following output:
+
 * `targetDIDDocument`: The contemporary DID document with all updates applied to it
 
 1. Set `capabilityId` to `update.proof.capability`.
@@ -602,6 +627,7 @@ following the bip340-jcs-2025 cryptosuite with a proofPurpose of
 `capabilityInvocation`.
 
 It takes the following inputs:
+
 * `identifier`: a valid **did:btc1** identifier
 * `sourceDocument`: the DID document being updated
 * `sourceVersionId`: the version ID of the source DID document
@@ -616,6 +642,7 @@ It takes the following inputs:
    `SMTAggregateBeacon`
 
 It returns the following output:
+
 * `signalsMetadata`: A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
    to a struct containing ::Sidecar Data:: for that signal provided as part of the
    resolutionOptions. This struct contains the following properties:
@@ -648,12 +675,14 @@ The Construct DID Update Payload algorithm applies a `documentPatch` to a
 DID document.
 
 It takes the following inputs:
+
 * `identifier`: a valid **did:btc1** identifier 
 * `sourceDocument`: The source DID document to apply the `documentPatch` to
 * `sourceVersionId`: the version ID of the source DID document
 * `documentPatch`: a valid JSON Patch object used to update the `sourceDocument`
 
 It returns the following output:
+
 * `didUpdatePayload`: a newly created ::DID Update Payload:: object
 
 1. Check that `sourceDocument.id` equals `btc1Identifier` else MUST raise
@@ -686,12 +715,14 @@ Integrity proof following the ZCAP-LD and
 Verifiable Credentials (VC) Data Integrity specifications.
 
 It takes the following inputs:
+
 * `identifier`: a valid **did:btc1** identifier
 * `didUpdatePayload`: an unsigned ::DID Update Payload:: object
 * `verificationMethod`: an object containing reference to keys and/or Beacons to
    use for ZCAP-LD
 
 It returns the following output:
+
 * `didUpdateInvocation`: a ::DID Update Payload:: object invoked and secured with
    signature / proof data.
 
@@ -726,6 +757,7 @@ and calls the Broadcast DID Update algorithm corresponding to the type of
 the ::Beacon::.
 
 It takes the following inputs:
+
 * `identifier`: a valid **did:btc1** identifier
 * `sourceDocument`: The source DID document being changed
 * `beaconIds`: string array with IDs that point to the ::Beacons:: to use for
@@ -734,6 +766,7 @@ It takes the following inputs:
    signature / proof data
 
 It returns the following output:
+
 * `signalsMetadata`: A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
    to a struct containing ::Sidecar Data:: for that signal provided as part of the
    resolutionOptions. This struct contains the following properties:
