@@ -535,10 +535,11 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
    1. Set `didDocument` to transformation of `didDocument` with `btc1Update`.
    1. If `didDocument` is not a valid DID document, raise InvalidDidUpdate error.
    1. If `didDocument.id` is not the same as the **did:btc1** identifier, raise InvalidDidUpdate error.
+   1. If `didDocument` has no BTC1 Beacon service types (i.e., no services where `service.type` is "BTC1Beacon"), raise InvalidDidUpdate error.
    1. If `targetVersionId` is defined and `didDocument.versionId` = `targetVersionId`, terminate.
 1. If `targetVersionId` is defined and `didDocument.versionId` ≠ `targetVersionId`, raise InvalidDidUpdate error.
 1. If `targetVersionId` is not defined:
-   1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
+       1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
       1. Get the next transaction from the Bitcoin address at `service.serviceEndpoint`.
       1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
       1. If the last output transaction is of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, raise InvalidDidUpdate error.
