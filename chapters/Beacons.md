@@ -533,6 +533,8 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
       1. Set `btc1Update` to `tempBtc1Update`. 
    1. If `btc1Update` is null, terminate.
    1. Set `didDocument` to transformation of `didDocument` with `btc1Update`.
+   1. If `didDocument` is not a valid DID document, raise InvalidDidUpdate error.
+   1. If `didDocument.id` is not the same as the **did:btc1** identifier, raise InvalidDidUpdate error.
    1. If `targetVersionId` is defined and `didDocument.versionId` = `targetVersionId`, terminate.
 1. If `targetVersionId` is defined and `didDocument.versionId` ≠ `targetVersionId`, raise InvalidDidUpdate error.
 1. If `targetVersionId` is not defined:
