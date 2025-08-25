@@ -432,7 +432,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 
 Given:
 
-* `smt` - required, optimized SMT
+* `smt` - required, optimized ::SMT::
 * `index` - required, index provided by DID controller
 
 Calculate the path to the root for the index:
