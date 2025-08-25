@@ -515,6 +515,7 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
    1. Set `id` to the hexadecimal string representation of `genesisBytes`.
    1. Get `didDocument` from `sidecarDocumentsMap` by its `id` if available, or from ::CAS:: by its `id` if not and `cas` is defined.
    1. Update placeholder values in `didDocument` with `did` as required.
+   1. If `didDocument` is not a valid DID document, raise InvalidDidUpdate error.
 1. Until terminated:
    1. Set `btc1Update` to null.
    1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
