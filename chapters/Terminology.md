@@ -1,23 +1,14 @@
 ## Terminology
 
-Beacon
+BTC1 Beacon
 
-: A Beacon is the mechanism by which updates to Decentralized Identifier (DID)
-  documents are announced and discovered.
+: A abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called Beacon Signals, should be discovered and checked for ::BTC1 Update Announcements::. 
 
-  Beacons are identified by a Bitcoin address which is included as a
-  service endpoint in a DID document along with a specific ::Beacon Type::. By spending
-  from a Beacon address, DID controllers announce that an update to their DID has
-  occurred (in the case of a SingletonBeacon) or may have occurred (in the case
-  of a CIDAggregate or SMTAggregate Beacons).
+BTC1 Beacons
 
-Beacons
+: ::BTC1 Beacon::
 
-: ::Beacon::
-
-Beacon's
-
-: ::Beacon::
+: ::BTC1 Beacon::
 
 Singleton Beacon
 
@@ -28,9 +19,9 @@ Aggregate Beacon
 
 : An Aggregate Beacon enables multiple entities (possibly controlling multiple
   DIDs and possibly posting multiple updates) to collectively announce a set of
-  ::DID Update Payloads:: in a ::Beacon Signal::.
+  ::BTC1 Updates:: in a ::Beacon Signal::.
 
-  There can only ever be one ::DID Update Payload:: per **did:btc1** in a ::Beacon
+  There can only ever be one ::BTC1 Update:: per **did:btc1** in a ::Beacon
   Signal:: from an Aggregate Beacon.
 
 Beacon Type
@@ -43,43 +34,116 @@ Beacon Types
 
 Beacon Signal
 
-: Beacon Signals are Bitcoin transactions that spend from a ::Beacon:: address and
+: Beacon Signals are Bitcoin transactions that spend from a ::BTC1 Beacon:: address and
   include a transaction output of the format `[OP_RETURN, <32_bytes>]`. Beacon
-  Signals announce one or more ::DID Update Payloads:: and provide a means for these
+  Signals announce one or more ::BTC1 Updates:: and provide a means for these
   payloads to be verified as part of the Beacon Signal.
 
-  The type of the ::Beacon::  determines how these Beacon Signals SHOULD be
-  constructed and processed to validate a set of ::DID Update Payloads:: against the
+  The type of the ::BTC1 Beacon::  determines how these Beacon Signals SHOULD be
+  constructed and processed to validate a set of ::BTC1 Updates:: against the
   32 bytes contained within the Beacon Signal.
 
 Beacon Signals
 
 : ::Beacon Signal::
 
+
 Authorized Beacon Signal
 
-: An Authorized Beacon Signal is a ::Beacon Signal:: from a ::Beacon:: with a ::Beacon::
+: An Authorized Beacon Signal is a ::Beacon Signal:: from a ::BTC1 Beacon:: with a ::BTC1 Beacon::
   address in a then-current DID document.
 
-DID Update Payload
+BTC1 Update Announcement
 
-: A capability invocation secured using Data Integrity that invokes the root 
-  capability to update a specific **did:btc1**. The signed payload includes a
-  JavaScript Object Notation (JSON) Patch object defining a set of mutations to 
-  the DID document being updated.
+: A 32 byte SHA256 hash committing to a ::BTC1 Update:: that has been broadcast by a ::BTC1 Beacon:: in an 
+  ::Authorized Beacon Signal::. ::Beacon Signals:: can include one or more BTC1 Update Announcements. 
+  How Beacon Signals include announcements is defined by the ::Beacon Type::.
 
-DID Update Payloads
+BTC1 Update Announcements
 
-: ::DID Update Payload::
+: ::BTC1 Update::
 
-DID's Update Payload
 
-: ::DID Update Payload::
+: ::BTC1 Update::
 
-DID Update Bundle
+: A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific **did:btc1** DID document. This capability invocation Data Integrity proof secures the ::Unsecured BTC1 Update:: document.
+
+BTC1 Updates
+
+: ::BTC1 Update::
+
+Unsecured BTC1 Update
+
+A ::BTC1 Update:: without a proof attached to it invoking the capability to apply the update to a **did:btc1** DID document. 
+An Usecured BTC1 Update contains the JSON Patch object that defines the set of mutations to be applied to a DID document, 
+along with the new version of the DID document and the source and target hashes of the DID document
+identifying the source DID document that the patch should be applied to and the target DID document that results from appliying the patch.
+
+Pending BTC1 Update
+
+: A ::BTC1 Update:: that has not yet been announced in an ::Authorized Beacon Signal::.
+
+Pending BTC1 Updates
+
+: ::Pending BTC1 Update::
+
+Announced BTC1 Update
+
+: A ::BTC1 Update:: that has been announced in an ::Authorized Beacon Signal:: 
+which has met the specified threshold for confirmation.
+
+Announced BTC1 Updates
+
+: ::Announced BTC1 Update::
+
+Beacon Type
+
+: The type of a ::BTC1 Beacon::. The Beacon Type defines how ::BTC1 Update Announcements:: 
+  are included within a ::Beacon Signal:: broadcast on the Bitcoin network. It also defines 
+  how the content committed within ::BTC1 Update Announcements:: can be verified 
+  against the ::Beacon Signal::.
+
+
+Singleton Beacon
+
+: A type of ::BTC1 Beacon:: whose ::Beacon Signals:: each contain a single ::BTC1 Update Announcement::.
+
+Map Beacon
+
+: A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Update Announcements::. 
+  A ::Beacon Signal:: from a Map Beacon commits to a ::Beacon Announcement Map::.
+
+
+Beacon Announcement Map
+
+: A document that maps **did:btc1** identifiers to ::BTC1 Update Announcements::. 
+  This is used to distinguish which ::BTC1 Update Announcement:: applies to which 
+  **did:btc1** identifier.
+
+SMT Beacon
+
+: A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Update Announcements::.  
+  A Beacon Signal from an SMT Beacon contains the root of an optimized sparse Merkle tree.
+
+Beacon Cohort
+
+: The set of unique cryptographic keys participating in a ::BTC1 Beacon:: that are required to
+authorize spends from the ::Beacon Address::.
+
+
+Beacon Aggregator
+
+: The entity that coordinates the protocols of an aggregate ::BTC1 Beacon::. 
+Specifically the Create Beacon Cohort and Announce Beacon Signal protocols.
+
+
+Beacon Participant
+
+: A member of a ::Beacon Cohort::, typically a DID controller, that controls cryptographic keys required 
+to partially authorize spends from a ::Beacon Address::.
 
 : A JSON object that maps **did:btc1** identifiers to ::Content Identifiers:: (CIDs)
-  that identify ::DID Update Payloads:: for the identified DID. DID Update Bundles
+  that identify ::BTC1 Updates:: for the identified DID. DID Update Bundles
   are announced by CIDAggregate Beacons.
 
 Merkle Tree
@@ -94,13 +158,13 @@ Merkle Tree
 
 Sparse Merkle Tree
 
-: A Sparse Merkle Tree (SMT) is a ::Merkle Tree:: where each data point included
+: A ::Merkle Tree:: data structure where each data point included
   at the leaf of the tree is indexed.
 
   This data structure enables proofs of both inclusion and non-inclusion of data
   at a given index. The instantiation in this specification has 2^256 leaves
   that are indexed by the SHA256 hash of a **did:btc1** identifier. The data
-  attested to at the leaves of the tree is the ::DID Update Payload:: for that
+  attested to at the leaves of the tree is the ::BTC1 Update:: for that
   **did:btc1** identifier that indexed to the leaf.
 
 SMT
@@ -109,7 +173,7 @@ SMT
 
 Invocation
 
-: See https://w3c-ccg.github.io/zcap-spec/#terminology
+: See [Authorization Capabilities for Linked Data v0.3](https://w3c-ccg.github.io/zcap-spec/#terminology)
 
 Schnorr Signature
 
@@ -236,4 +300,18 @@ Contemporary Blockheight
 
 : The blockheight of consideration when walking the provenance of a series of DID
   updates. A DID document's contemporary time is the Signal Time of the ::Beacon Signal::
-  that announced the last ::DID Update Payload:: applied to the DID document.
+  that announced the last ::BTC1 Update:: applied to the DID document.
+
+Intermediate DID Document
+
+: A representation of a DID document that it not yet fully conformant with the DID Core
+  specification. Intermediate DID documents for the **did:btc1** DID method are DID documents
+  whose identifier values have been replaced with a placeholder value.
+
+Initial DID Document
+
+: The canonical, conformant version 1 of a DID document for a specific **did:btc1** identifier.
+
+Initial DID Documents
+
+: ::Initial DID Document::

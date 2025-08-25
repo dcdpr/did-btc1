@@ -1,20 +1,20 @@
 ## Syntax
 
 A **did:btc1** Decentralized Identifier (DID) consists of a `did:btc1` prefix, 
-followed by an `id-bech32`value, which is a
+followed by an `id-bech32` value, which is a
 [Bech32m](https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki)
-encoding of:
+encoding of the following data:
 
-* the specification `version`;
-* the Bitcoin `network` identifier; and
+* `version` - the specification version the DID was created against;
+* `network` - the Bitcoin network the DID can be used on; and
 * either:
   * a `key-value` representing a secp256k1 public key; or
   * a `hash-value` representing the hash of an initiating external DID document.
 
-The specification `version` and the Bitcoin `network` identifier are encoded
+The specification `version` and the Bitcoin `network` are encoded
 into a single byte as follows:
 
-1. The first four bits (high nibble) are the `version` minus 1. For this version
+1. The first four bits (high nibble) are the `version` minus one. For this version
    of the specification, the `version` is `1` and the high nibble is `0`.
 1. The second (remaining) four bits (low nibble) are the Bitcoin `network`
    identifier, one of:

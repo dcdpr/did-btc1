@@ -1,0 +1,17 @@
+[
+    {
+        "type": "SingletonBeacon",
+        "id": "did:btc1:k1qgpgwtp2dpe3thqny6jngl5eg6p4wghd04yj70jcp8qe4nh75hd4dhc8f08q4#initialP2PKH",
+        "serviceEndpoint": "bitcoin:mppdEp4wznKcUkDrw7LhrtKpTFx19vXxi8"
+    },
+    {
+        "type": "SingletonBeacon",
+        "id": "did:btc1:k1qgpgwtp2dpe3thqny6jngl5eg6p4wghd04yj70jcp8qe4nh75hd4dhc8f08q4#initialP2WPKH",
+        "serviceEndpoint": "bitcoin:bcrt1qvcgtvk08lx52apzxxd0c663l6274u4muchq7qg"
+    },
+    {
+        "type": "SingletonBeacon",
+        "id": "did:btc1:k1qgpgwtp2dpe3thqny6jngl5eg6p4wghd04yj70jcp8qe4nh75hd4dhc8f08q4#initialP2TR",
+        "serviceEndpoint": "bitcoin:bcrt1put79jyupjf66qap9n089m45qwhd53sqmkej66kf5rsxudajsf6dstl5jqw"
+    }
+]

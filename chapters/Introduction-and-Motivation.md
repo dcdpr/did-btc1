@@ -123,11 +123,11 @@ provide. In summary its main limitations are:
 
 * Resolvers require read-only view of all blocks arriving at the Bitcoin blockchain.
 * DID controllers are responsible for providing the data referenced in their
-  ::Beacons::' updates (although many ::Beacons:: are expected to provide an archival
+  ::BTC1 Beacons::' updates (although many ::BTC1 Beacons:: are expected to provide an archival
   service making Bundles publicly available).  If this data is not available, the
   DID will not verify.
 * Because of the data availability responsibility, and the threat of a rogue
-  Beacon publishing an invalid reference, the most secure ::Beacons:: will choose
+  Beacon publishing an invalid reference, the most secure ::BTC1 Beacons:: will choose
   Bitcoin scripts that allow every DID controller a veto, although given current
   ::Unspent Transaction Output:: (::UTXO::)-sharing technology, this impedes
   availability.
@@ -138,5 +138,5 @@ provide. In summary its main limitations are:
   DID Document;
 * More scalable ::Aggregate Beacons:: will be possible with a "transaction
   introspection" upgrade to Bitcoin, such as OP_CTV or OP_CAT; and
-* ::Beacons:: do not have to reuse their addresses if, in the controller's DID document,
+* ::BTC1 Beacons:: do not have to reuse their addresses if, in the controller's DID document,
   a descriptor is used instead of an address.
