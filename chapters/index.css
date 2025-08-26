@@ -2,19 +2,19 @@ html {
     overflow: hidden;
 }
 
-#toc {
+.toc {
     background-color: #eceff1;
     padding: 1em 0.8em;
     font-size: .85em;
 }
 
-#toc-header {
+.toc-header {
     display: table;
     margin: 0 auto;
     font-size: 1.7em;
 }
 
-#toc ul, #toc ul ul, #toc ul ul ul {
+.toc ul {
     list-style: none;
 }
 
@@ -24,7 +24,7 @@ html {
     padding: 0 .2em;
 }
 
-#toc ul li a {
+.toc ul li a {
     display: block;
     padding: .4em .3em .225em;
     text-decoration: none;
@@ -32,21 +32,21 @@ html {
     color: #333;
 }
 
-#toc ul {
+.toc ul {
     padding: 0 0 0 1em;
 }
 
-#toc a:hover {
+.toc a:hover {
     text-shadow: 0 1px 1px #fff;
     background: rgba(0, 0, 0, .1);
 }
 
-#content {
+.content {
     box-sizing: border-box;
     padding: .5em 2em 1.5em 2em;
 }
 
-#content h1:first-of-type {
+.content h1:first-of-type {
     margin: 1em 0 .5em;
 }
 

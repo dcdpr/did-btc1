@@ -11,7 +11,7 @@ The original Bech32 algorithm is documented in
 
 Given:
 
-* `hrp` - required, a string representing the Human-Readable Part of the encoding
+* `hrp` - required, a string representing the Human-Readable Part (HRP) of the encoding
 * `dataBytes` - required, a byte array to be encoded
 
 1. Initialize `encodedString` to the output of Bech32m encoding the `hrp` and
@@ -46,8 +46,8 @@ The function returns the `canonicalizedBytes`.
 ### Fetch Content from Addressable Storage
 
 A macro function that takes in SHA256 hash of some content, `hashBytes`, converts these 
-bytes to a IPFS v1 ::Content Identifier:: and attempts to retrieve the identified content 
-from ::Content Addressable Storage:: (CAS). 
+bytes to an InterPlanetary File System (IPFS) v1 ::Content Identifier:: (CID) and attempts 
+to retrieve the identified content from ::Content Addressable Storage:: (CAS). 
 
 The function returns the retrieved `content` or null.
 
@@ -63,11 +63,10 @@ Note: Not sure if these algorithms should go here or in the appendix?
 
 #### Derive Root Capability from **did:btc1** Identifier
 
-This algorithm deterministically generates a ZCAP-LD root capability from a
-given **did:btc1** identifier. Each root capability is unique to the identifier.
-This root capability is defined and understood by the **did:btc1** specification
-as the root capability to authorize updates to the specific **did:btc1** identifiers
-DID document.
+This algorithm deterministically generates an [Authorization Capabilities for Linked Data](https://w3c-ccg.github.io/zcap-spec/) (ZCAP-LD) root capability from a given **did:btc1** identifier. Each root 
+capability is unique to the identifier. This root capability is defined and understood 
+by the **did:btc1** specification as the root capability to authorize updates to the 
+specific **did:btc1** identifiers DID document.
 
 The algorithm takes in a **did:btc1** identifier and returns a `rootCapability` object.
 
@@ -106,8 +105,8 @@ This algorithm takes in a `capabilityId` and returns a `rootCapability` object.
 1. Set `rootCapability.invocationTarget` to `btc1Identifier`.
 1. Return `rootCapability`.
 
-Below is an example of a `didUpdatePayload`. An invoked ZCAP-LD capability
-containing a `patch` defining how the DID document for
+Below is an example of a `btc1Update`. An invoked [ZCAP-LD](https://w3c-ccg.github.io/zcap-spec/)
+capability containing a `patch` defining how the DID document for
 **did:btc1:k1q0rnnwf657vuu8trztlczvlmphjgc6q598h79cm6sp7c4fgqh0fkc0vzd9u** SHOULD
 be mutated.
 

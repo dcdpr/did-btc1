@@ -1,6 +1,0 @@
-{
-  "id": "#singletonBeacon",
-  "type": "SingletonBeacon",
-  "serviceEndpoint": "${beaconUri}",
-  "casType": "IPFS"
-}

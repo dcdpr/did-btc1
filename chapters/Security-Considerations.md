@@ -5,10 +5,18 @@
 #### Late Publishing
 
 **did:btc1** was designed to avoid ::Late Publishing:: such that, independent of when
-a resolution occurs, the DID document history and provenance are guaranteed to
-be invariant. This is achieved through requiring strict ordering of DID updates
-and complete coverage of all relevant ::Beacon Signals::. Resolvers MUST process all
-relevant ::Beacon Signals:: and enforce strict ordering.
+a resolution occurs, the Decentralized Identifier (DID) document history and provenance are 
+guaranteed to be invariant. This is achieved through requiring strict ordering of 
+DID updates and complete coverage of all relevant ::Beacon Signals::. Resolvers MUST 
+process all relevant ::Beacon Signals:: and enforce strict ordering.
+
+Additionally, when resolvers are passed resolution options specifying a versionId 
+they MUST process the full history of the signals up to the current time in order 
+to check for late publishing. Any update that specifies the same versionId but 
+contains different update operations MUST trigger a ::Late Publishing:: error. This 
+is not the case for versionTime. When a resolver is passed a versionTime option
+then the state of the DID document can be returned once the all the signals in 
+the blocks before this timestamp have been processed. 
 
 #### Invalidation Attacks
 
@@ -30,17 +38,17 @@ Publishing::. This means that the updates MUST be available to resolver at the
 time of resolution. It is the responsibility of DID controllers to persist this
 data, otherwise the consequence is that the DID MAY not be resolvable (depending
 on data accessibility from the perspective of the resolver).  DID controllers
-MAY store ::DID Update Payloads:: on a ::Content Addressable Storage:: (CAS) system. DID
+MAY store ::BTC1 Updates:: on a ::Content Addressable Storage:: (CAS) system. DID
 controllers SHOULD consider that in some constrained environments it is preferable
 to discard a DID and replace it with a newly issued DID, rather than rotating
 a key.
 
 #### Aggregate Beacon Address Verification
 
-An Aggregate ::Beacon:: Address SHOULD be an n-of-n Pay-to-Taproot (P2TR) address,
+An ::Aggregate Beacon:: Address SHOULD be an n-of-n Pay-to-Taproot (P2TR) address,
 with a cohort key contributed to the n by each of the cohort participants. DID
-controllers participating in aggregation cohorts SHOULD verify the ::Beacon:: address
-is an n-of-n and that one of the n keys is the cohort key provided to the ::Beacon::
+controllers participating in aggregation cohorts SHOULD verify the ::BTC1 Beacon:: address
+is an n-of-n and that one of the n keys is the cohort key provided to the ::BTC1 Beacon::
 coordinator. This can be achieved only by constructing the address for themselves
 from the set of cohort keys which the coordinator SHOULD provide.
 
@@ -59,10 +67,10 @@ the DID to be invalidated.
 In **did:btc1**, cryptographic keys authorize both DID updates and ::Beacon Signals::.
 Should these keys get compromised without the DID controller's knowledge, it
 would be possible for an adversary to take control of a DID by submitting a ::DID
-Update Payload:: to a ::Beacon:: that replaces key material and ::Beacons:: in the DID
+Update Payload:: to a ::BTC1 Beacon:: that replaces key material and ::BTC1 Beacons:: in the DID
 document for ones under the adversary's control. Such an attack would be detectable
-by the DID controller, as they would see a valid spend from a ::Beacon:: that they
-did not authorize. Additionally, if the DID relied on ::Sidecar data::, without access
+by the DID controller, as they would see a valid spend from a ::BTC1 Beacon:: that they
+did not authorize. Additionally, if the DID relied on ::Sidecar Data::, without access
 to this data the DID would be useless to the adversary as they would be unable
 to demonstrate a valid complete history of the DID during resolution.
 
@@ -70,7 +78,7 @@ to demonstrate a valid complete history of the DID during resolution.
 
 The security of **did:btc1** identifiers depends on the security of ::Schnorr
 Signatures:: over the secp256k1 curve. It is this signature scheme that is used
-to secure both the ::Beacon Signals:: and ::DID Update Payloads::. Should vulnerabilities
+to secure both the ::Beacon Signals:: and ::BTC1 Updates::. Should vulnerabilities
 be discovered in this scheme or if advancements in quantum computing compromise
 its cryptographic foundations, the **did:btc1** method would become obsolete.
 
