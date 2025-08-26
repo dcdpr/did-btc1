@@ -317,7 +317,7 @@ sequenceDiagram
         A ->> A: Add Beacon participant<br/>to Beacon cohort
 
         loop For each DID or index...
-            R ->> R: If DID provided,<br/>calculate index = hash(DID)
+            R ->> R: Calculate index = hash(DID)
             R ->> A: Add index
             A ->> A: Add index to Beacon<br/>participant's authorized list
         end
