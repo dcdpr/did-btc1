@@ -106,7 +106,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 
 ### Map Beacon
 
-A Map Beacon creates a ::Beacon Signal:: that commits to multiple ::BTC1 Update Announcements::. To do so, it constructs a map where the key is the **did:btc1** identifier and the value is the hash of the corresponding ::BTC1 Update::, and publishes a hash of the map.
+A ::Map Beacon:: creates a ::Beacon Signal:: that commits to multiple ::BTC1 Update Announcements:: through a ::Beacon Announcement Map::. To do so, it constructs a map where the key is the **did:btc1** identifier and the value is the hash of the corresponding ::BTC1 Update::, and broadcasts a SHA256 hash of the map in the ::Beacon Signal::.
 
 If a ::BTC1 Update:: is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller. However, any party that has access to or is provided the map is at least aware of the existence of all **did:btc1** identifiers in the map and the existence of their ::BTC1 Update Announcements::.
 
