@@ -28,9 +28,9 @@ All resolvers of **did:btc1** DIDs MUST support the ::Beacon Types:: defined in 
 
 A ::Beacon Signal:: commits to and anchors in a Bitcoin block 32 bytes of information that represents one of the following:
 
-* A ::BTC1 Update Announcement::;
+* a ::BTC1 Update Announcement::;
 * the hash of a ::Beacon Announcement Map::; or
-* The 32 bytes of an optimized ::sparse Merkle tree:: root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
+* the 32 bytes of an optimized ::sparse Merkle tree:: root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
 
 ### Actors
 
