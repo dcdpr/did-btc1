@@ -64,7 +64,7 @@ BTC1 Update Announcements
 : ::BTC1 Update Announcement::
 
 
-: ::BTC1 Update::
+BTC1 Update
 
 : A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific **did:btc1** DID document. This capability invocation Data Integrity proof secures the ::Unsecured BTC1 Update:: document.
 
