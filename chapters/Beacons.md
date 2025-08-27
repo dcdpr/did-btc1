@@ -381,15 +381,15 @@ sequenceDiagram
     A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
 
     loop For each Beacon participant...
-        A ->> A: Initialize empty peers array<br/>map (keyed by index)
+        A ->> A: Initialize empty proof<br/>paths map (keyed by index)
 
         loop For each index...
-            A ->> A: Construct peers array (*)
-            A ->> A: Add index and peers array<br/>to peers array map
+            A ->> A: Construct proof path (*)
+            A ->> A: Add index and proof path<br/>to proof paths map
         end
         
-        A ->> R: Send peers array map and<br/>unsigned Beacon signal
-        R ->> R: Validate peers array map<br/>and unsigned Beacon signal (*)
+        A ->> R: Send proof paths map and<br/>unsigned Beacon signal
+        R ->> R: Validate proof paths map<br/>and unsigned Beacon signal (*)
         R ->> R: Sign Bitcoin transaction<br/>as PSBT
         R ->> A: Send PSBT
         A ->> A: Validate PSBT
@@ -428,7 +428,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. Ensure `bitcoinAddress` is funded; if not, fund this address.
 1. Initialize `unsignedSpendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
 
-##### Construct Peers Array
+##### Construct Proof Path
 
 Given:
 
@@ -437,38 +437,38 @@ Given:
 
 Calculate the path to the root for the index:
 
-1. Set `peers` to empty array.
+1. Set `path` to empty array.
 1. Set `node` to leaf node for `index`.
 1. While `node` is not root of `smt`:
    1. Set `parentNode` to parent of `node`.
-   1. If `node` is left of `parentNode`, add `{right: <rightHashString>}`to `peers`, where `rightHashString` is the hexadecimal string representation of the value at `parentNode.rightNode`.
-   1. If `node` is right of `parentNode`, add `{left: <leftHashString>}` to `peers`, where `leftHashString` is the hexadecimal string representation of the value at `parentNode.leftNode`.
-1. Return `peers`. 
+   1. If `node` is left of `parentNode`, add `{right: <rightHashString>}`to `path`, where `rightHashString` is the hexadecimal string representation of the value at `parentNode.rightNode`.
+   1. If `node` is right of `parentNode`, add `{left: <leftHashString>}` to `path`, where `leftHashString` is the hexadecimal string representation of the value at `parentNode.leftNode`.
+1. Return `path`. 
 
-##### Validate Peers Array Map and Unsigned Beacon Signal
+##### Validate Proof Paths Map and Unsigned Beacon Signal
 
 Given:
 
-* `peersMap` - required, peers array map constructed as above
+* `pathsMap` - required, proof paths map constructed as above
 * `unsignedSpendTx` - required, unsigned Beacon signal constructed as above
 
-Validate the peers array map and the unsigned Beacon signal:
+Validate the proof paths map and the unsigned Beacon signal:
 
 1. Validate that `unsignedSpendTx` is spending from the correct Bitcoin address.
 1. For each `did` expected to be in the ::Beacon Signal:::
    1. Set `index` to `hash(did)`.
-   1. Set `peers` to the value at `index` and remove it from the map.
-   1. If `peers` is undefined, raise InvalidParameter error.
+   1. Set `path` to the value at `index` and remove it from the map.
+   1. If `path` is undefined, raise InvalidParameter error.
    1. Extract the current `nonce` and `btc1Update` for `did` from local storage.
    1. If `btc1Update` is defined, set `btc1UpdateAnnouncement` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm and set `hashBytes` to `hash(index + hash(nonce ^ btc1UpdateAnnouncement))`, otherwise set `hashBytes` to `hash(index + hash(nonce))`.
-   1. For each `peer` in `peers`:
-      1. Validate that `peer` has a single key-value pair.
-      1. Extract `key` and `value` from `peer`.
+   1. For each `step` in `path`:
+      1. Validate that `step` has a single key-value pair.
+      1. Extract `key` and `value` from `step`.
       1. If `key` is `"left"`, set `hashBytes` to `hash(value + hashBytes)`; otherwise, if `key` is `"right"`, set `hashBytes` to `hash(hashBytes + value)`; otherwise, raise InvalidParameter error.
    1. Validate that the last transaction output of `unsignedSpendTx` is `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`.
-   1. If `btc1UpdateAnnouncement` is defined, construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, updateId: <btc1UpdateHashString>, peers: <peers>}`, otherwise construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, peers: <peers>}`, where `hashString` is the hexadecimal string representation of `hashBytes` and `btc1UpdateHashString` is the hexadecimal string representation of `btc1UpdateAnnouncement`.
+   1. If `btc1UpdateAnnouncement` is defined, construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, updateId: <btc1UpdateHashString>, path: <path>}`, otherwise construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, path: <path>}`, where `hashString` is the hexadecimal string representation of `hashBytes` and `btc1UpdateHashString` is the hexadecimal string representation of `btc1UpdateAnnouncement`.
    1. Store `smtProof` for later presentation to verifiers.
-1. If `peersMap` is not empty, raise InvalidParameter error.
+1. If `pathsMap` is not empty, raise InvalidParameter error.
 
 ##### Finalize
 
@@ -578,9 +578,9 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. Set `nonce` to the value of `smtProof.nonce`.
 1. Set `updateId` to the value of `smtProof.updateId`.
 1. If `updateId` is defined, set `btc1UpdateAnnouncement` to the binary representation of `updateId` and set `verifyHashBytes` to `hash(index + hash(nonce ^ btc1UpdateAnnouncement))`, otherwise set `verifyHashBytes` to `hash(index + hash(nonce))`.
-1. For each `peer` in `smtProof.peers`:
-   1. Validate that `peer` has a single key-value pair.
-   1. Extract `key` and `value` from `peer`.
+1. For each `step` in `smtProof.path`:
+   1. Validate that `step` has a single key-value pair.
+   1. Extract `key` and `value` from `step`.
    1. If `key` is `"left"`, set `verifyHashBytes` to `hash(value + verifyHashBytes)`; otherwise, if `key` is `"right"`, set `verifyHashBytes` to `hash(verifyHashBytes + value)`; otherwise, raise InvalidDidUpdate error.
 1. If `verifyHashBytes` ≠ `hashBytes`, raise InvalidDidUpdate error.
 1. If `updateId` is undefined, return null.
