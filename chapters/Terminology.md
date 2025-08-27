@@ -142,10 +142,6 @@ Beacon Participant
 : A member of a ::Beacon Cohort::, typically a DID controller, that controls cryptographic keys required 
 to partially authorize spends from a ::Beacon Address::.
 
-: A JSON object that maps **did:btc1** identifiers to ::Content Identifiers:: (CIDs)
-  that identify ::BTC1 Updates:: for the identified DID. DID Update Bundles
-  are announced by CIDAggregate Beacons.
-
 Merkle Tree
 
 : A tree data structure in which the leaves are a hash of a data block and every

@@ -26,11 +26,11 @@ The current, active ::BTC1 Beacons:: of a DID document are specified in the docu
 
 All resolvers of **did:btc1** DIDs MUST support the ::Beacon Types:: defined in this specification.
 
-The ::BTC1 Update Announcement:: is a SHA256 hash that represents one of the following:
+A ::Beacon Signal:: commits to and anchors in a Bitcoin block 32 bytes of information that represents one of the following:
 
-* the hash of a single ::BTC1 Update:: associated with a **did:btc1** identifier;
-* the hash of a set of key-value pairs, where each key is a **did:btc1** identifier and the value is the hash of a ::BTC1 Update::; or
-* the hash of an optimized ::sparse Merkle tree:: root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
+* A ::BTC1 Update Announcement::;
+* the hash of a ::Beacon Announcement Map::; or
+* The 32 bytes of an optimized ::sparse Merkle tree:: root, where each leaf node is deterministically selected by a **did:btc1** identifier and contains a hash associated with the **did:btc1** identifier.
 
 ### Actors
 
