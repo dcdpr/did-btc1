@@ -61,7 +61,7 @@ BTC1 Update Announcement
 
 BTC1 Update Announcements
 
-: ::BTC1 Update::
+: ::BTC1 Update Announcement::
 
 
 : ::BTC1 Update::
