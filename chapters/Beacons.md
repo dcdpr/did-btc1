@@ -44,11 +44,11 @@ Actors in signaling are as follows:
 
 ### Aggregation
 
-Three types of ::BTC1 Beacons:: are defined: SingletonBeacon, MapBeacon and SMTBeacon.  Two of them, MapBeacon and SMTBeacon, support aggregation, i.e. the act of  committing to multiple ::BTC1 Update Announcements:: in a single transaction.
+Three types of ::BTC1 Beacons:: are defined: SingletonBeacon, MapBeacon and SMTBeacon.  Two of them, MapBeacon and SMTBeacon, support aggregation, i.e. the act of  committing to multiple ::BTC1 Update Announcements:: in a ::Beacon Signal::.
 
 How coordination between an aggregator and multiple ::Beacon participants:: is managed is out of scope, but one possible mechanism is outlined in “MuSig2 3-of-3 Multisig with Coordinator Facilitation” at [MuSig2 Sequence Diagrams](https://developer.blockchaincommons.com/musig/sequence/#musig2-3-of-3-multisig-with-coordinator-facilitation).
 
-When defining a Beacon Cohort, the Beacon Aggregator may define the conditions for the cohort, including but not limited to:
+When defining a ::Beacon Cohort::, the ::Beacon Aggregator:: may define the conditions for the cohort, including but not limited to:
 
 * Automatic publication to ::CAS:: (Map Beacon only)
 * Minimum and/or maximum number of ::Beacon participants::
@@ -62,7 +62,7 @@ When defining a Beacon Cohort, the Beacon Aggregator may define the conditions f
 
 A ::Singleton Beacon:: is a ::BTC1 Beacon:: that can be used to announce commitments to a single ::BTC1 Update:: targeting a single DID document. It creates a ::Beacon Signal:: that commits to a single ::BTC1 Update Announcement::. This is typically done directly by the DID controller, as there is no ::Beacon cohort::.
 
-If the ::BTC1 Update:: associated with the ::BTC1 Update Announcement:: is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller.
+If the ::BTC1 Update:: committed to by the ::BTC1 Update Announcement:: is not publicly discoverable (i.e., is not published to a ::CAS:: under its hash), the only parties that are aware of it are the DID controller and any parties provided it by the DID controller.
 
 The `beaconType` of the `service` for a Singleton Beacon is "SingletonBeacon".
 
@@ -84,7 +84,7 @@ Given:
 * `serviceEndpoint` - required, a Bitcoin address represented as a URI
 * One and only one of, required:
     * `btc1Update` - the ::BTC1 Update:: whose SHA256 hash is the ::BTC1 Update Announcement:: to be broadcast in the ::Beacon Signal::
-    * `btc1UpdateHashBytes` - the ::BTC1 Update Announcement:: to be broadcast in the ::Beacon Signal::
+    * `btc1UpdateAnnouncement` - the ::BTC1 Update Announcement:: to be broadcast in the ::Beacon Signal::
 * `cas` - optional, one of:
     * "ipfs"
 
@@ -95,8 +95,8 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. If `cas` is defined and is not a valid value per above, raise InvalidParameter error.
 1. Set `bitcoinAddress` to the decoding of `serviceEndpoint` following BIP21.
 1. Ensure `bitcoinAddress` is funded; if not, fund this address.
-1. If `btc1UpdateHashBytes` is not defined, set `btc1UpdateHashBytes` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm.
-1. Initialize `spendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <btc1UpdateHashBytes>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
+1. If `btc1UpdateAnnouncement` is not defined, set `btc1UpdateAnnouncement` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm.
+1. Initialize `spendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <btc1UpdateAnnouncement>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
 1. Retrieve the cryptographic material, e.g., private key or signing capability, associated with the `bitcoinAddress`. How this is done is left to the implementer.
 1. Sign the `spendTx`.
 1. Broadcast `spendTx` on the Bitcoin network defined by `network`.
@@ -214,7 +214,7 @@ Given:
     * `did` - required, a unique **did:btc1** identifier (key)
     * One and only one of, required (value):
         * `btc1Update` - a ::BTC1 Update::
-        * `btc1UpdateHashBytes` - the SHA256 hash in binary form of a ::BTC1 Update::
+        * `btc1UpdateAnnouncement` - the SHA256 hash in binary form of a ::BTC1 Update::
 
 Create a normalized map as follows:
 
@@ -224,7 +224,7 @@ Create a normalized map as follows:
       1. Set `hashBytes` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm.
       1. Set `hashString` to the hexadecimal string representation of `hashBytes`.
    1. If the value is a SHA256 hash in binary form:
-       1. Set `hashString` to the hexadecimal string representation of `btc1UpdateHashBytes`.
+       1. Set `hashString` to the hexadecimal string representation of `btc1UpdateAnnouncement`.
    1. Add `did` (key) and `hashString` (value) to `normalizedMap`.
 
 ##### Construct Unsigned Beacon Signal
@@ -460,13 +460,13 @@ Validate the peers array map and the unsigned Beacon signal:
    1. Set `peers` to the value at `index` and remove it from the map.
    1. If `peers` is undefined, raise InvalidParameter error.
    1. Extract the current `nonce` and `btc1Update` for `did` from local storage.
-   1. If `btc1Update` is defined, set `btc1UpdateHashBytes` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm and set `hashBytes` to `hash(index + hash(nonce ^ btc1UpdateHashBytes))`, otherwise set `hashBytes` to `hash(index + hash(nonce))`.
+   1. If `btc1Update` is defined, set `btc1UpdateAnnouncement` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm and set `hashBytes` to `hash(index + hash(nonce ^ btc1UpdateAnnouncement))`, otherwise set `hashBytes` to `hash(index + hash(nonce))`.
    1. For each `peer` in `peers`:
       1. Validate that `peer` has a single key-value pair.
       1. Extract `key` and `value` from `peer`.
       1. If `key` is `"left"`, set `hashBytes` to `hash(value + hashBytes)`; otherwise, if `key` is `"right"`, set `hashBytes` to `hash(hashBytes + value)`; otherwise, raise InvalidParameter error.
    1. Validate that the last transaction output of `unsignedSpendTx` is `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`.
-   1. If `btc1UpdateHashBytes` is defined, construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, updateId: <btc1UpdateHashString>, peers: <peers>}`, otherwise construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, peers: <peers>}`, where `hashString` is the hexadecimal string representation of `hashBytes` and `btc1UpdateHashString` is the hexadecimal string representation of `btc1UpdateHashBytes`.
+   1. If `btc1UpdateAnnouncement` is defined, construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, updateId: <btc1UpdateHashString>, peers: <peers>}`, otherwise construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, peers: <peers>}`, where `hashString` is the hexadecimal string representation of `hashBytes` and `btc1UpdateHashString` is the hexadecimal string representation of `btc1UpdateAnnouncement`.
    1. Store `smtProof` for later presentation to verifiers.
 1. If `peersMap` is not empty, raise InvalidParameter error.
 
@@ -577,7 +577,7 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. Set `index` to `hash(did)`.
 1. Set `nonce` to the value of `smtProof.nonce`.
 1. Set `updateId` to the value of `smtProof.updateId`.
-1. If `updateId` is defined, set `btc1UpdateHashBytes` to the binary representation of `updateId` and set `verifyHashBytes` to `hash(index + hash(nonce ^ btc1UpdateHashBytes))`, otherwise set `verifyHashBytes` to `hash(index + hash(nonce))`.
+1. If `updateId` is defined, set `btc1UpdateAnnouncement` to the binary representation of `updateId` and set `verifyHashBytes` to `hash(index + hash(nonce ^ btc1UpdateAnnouncement))`, otherwise set `verifyHashBytes` to `hash(index + hash(nonce))`.
 1. For each `peer` in `smtProof.peers`:
    1. Validate that `peer` has a single key-value pair.
    1. Extract `key` and `value` from `peer`.
