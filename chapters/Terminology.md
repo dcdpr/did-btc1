@@ -61,10 +61,10 @@ BTC1 Update Announcement
 
 BTC1 Update Announcements
 
-: ::BTC1 Update::
+: ::BTC1 Update Announcement::
 
 
-: ::BTC1 Update::
+BTC1 Update
 
 : A capability invocation secured using Data Integrity that invokes an authorization capability to update a specific **did:btc1** DID document. This capability invocation Data Integrity proof secures the ::Unsecured BTC1 Update:: document.
 
@@ -141,10 +141,6 @@ Beacon Participant
 
 : A member of a ::Beacon Cohort::, typically a DID controller, that controls cryptographic keys required 
 to partially authorize spends from a ::Beacon Address::.
-
-: A JSON object that maps **did:btc1** identifiers to ::Content Identifiers:: (CIDs)
-  that identify ::BTC1 Updates:: for the identified DID. DID Update Bundles
-  are announced by CIDAggregate Beacons.
 
 Merkle Tree
 

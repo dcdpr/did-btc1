@@ -13,7 +13,8 @@
     "Security-Considerations.md",
     "Privacy-Considerations.md",
     "References.md",
-    "Appendix.md"
+    "Appendix.md",
+    "Appendix-SMT.md"
   ],
   "cssFiles": [
     "index.css"
