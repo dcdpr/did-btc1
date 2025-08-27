@@ -335,7 +335,7 @@ flowchart TD
     Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
 ```
 
-Every DID is included, so there is no longer a proof of non-inclusion. Instead, what's being proved is the presence or absence of an update, where the absence of an update is a null document. To prove presence or absence of an update, the DID controller presents the nonce, the DID update payload or null, and the list of peer hashes from bottom to top.
+Every DID is included, so there is no longer a proof of non-inclusion. Instead, what's being proved is the presence or absence of an update, where the absence of an update is a null document. To prove presence or absence of an update, the DID controller presents the nonce, the ::BTC1 Update:: or null, and the list of peer hashes from bottom to top.
 
 Now, the presentation to the verifier for DID 13 includes the following:
 
