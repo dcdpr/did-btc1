@@ -100,9 +100,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. Retrieve the cryptographic material, e.g., private key or signing capability, associated with the `bitcoinAddress`. How this is done is left to the implementer.
 1. Sign the `spendTx`.
 1. Broadcast `spendTx` on the Bitcoin network defined by `network`.
-1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
 1. If `cas` and `btc1Update` are defined, publish `btc1Update` to the ::CAS:: network defined by `cas`.
-1. Return `signalId`.
 
 ### Map Beacon
 
@@ -191,10 +189,6 @@ sequenceDiagram
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
     A ->> A: Broadcast signed transaction
 
-    loop For each Beacon participant...
-        A ->> R: Send signal ID
-    end
-
     alt CAS defined
         A ->> A: Publish JSON representation<br/>of normalized map to CAS
 
@@ -280,11 +274,9 @@ Spend the transaction and publish to CAS:
 1. If `cas` is defined and is not a valid value per above, raise InvalidParameter error.
 1. Set `spendTx` to the aggregation of the partially signed Bitcoin transactions `psbts` into a single transaction.
 1. Broadcast `spendTx` on the Bitcoin network.
-1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
 1. If `cas` is defined:
    1. Publish JSON representation of `normalizedMap` to the ::CAS:: network defined by `cas`.
    1. For each `did` with a `btc1Update` in `unnormalizedMap`, publish `btc1Update` to the ::CAS:: network defined by `cas`.
-1. Return `signalId`.
 
 ### SMT Beacon
 
@@ -399,10 +391,6 @@ sequenceDiagram
 
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
     A ->> A: Broadcast signed transaction
-
-    loop For each Beacon participant...
-        A ->> R: Send signal ID
-    end
 ```
 
 ##### Construct Unsigned Beacon Signal
@@ -480,8 +468,6 @@ Spend the transaction:
 
 1. Set `spendTx` to the aggregation of the partially signed Bitcoin transactions `psbts` into a single transaction.
 1. Broadcast `spendTx` on the Bitcoin network.
-1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
-1. Return `signalId`.
 
 ### Processing Signals
 
