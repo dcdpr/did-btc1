@@ -174,16 +174,26 @@ sequenceDiagram
     end
 
     A ->> A: Create Beacon<br/>announcement map (*)
-    A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
+    A ->> A: Construct unsigned<br/>Beacon signal (*)
 
     loop For each Beacon participant...
-        A ->> R: Send Beacon announcement map<br/>and unsigned Bitcoin transaction
-        R ->> R: Validate Beacon announcement map<br/>and unsigned Bitcoin transaction (*)
-        R ->> R: Sign Bitcoin transaction<br/>as PSBT
+        A ->> R: Send Beacon announcement map<br/>and unsigned Beacon signal
+        R ->> R: Validate Beacon announcement map<br/>and unsigned Beacon signal (*)
+        R ->> R: Generate *secnonce* and *pubnonce*
+        R ->> A: Send *pubnonce*
+    end
+    
+    A ->> A: Compute aggregate nonce
+    A ->> A: Compute session context<br/>minus message
+
+    loop For each Beacon participant...
+        A ->> R: Send session context<br/>minus message
+        R ->> R: Add message (unsigned<br/>Beacon signal)
+        R ->> R: Sign session context<br/>as PSBT
         R ->> A: Send PSBT
         A ->> A: Validate PSBT
     end
-    
+
     note left of A: Finalize (*)
 
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
@@ -371,7 +381,7 @@ sequenceDiagram
     end
 
     A ->> A: Fill optimized SMT
-    A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
+    A ->> A: Construct unsigned<br/>Beacon signal (*)
 
     loop For each Beacon participant...
         A ->> A: Initialize empty proof<br/>paths map (keyed by index)
@@ -383,11 +393,21 @@ sequenceDiagram
         
         A ->> R: Send proof paths map and<br/>unsigned Beacon signal
         R ->> R: Validate proof paths map<br/>and unsigned Beacon signal (*)
-        R ->> R: Sign Bitcoin transaction<br/>as PSBT
+        R ->> R: Generate *secnonce* and *pubnonce*
+        R ->> A: Send *pubnonce*
+    end
+
+    A ->> A: Compute aggregate nonce
+    A ->> A: Compute session context<br/>minus message
+
+    loop For each Beacon participant...
+        A ->> R: Send session context<br/>minus message
+        R ->> R: Add message (unsigned<br/>Beacon signal)
+        R ->> R: Sign session context<br/>as PSBT
         R ->> A: Send PSBT
         A ->> A: Validate PSBT
     end
-    
+
     note left of A: Finalize (*)
 
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
