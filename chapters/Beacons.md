@@ -100,9 +100,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. Retrieve the cryptographic material, e.g., private key or signing capability, associated with the `bitcoinAddress`. How this is done is left to the implementer.
 1. Sign the `spendTx`.
 1. Broadcast `spendTx` on the Bitcoin network defined by `network`.
-1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
 1. If `cas` and `btc1Update` are defined, publish `btc1Update` to the ::CAS:: network defined by `cas`.
-1. Return `signalId`.
 
 ### Map Beacon
 
@@ -165,67 +163,74 @@ sequenceDiagram
     actor A as Beacon Aggregator
     actor R as Beacon Participant<br/>(multiple)
 
-    A ->> A: Initialize empty unnormalized<br/>map (keyed by DID)
+    A ->> A: Initialize empty unnormalized Beacon<br/>announcement map (keyed by DID)
 
     loop Until signal conditions met...
         R ->> A: Send DID and update
         note left of R: Update is<br/>data or hash
         A ->> A: Validate DID against Beacon<br/>participant's authorized list
-        A ->> A: Add DID and update<br/>to unnormalized map
+        A ->> A: Add DID and update to unnormalized<br/>Beacon announcement map
         note right of A: Duplicate DID replaces<br/>existing update content
     end
 
-    A ->> A: Create normalized map (*)
-    A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
+    A ->> A: Create Beacon<br/>announcement map (*)
+    A ->> A: Construct unsigned<br/>Beacon signal (*)
 
     loop For each Beacon participant...
-        A ->> R: Send normalized map and<br/>unsigned Bitcoin transaction
-        R ->> R: Validate normalized map and<br/>unsigned Bitcoin transaction (*)
-        R ->> R: Sign Bitcoin transaction<br/>as PSBT
+        A ->> R: Send Beacon announcement map<br/>and unsigned Beacon signal
+        R ->> R: Validate Beacon announcement map<br/>and unsigned Beacon signal (*)
+        R ->> R: Generate *secnonce* and *pubnonce*
+        R ->> A: Send *pubnonce*
+    end
+    
+    A ->> A: Compute aggregate nonce
+    A ->> A: Compute session context<br/>minus message
+
+    loop For each Beacon participant...
+        A ->> R: Send session context<br/>minus message
+        R ->> R: Add message (unsigned<br/>Beacon signal)
+        R ->> R: Sign session context<br/>as PSBT
         R ->> A: Send PSBT
         A ->> A: Validate PSBT
     end
-    
+
     note left of A: Finalize (*)
 
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
     A ->> A: Broadcast signed transaction
 
-    loop For each Beacon participant...
-        A ->> R: Send signal ID
-    end
-
     alt CAS defined
-        A ->> A: Publish JSON representation<br/>of normalized map to CAS
+        A ->> A: Publish JSON representation of<br/>Beacon announcement map to CAS
 
-        loop For each DID in unnormalized map...
-            alt Data provided
-                A ->> A: Publish data as<br/>file to CAS
+        loop For each DID in unnormalized Beacon announcement map...
+            alt BTC1 update provided
+                A ->> A: Publish BTC1 update<br/>as file to CAS
             end
         end
     end
 ```
 
-##### Create Normalized Map
+##### Create Beacon Announcement Map
 
 Given:
 
-* `unnormalizedMap` - required, a map of key-value pairs consisting of:
+* `unnormalizedBeaconAnnouncementMap` - required, a map of key-value pairs consisting of:
     * `did` - required, a unique **did:btc1** identifier (key)
     * One and only one of, required (value):
         * `btc1Update` - a ::BTC1 Update::
         * `btc1UpdateAnnouncement` - the SHA256 hash in binary form of a ::BTC1 Update::
 
-Create a normalized map as follows:
+Create a ::Beacon Announcement Map:: as follows:
 
-1. If `unnormalizedMap` contains a duplicate `did`, raise InvalidParameter error.
-1. For each `did` in `unnormalizedMap`:
+1. If `unnormalizedBeaconAnnouncementMap` contains a duplicate `did`, raise InvalidParameter error.
+1. Create empty `beaconAnnouncementMap`.
+1. For each `did` in `unnormalizedBeaconAnnouncementMap`:
    1. If the value is a ::BTC1 Update:::
       1. Set `hashBytes` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm.
       1. Set `hashString` to the hexadecimal string representation of `hashBytes`.
    1. If the value is a SHA256 hash in binary form:
        1. Set `hashString` to the hexadecimal string representation of `btc1UpdateAnnouncement`.
-   1. Add `did` (key) and `hashString` (value) to `normalizedMap`.
+   1. Add `did` (key) and `hashString` (value) to `beaconAnnouncementMap`.
 
 ##### Construct Unsigned Beacon Signal
 
@@ -240,7 +245,7 @@ Given:
     * "mutinynet"
     * number
 * `serviceEndpoint` - required, a Bitcoin address represented as a URI
-* `normalizedMap` - required, normalized map created as above
+* `beaconAnnouncementMap` - required, ::Beacon Announcement Map:: created as above
 
 Construct a Bitcoin transaction that spends from the Beacon address on the selected network:
 
@@ -248,20 +253,20 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. if `network` is a number and is outside the range of 1-4, raise InvalidParameter error.
 1. Set `bitcoinAddress` to the decoding of `serviceEndpoint` following BIP21.
 1. Ensure `bitcoinAddress` is funded; if not, fund this address.
-1. Set `hashBytes` to the result of passing the JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
+1. Set `hashBytes` to the result of passing the JSON representation of `beaconAnnouncementMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Initialize `unsignedSpendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
 
-##### Validate Normalized Map and Unsigned Beacon Signal
+##### Validate Beacon Announcement Map and Unsigned Beacon Signal
 
 Given:
 
-* `normalizedMap` - required, normalized map created as above
+* `beaconAnnouncementMap` - required, ::Beacon Announcement Map:: created as above
 * `unsignedSpendTx` - required, unsigned Beacon signal constructed as above
 
-Validate the normalized map and the unsigned Beacon signal:
+Validate the ::Beacon Announcement Map:: and the unsigned Beacon signal:
 
-1. Validate that `normalizedMap` contains each DID previously sent and that the value associated with each DID is either the hash previously sent or the hash of the data previously sent.
-1. Set `hashBytes` to the result of passing the JSON representation of `normalizedMap` to the [JSON Canonicalization and Hash] algorithm.
+1. Validate that `beaconAnnouncementMap` contains each DID previously sent and that the value associated with each DID is either the hash previously sent or the hash of the data previously sent.
+1. Set `hashBytes` to the result of passing the JSON representation of `beaconAnnouncementMap` to the [JSON Canonicalization and Hash] algorithm.
 1. Validate that `unsignedSpendTx` is spending from the correct Bitcoin address.
 1. Validate that the last transaction output of `unsignedSpendTx` is `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`.
 
@@ -269,8 +274,8 @@ Validate the normalized map and the unsigned Beacon signal:
 
 Given:
 
-* `normalizedMap` - required, normalized map created as above
-* `unnormalizedMap` - required, as above
+* `beaconAnnouncementMap` - required, ::Beacon Announcement Map:: created as above
+* `unnormalizedBeaconAnnouncementMap` - required, as above
 * `psbts` - required, partially signed Bitcoin transactions
 * `cas` - optional, one of:
     * "ipfs"
@@ -280,11 +285,9 @@ Spend the transaction and publish to CAS:
 1. If `cas` is defined and is not a valid value per above, raise InvalidParameter error.
 1. Set `spendTx` to the aggregation of the partially signed Bitcoin transactions `psbts` into a single transaction.
 1. Broadcast `spendTx` on the Bitcoin network.
-1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
 1. If `cas` is defined:
-   1. Publish JSON representation of `normalizedMap` to the ::CAS:: network defined by `cas`.
-   1. For each `did` with a `btc1Update` in `unnormalizedMap`, publish `btc1Update` to the ::CAS:: network defined by `cas`.
-1. Return `signalId`.
+   1. Publish JSON representation of `beaconAnnouncementMap` to the ::CAS:: network defined by `cas`.
+   1. For each `did` with a `btc1Update` in `unnormalizedBeaconAnnouncementMap`, publish `btc1Update` to the ::CAS:: network defined by `cas`.
 
 ### SMT Beacon
 
@@ -378,31 +381,37 @@ sequenceDiagram
     end
 
     A ->> A: Fill optimized SMT
-    A ->> A: Construct unsigned<br/>Bitcoin transaction (*)
+    A ->> A: Construct unsigned<br/>Beacon signal (*)
 
     loop For each Beacon participant...
-        A ->> A: Initialize empty peers array<br/>map (keyed by index)
+        A ->> A: Initialize empty proof<br/>paths map (keyed by index)
 
         loop For each index...
-            A ->> A: Construct peers array (*)
-            A ->> A: Add index and peers array<br/>to peers array map
+            A ->> A: Construct proof path (*)
+            A ->> A: Add index and proof path<br/>to proof paths map
         end
         
-        A ->> R: Send peers array map and<br/>unsigned Beacon signal
-        R ->> R: Validate peers array map<br/>and unsigned Beacon signal (*)
-        R ->> R: Sign Bitcoin transaction<br/>as PSBT
+        A ->> R: Send proof paths map and<br/>unsigned Beacon signal
+        R ->> R: Validate proof paths map<br/>and unsigned Beacon signal (*)
+        R ->> R: Generate *secnonce* and *pubnonce*
+        R ->> A: Send *pubnonce*
+    end
+
+    A ->> A: Compute aggregate nonce
+    A ->> A: Compute session context<br/>minus message
+
+    loop For each Beacon participant...
+        A ->> R: Send session context<br/>minus message
+        R ->> R: Add message (unsigned<br/>Beacon signal)
+        R ->> R: Sign session context<br/>as PSBT
         R ->> A: Send PSBT
         A ->> A: Validate PSBT
     end
-    
+
     note left of A: Finalize (*)
 
     A ->> A: Aggregate PSBTs to create<br/>signed transaction
     A ->> A: Broadcast signed transaction
-
-    loop For each Beacon participant...
-        A ->> R: Send signal ID
-    end
 ```
 
 ##### Construct Unsigned Beacon Signal
@@ -428,7 +437,7 @@ Construct a Bitcoin transaction that spends from the Beacon address on the selec
 1. Ensure `bitcoinAddress` is funded; if not, fund this address.
 1. Initialize `unsignedSpendTx` to a Bitcoin transaction that spends a transaction controlled by the `bitcoinAddress` and contains at least one transaction output. This signal output MUST have the format `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`. If the transaction contains multiple transaction outputs, the signal output MUST be the last transaction output.
 
-##### Construct Peers Array
+##### Construct Proof Path
 
 Given:
 
@@ -437,38 +446,38 @@ Given:
 
 Calculate the path to the root for the index:
 
-1. Set `peers` to empty array.
+1. Set `path` to empty array.
 1. Set `node` to leaf node for `index`.
 1. While `node` is not root of `smt`:
    1. Set `parentNode` to parent of `node`.
-   1. If `node` is left of `parentNode`, add `{right: <rightHashString>}`to `peers`, where `rightHashString` is the hexadecimal string representation of the value at `parentNode.rightNode`.
-   1. If `node` is right of `parentNode`, add `{left: <leftHashString>}` to `peers`, where `leftHashString` is the hexadecimal string representation of the value at `parentNode.leftNode`.
-1. Return `peers`. 
+   1. If `node` is left of `parentNode`, add `{right: <rightHashString>}`to `path`, where `rightHashString` is the hexadecimal string representation of the value at `parentNode.rightNode`.
+   1. If `node` is right of `parentNode`, add `{left: <leftHashString>}` to `path`, where `leftHashString` is the hexadecimal string representation of the value at `parentNode.leftNode`.
+1. Return `path`. 
 
-##### Validate Peers Array Map and Unsigned Beacon Signal
+##### Validate Proof Paths Map and Unsigned Beacon Signal
 
 Given:
 
-* `peersMap` - required, peers array map constructed as above
+* `pathsMap` - required, proof paths map constructed as above
 * `unsignedSpendTx` - required, unsigned Beacon signal constructed as above
 
-Validate the peers array map and the unsigned Beacon signal:
+Validate the proof paths map and the unsigned Beacon signal:
 
 1. Validate that `unsignedSpendTx` is spending from the correct Bitcoin address.
 1. For each `did` expected to be in the ::Beacon Signal:::
    1. Set `index` to `hash(did)`.
-   1. Set `peers` to the value at `index` and remove it from the map.
-   1. If `peers` is undefined, raise InvalidParameter error.
+   1. Set `path` to the value at `index` and remove it from the map.
+   1. If `path` is undefined, raise InvalidParameter error.
    1. Extract the current `nonce` and `btc1Update` for `did` from local storage.
    1. If `btc1Update` is defined, set `btc1UpdateAnnouncement` to the result of passing `btc1Update` to the [JSON Canonicalization and Hash] algorithm and set `hashBytes` to `hash(index + hash(nonce ^ btc1UpdateAnnouncement))`, otherwise set `hashBytes` to `hash(index + hash(nonce))`.
-   1. For each `peer` in `peers`:
-      1. Validate that `peer` has a single key-value pair.
-      1. Extract `key` and `value` from `peer`.
+   1. For each `step` in `path`:
+      1. Validate that `step` has a single key-value pair.
+      1. Extract `key` and `value` from `step`.
       1. If `key` is `"left"`, set `hashBytes` to `hash(value + hashBytes)`; otherwise, if `key` is `"right"`, set `hashBytes` to `hash(hashBytes + value)`; otherwise, raise InvalidParameter error.
    1. Validate that the last transaction output of `unsignedSpendTx` is `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`.
-   1. If `btc1UpdateAnnouncement` is defined, construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, updateId: <btc1UpdateHashString>, peers: <peers>}`, otherwise construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, peers: <peers>}`, where `hashString` is the hexadecimal string representation of `hashBytes` and `btc1UpdateHashString` is the hexadecimal string representation of `btc1UpdateAnnouncement`.
+   1. If `btc1UpdateAnnouncement` is defined, construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, updateId: <btc1UpdateHashString>, path: <path>}`, otherwise construct as `smtProof` the object `{id: <hashString>, nonce: <nonce>, path: <path>}`, where `hashString` is the hexadecimal string representation of `hashBytes` and `btc1UpdateHashString` is the hexadecimal string representation of `btc1UpdateAnnouncement`.
    1. Store `smtProof` for later presentation to verifiers.
-1. If `peersMap` is not empty, raise InvalidParameter error.
+1. If `pathsMap` is not empty, raise InvalidParameter error.
 
 ##### Finalize
 
@@ -480,8 +489,6 @@ Spend the transaction:
 
 1. Set `spendTx` to the aggregation of the partially signed Bitcoin transactions `psbts` into a single transaction.
 1. Broadcast `spendTx` on the Bitcoin network.
-1. Set `signalId` to the Bitcoin transaction identifier of `spendTx`.
-1. Return `signalId`.
 
 ### Processing Signals
 
@@ -578,9 +585,9 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 1. Set `nonce` to the value of `smtProof.nonce`.
 1. Set `updateId` to the value of `smtProof.updateId`.
 1. If `updateId` is defined, set `btc1UpdateAnnouncement` to the binary representation of `updateId` and set `verifyHashBytes` to `hash(index + hash(nonce ^ btc1UpdateAnnouncement))`, otherwise set `verifyHashBytes` to `hash(index + hash(nonce))`.
-1. For each `peer` in `smtProof.peers`:
-   1. Validate that `peer` has a single key-value pair.
-   1. Extract `key` and `value` from `peer`.
+1. For each `step` in `smtProof.path`:
+   1. Validate that `step` has a single key-value pair.
+   1. Extract `key` and `value` from `step`.
    1. If `key` is `"left"`, set `verifyHashBytes` to `hash(value + verifyHashBytes)`; otherwise, if `key` is `"right"`, set `verifyHashBytes` to `hash(verifyHashBytes + value)`; otherwise, raise InvalidDidUpdate error.
 1. If `verifyHashBytes` ≠ `hashBytes`, raise InvalidDidUpdate error.
 1. If `updateId` is undefined, return null.
