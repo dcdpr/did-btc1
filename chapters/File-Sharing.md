@@ -14,9 +14,9 @@ sharing mechanisms, it is not recommended.
 
 Sidecar is a mechanism by which a file is provided alongside the **did:btc1**
 identifier being resolved. This is analogous to a sidecar on a motorcycle
-bringing along a second passenger: the DID controller provides the DID Document
+bringing along a second passenger: the DID controller provides the DID document
 history (in the form of JSON Patch transformations) alongside the DID to the
-relying party so that the resolver can construct the DID Document.
+relying party so that the resolver can construct the DID document.
 
 In short, when a resolver is presented with a **did:btc1** identifier, it is
 also presented with files matching the SHA256 hashes it encounters during the
