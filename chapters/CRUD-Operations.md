@@ -7,7 +7,7 @@ for the **did:btc1** method.
 
 The Create operation consists of two main algorithms for creating identifiers
 and DID documents. A **did:btc1** identifier and DID document can either be created
-from a deterministic key pair or from an external ::intermediate DID document::.
+from a deterministic key pair or from an external ::Intermediate DID Document::.
 In both cases, DID creation can be undertaken in an offline manner, i.e., the DID
 controller does not need to interact with the Bitcoin network to create their DID.
 
@@ -43,10 +43,10 @@ The steps are as follows:
 
 #### From External Intermediate DID Document
 
-The From External ::intermediate DID document:: algorithm enables the ability 
-to create a **did:btc1** from an external ::intermediate DID document::. This allows for a
-more complex ::initial DID document::, including the ability to include
-Service Endpoints and ::BTC1 Beacons:: that support aggregation.
+The From External ::Intermediate DID Document:: algorithm enables the ability 
+to create a **did:btc1** from an external ::Intermediate DID Document::. This allows for a
+more complex ::Initial DID Document::, including the ability to include
+service endpoints and ::BTC1 Beacons:: that support aggregation.
 
 It takes the following inputs:
 
@@ -62,7 +62,7 @@ It takes the following inputs:
 It returns the following outputs:
 
 * `did` - a newly created **did:btc1** identifier; string
-* `initialDocument` - the valid first version of a DID document for a given btc1 identifier.
+* `initialDocument` - the valid first version of a DID document for a given **did:btc1** identifier.
 
 The steps are as follows:
 
@@ -80,7 +80,7 @@ The steps are as follows:
    values in the `initialDocument` with the `did`.
 1. Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
    system like the InterPlanetary File System (IPFS). If doing so, implementations
-   MUST use ::Content Identifiers:: (::CIDs::) generated following the IPFS v1 algorithm.
+   MUST use ::Content Identifiers:: (CIDs) generated following the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
 
 ### Read
