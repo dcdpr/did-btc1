@@ -670,8 +670,8 @@ The steps are as follows:
    instance using the key referenced by the `verificationMethod` field in the update.
    ```{.json include="json/CRUD-Operations/Update-apply-did-update.json"}
    ```
-1. Set `expectedProofPurpose` to `capabilityInvocation`.
-1. Set `mediaType` to `application/ld+json`
+1. Set `expectedProofPurpose` to "capabilityInvocation".
+1. Set `mediaType` to "application/ld+json".
 1. Set `documentBytes` to the bytes representation of `update`.
 1. Set `verificationResult` to the result of passing `mediaType`, `documentBytes`,
    `cryptosuite`, and `expectedProofPurpose` into the
