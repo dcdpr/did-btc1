@@ -22,10 +22,10 @@ DID document can be provided at ::Resolution Time:: through a ::Sidecar:: mechan
 along with the collection of updates that can be verified against the 
 relevant ::Beacon Signals:: for the DID being resolved.
 
-#### Offline DID Generation
+#### Offline DID Creation
 
-**did:btc1** was designed to support offline DID generation, that is, the
-creation of a **did:btc1** identifier and associated DID document without any
+**did:btc1** was designed to support ::Offline Creation::, that is, the
+generation of a **did:btc1** identifier and associated DID document without any
 network calls to the Bitcoin blockchain. This is possible in both deterministic
 and externally resolvable DIDs.
 
