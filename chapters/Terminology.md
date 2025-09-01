@@ -2,7 +2,7 @@
 
 BTC1 Beacon
 
-: A abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called Beacon Signals, should be discovered and checked for ::BTC1 Update Announcements::. 
+: A abstract mechanism, identified by a ::Beacon Address::, that is included as a service in a DID document to indicate to resolvers that spends from this address, called ::Beacon Signals::, should be discovered and checked for ::BTC1 Update Announcements::. 
 
 BTC1 Beacons
 
@@ -15,6 +15,10 @@ Singleton Beacon
 : A Singleton Beacon enables a single entity to independently post a ::DID Update
   Payload:: in a ::Beacon Signal::.
 
+Singleton Beacons
+
+: ::Singleton Beacon::
+
 Aggregate Beacon
 
 : An Aggregate Beacon enables multiple entities (possibly controlling multiple
@@ -23,6 +27,10 @@ Aggregate Beacon
 
   There can only ever be one ::BTC1 Update:: per **did:btc1** in a ::Beacon
   Signal:: from an Aggregate Beacon.
+
+Aggregate Beacons
+
+: ::Aggregate Beacon::
 
 Beacon Type
 
@@ -47,22 +55,24 @@ Beacon Signals
 
 : ::Beacon Signal::
 
-
 Authorized Beacon Signal
 
 : An Authorized Beacon Signal is a ::Beacon Signal:: from a ::BTC1 Beacon:: with a ::BTC1 Beacon::
   address in a then-current DID document.
 
+Authorized Beacon Signals
+
+: ::Authorized Beacon Signal::
+
 BTC1 Update Announcement
 
 : A 32 byte SHA256 hash committing to a ::BTC1 Update:: that has been broadcast by a ::BTC1 Beacon:: in an 
   ::Authorized Beacon Signal::. ::Beacon Signals:: can include one or more BTC1 Update Announcements. 
-  How Beacon Signals include announcements is defined by the ::Beacon Type::.
+  How ::Beacon Signals:: include announcements is defined by the ::Beacon Type::.
 
 BTC1 Update Announcements
 
 : ::BTC1 Update Announcement::
-
 
 BTC1 Update
 
@@ -74,10 +84,14 @@ BTC1 Updates
 
 Unsecured BTC1 Update
 
-A ::BTC1 Update:: without a proof attached to it invoking the capability to apply the update to a **did:btc1** DID document. 
+: A ::BTC1 Update:: without a proof attached to it invoking the capability to apply the update to a **did:btc1** DID document. 
 An Usecured BTC1 Update contains the JSON Patch object that defines the set of mutations to be applied to a DID document, 
 along with the new version of the DID document and the source and target hashes of the DID document
 identifying the source DID document that the patch should be applied to and the target DID document that results from appliying the patch.
+
+Unsecured BTC1 Updates
+
+: ::Unsecured BTC1 Update::
 
 Pending BTC1 Update
 
@@ -103,16 +117,26 @@ Beacon Type
   how the content committed within ::BTC1 Update Announcements:: can be verified 
   against the ::Beacon Signal::.
 
+Beacon Types
+
+: ::Beacon Type::
 
 Singleton Beacon
 
 : A type of ::BTC1 Beacon:: whose ::Beacon Signals:: each contain a single ::BTC1 Update Announcement::.
+
+Singleton Beacons
+
+: ::Singleton Beacon::
 
 Map Beacon
 
 : A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Update Announcements::. 
   A ::Beacon Signal:: from a Map Beacon commits to a ::Beacon Announcement Map::.
 
+Map Beacons
+
+: ::Map Beacon::
 
 Beacon Announcement Map
 
@@ -120,37 +144,59 @@ Beacon Announcement Map
   This is used to distinguish which ::BTC1 Update Announcement:: applies to which 
   **did:btc1** identifier.
 
+Beacon Announcement Maps
+
+: ::Beacon Announcement Map::
+
 SMT Beacon
 
 : A type of ::BTC1 Beacon:: which aggregates multiple ::BTC1 Update Announcements::.  
-  A Beacon Signal from an SMT Beacon contains the root of an optimized sparse Merkle tree.
+  A ::Beacon Signal:: from an SMT Beacon contains the root of an optimized ::Sparse Merkle Tree::.
+
+SMT Beacons
+
+: ::SMT Beacon::
 
 Beacon Cohort
 
 : The set of unique cryptographic keys participating in a ::BTC1 Beacon:: that are required to
 authorize spends from the ::Beacon Address::.
 
+Beacon Cohorts
+
+: ::Beacon Cohort::
 
 Beacon Aggregator
 
 : The entity that coordinates the protocols of an aggregate ::BTC1 Beacon::. 
 Specifically the Create Beacon Cohort and Announce Beacon Signal protocols.
 
+Beacon Aggregators
+
+: ::Beacon Aggregator::
 
 Beacon Participant
 
 : A member of a ::Beacon Cohort::, typically a DID controller, that controls cryptographic keys required 
 to partially authorize spends from a ::Beacon Address::.
 
+Beacon Participants
+
+: ::Beacon Participant::
+
 Merkle Tree
 
 : A tree data structure in which the leaves are a hash of a data block and every
   node that is not a leaf is a hash of its child node values.
 
-  The root of a Merkle tree is a single hash that is produced by recursively
+  The root of a Merkle Tree is a single hash that is produced by recursively
   hashing the child nodes down to the leaves of the tree. Given the root of a
-  Merkle tree it is possible to provide a Merkle path that proves the inclusion
+  Merkle Tree it is possible to provide a Merkle path that proves the inclusion
   of some data in the tree.
+
+Merkle Trees
+
+: ::Merkle Tree::
 
 Sparse Merkle Tree
 
@@ -167,6 +213,10 @@ SMT
 
 : ::Sparse Merkle Tree::
 
+Spares Merkle Trees
+
+: ::Sparse Merkle Tree::
+
 Invocation
 
 : See [Authorization Capabilities for Linked Data v0.3](https://w3c-ccg.github.io/zcap-spec/#terminology)
@@ -174,7 +224,7 @@ Invocation
 Schnorr Signature
 
 : An alternative to Elliptic Curve Digital Signature Algorithm (ECDSA) signatures 
-  with some major advantages, such as being able  to combine digital signatures 
+  with some major advantages, such as being able to combine digital signatures 
   from multiple parties to form a single digital signature for the composite public key.
 
   Bitcoin Schnorr signatures are still over the secp256k1 curve, so the same
@@ -203,6 +253,14 @@ Unspent Transaction Output
   Bitcoin transaction.
 
 UTXO
+
+: ::Unspent Transaction Output::
+
+Unspent Transaction Outputs
+
+: ::Unspent Transaction Output::
+
+UTXOs
 
 : ::Unspent Transaction Output::
 
@@ -254,7 +312,7 @@ Late Publishing
 
 Offline Creation
 
-: Offline creation refers to when a **did:btc1** identifier and corresponding
+: Offline Creation refers to when a **did:btc1** identifier and corresponding
   initial DID document are created without requiring network interactions.
 
 **did:btc1** supports offline creation in two modes:
@@ -303,6 +361,10 @@ Intermediate DID Document
 : A representation of a DID document that it not yet fully conformant with the DID Core
   specification. Intermediate DID documents for the **did:btc1** DID method are DID documents
   whose identifier values have been replaced with a placeholder value.
+
+Intermediate DID Documents
+
+: ::Intermediate DID Document::
 
 Initial DID Document
 
