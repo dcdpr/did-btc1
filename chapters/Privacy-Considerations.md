@@ -33,7 +33,7 @@ and externally resolvable DIDs.
 
 ::BTC1 Beacon:: coordinators in **did:btc1** are entities that coordinate ::Aggregate
 Beacons:: and the corresponding ::Beacon Signals:: that announce and anchor an aggregated
-set of ::BTC1 Updates::. However, in **did:btc1,** Aggregators are able to
+set of ::BTC1 Updates::. However, in **did:btc1,** aggregators are able to
 coordinate ::Beacon Signals:: without needing to view or validate DID documents or
 the updates. Instead, they are provided with a hash or ::Content Identifier:: (CID) 
 of the update for a specific DID which they include in the ::Beacon Signal:: 
@@ -84,10 +84,10 @@ MUST know all DIDs being aggregated by a cohort.
 Cohort members participating in a CIDAggregate ::BTC1 Beacon:: learn all DIDs that are
 updated in each ::Beacon Signal::. This is because they SHOULD verify the contents
 of the ::Beacon Signal:: before authorizing it and a CIDAggregate ::Beacon Signal::
-contains a ::CID:: to an Update Bundle. An Update Bundle is a JSON object mapping
+contains a ::CID:: to an update bundle. An update bundle is a JSON object mapping
 **did:btc1** identifiers to ::CID:: values for individual ::BTC1 Updates::. Each
 DID controller SHOULD independently retrieve and verify the contents of the
-Update Bundle to ensure it contains the expected update for their DID.
+update bundle to ensure it contains the expected update for their DID.
 
 #### In a System with Non-Repudiation, DID Document History is Revealed
 
