@@ -192,7 +192,10 @@ The steps are as follows:
 1. Initialize a `contextArray` to empty array:
     1. Append the DID Core v1.1 context "https://www.w3.org/ns/did/v1.1".
     1. Append the **did:btc1** context "https://btc1.dev/context/v1".
-    1. Set `initialDocument['@context]' to contextArray`.
+    1. Set `initialDocument['@context]'` to `contextArray`.
+1. Initialize a `controllerArray` to empty array:
+    1. Append the `identifier`.
+    1. Set `initialDocument.controller` to `controllerArray`.
 1. Create an initial verification method:
     1. Initialize `verificationMethod` to an empty object.
     1. Set `verificationMethod.id` to `{identifier}#initialKey`.
