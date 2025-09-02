@@ -118,7 +118,7 @@ These are the requirements for using Merkle trees to signal commitments in ::Bea
 
 The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from a CAS); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the hashes of each peer in the tree (the Merkle proof) as the verifier walks up it to determine the top hash (which, in turn, must have been provided to the DID controller by the aggregator).
 
-Let’s assume that the DID controller has been allocated position 13 (1101).
+Let’s assume that a DID controller has been allocated index 13 (1101).
 
 To prove that the DID is included in the signal, the DID controller provides the ::BTC1 Update:: to calculate *Hash 1101* and the values *Hash 1100*, *Hash 111*, *Hash 10*, and *Hash 0*. The verifier then calculates *Hash 110*, *Hash 11*, *Hash 1*, and *Top Hash*. If that last value matches the value in the signal, the verifier knows that the DID is included in the signal.
 
@@ -144,19 +144,19 @@ The `path` is the hexadecimal string of a bitmap where each bit, from right to l
 
 #### Misrepresented Proof of Inclusion/Non-Inclusion
 
-Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated position 6 (0110). At some point in time, NA gains access to the cryptographic material and the entire DID history for the DID in position 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the n-of-n P2TR Bitcoin address, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
+Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated index 6 (0110). At some point in time, NA gains access to the cryptographic material and the entire DID history for the DID at index 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the n-of-n P2TR Bitcoin address, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
 
-NA makes a presentation with LA’s DID and, using the ::Sidecar:: method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for position 6 (0110), for which NA posted an update (for inclusion) or nothing (for non-inclusion). Comparison to previous presentations would detect the breach by the change in the path assuming that, once allocated, the DID position is fixed.
+NA makes a presentation with LA’s DID and, using the ::Sidecar:: method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for index 6 (0110), for which NA posted an update (for inclusion) or nothing (for non-inclusion). Comparison to previous presentations would detect the breach by the change in the path assuming that, once allocated, the DID index is fixed.
 
-To mitigate this attack, a DID’s position must be fixed deterministically and the hashing operation most not be commutative, i.e., *hash(X + Y)* ≠ *hash(Y + X)*. The following algorithm meets these requirements:
+To mitigate this attack, a DID’s index must be fixed deterministically and the hashing operation most not be commutative, i.e., *hash(X + Y)* ≠ *hash(Y + X)*. The following algorithm meets these requirements:
 
-1. A DID’s position is the SHA256 hash of the DID.
-2. The value at the DID’s position for the signal is the ::BTC1 Update Announcement:: for that DID (0 if null).
+1. A DID’s index is the SHA256 hash of the DID.
+2. The value at the DID’s index for the signal is the ::BTC1 Update Announcement:: for that DID (0 if null).
 3. For any parent node:
     1. If the values of both child nodes are 0, the value of the parent node is 0.
     2. Otherwise, the value of the parent node is the hash of the concatenation of the 256-bit left child value and the 256-bit right child value.
 
-The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the hashes doesn't require a path, as the path is the bitwise NOT of the DID's position.
+The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the hashes doesn't require a path, as the path is the bitwise NOT of the DID's index.
 
 #### Information Leakage
 
@@ -169,7 +169,7 @@ The list of peer hashes must be provided by the aggregator to the DID controller
 
 Let's assume that:
 
-* positions 0 (0000), 2 (0010), 5 (0101), 9 (1001), 13 (1101), and 14 (1110) have DIDs associated with them;
+* indexes 0 (0000), 2 (0010), 5 (0101), 9 (1001), 13 (1101), and 14 (1110) have DIDs associated with them;
 * a signal includes updates for DIDs 2, 9, and 13; and
 * a verifier presented with DID 13 also knows, through prior presentations, about DIDs 5 and 14, but not about DIDs 0, 2, and 9.
 
@@ -236,17 +236,17 @@ The presentation to the verifier for DID 13 includes the following:
 
 From this, the verifier can infer that:
 
-* position 12 (1100) is not allocated or has been allocated to an unknown DID that hasn't been updated;
-* the DID at position 14 (1110) has not been updated;
-* position 15 (1111) is not allocated or has been allocated to an unknown DID that hasn't been updated;
-* one or more unknown DIDs at positions 8-11 (1000-1011) have been updated; and
-* the DID at position 5 (0101) may have been updated (probability ≥ 1/8).
+* index 12 (1100) is not allocated or has been allocated to an unknown DID that hasn't been updated;
+* the DID at index 14 (1110) has not been updated;
+* index 15 (1111) is not allocated or has been allocated to an unknown DID that hasn't been updated;
+* one or more unknown DIDs at indexes 8-11 (1000-1011) have been updated; and
+* the DID at index 5 (0101) may have been updated (probability ≥ 1/8).
 
 To mitigate this, inclusion and non-inclusion should be indistinguishable, i.e., there should not be a reserved value of 0 indicating a null payload. It is still necessary to identify empty branches (otherwise the hash calculation time becomes impossibly large), so the reserved value of 0 is retained for that purpose. The following (revised) algorithm meets these requirements:
 
-* A DID’s position is the SHA256 hash of the DID.
+* A DID’s index is the SHA256 hash of the DID.
 * A signal- and DID-specific 256-bit nonce shall be generated by the DID controller, regardless of update or non-update status.
-* The value at the DID’s position for the signal is the nonce xored with the hash of the ::BTC1 Update:: for that signal (0 if null).
+* The value at the DID’s index for the signal is the nonce xored with the hash of the ::BTC1 Update:: for that signal (0 if null).
     * If the DID controller is responsible for providing the value, the nature of the signal (update or non-update) is hidden from the aggregator.
 * The value of the parent node is the hash of the concatenation of the 256-bit left child value (0 if the left branch is empty) and the 256-bit right child value (0 if the right branch is empty).
     * One or both of the left and right branches is non-empty.
@@ -333,7 +333,7 @@ Now, the presentation to the verifier for DID 13 includes the following:
 }
 ```
 
-From this, the verifier can infer only that position 12 (1100) is not allocated. Having the nonce vary per signal ensures that the hash of the null value varies and so can't be tested for across signals. Having the nonce vary per DID ensures that the verifier can't test for non-update of other known DIDs. Peer hashes that are zero will always be zero and those that are non-zero will always be non-zero.
+From this, the verifier can infer only that index 12 (1100) is not allocated. Having the nonce vary per signal ensures that the hash of the null value varies and so can't be tested for across signals. Having the nonce vary per DID ensures that the verifier can't test for non-update of other known DIDs. Peer hashes that are zero will always be zero and those that are non-zero will always be non-zero.
 
 ### Optimization
 
