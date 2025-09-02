@@ -124,11 +124,12 @@ To prove that the DID is included in the signal, the DID controller provides the
 
 The logic is the same for non-inclusion, except that the DID controller provides the null value instead of the ::BTC1 Update:: to calculate *Hash 1101*.
 
-In either case, the DID presentation would include something like the following:
+In either case, the DID presentation would include the following:
 
 ```json
 {
-  "peers": [
+  "path": "2",
+  "hashes": [
     "<< Hexadecimal of Hash 1100 >>",
     "<< Hexadecimal of Hash 111 >>",
     "<< Hexadecimal of Hash 10 >>",
@@ -137,34 +138,15 @@ In either case, the DID presentation would include something like the following:
 }
 ```
 
-This assumes that *hash(X + Y)* = *hash(Y + X)*, i.e., that the addition operation is commutative. If not, then the position of the peer node must be included:
-
-```json
-{
-  "peers": [
-    {
-      "left": "<< Hexadecimal of Hash 1100 >>"
-    },
-    {
-      "right": "<< Hexadecimal of Hash 111 >>"
-    },
-    {
-      "left": "<< Hexadecimal of Hash 10 >>"
-    },
-    {
-      "left": "<< Hexadecimal of Hash 0 >>"
-    }
-  ]
-}
-```
+The `path` is the hexadecimal string of a bitmap where each bit, from right to left, indicates the direction from which to apply the hash at the corresponding index. The `hashes` array has four elements, so the binary equivalent of `path` is 0010 (bitwise NOT of 1101).
 
 ### Attacks
 
 #### Misrepresented Proof of Inclusion/Non-Inclusion
 
-Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated position 2 (0010). At some point in time, NA gains access to the cryptographic material and the entire DID history for the DID in position 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the n-of-n P2TR Bitcoin address, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
+Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated position 6 (0110). At some point in time, NA gains access to the cryptographic material and the entire DID history for the DID in position 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the n-of-n P2TR Bitcoin address, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
 
-NA makes a presentation with LA’s DID and, using the ::Sidecar:: method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for position 2 (0010), for which NA posted an update (for inclusion) or nothing (for non-inclusion). If the direction is not included, there is no way for the verifier to know that the path taken to the root is illegitimate, and it accepts the presentation by NA. If the direction is included, comparison to previous presentations would detect the breach by noting the changes in the direction, assuming that once allocated, the DID position is fixed.
+NA makes a presentation with LA’s DID and, using the ::Sidecar:: method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for position 6 (0110), for which NA posted an update (for inclusion) or nothing (for non-inclusion). Comparison to previous presentations would detect the breach by the change in the path assuming that, once allocated, the DID position is fixed.
 
 To mitigate this attack, a DID’s position must be fixed deterministically and the hashing operation most not be commutative, i.e., *hash(X + Y)* ≠ *hash(Y + X)*. The following algorithm meets these requirements:
 
@@ -174,7 +156,7 @@ To mitigate this attack, a DID’s position must be fixed deterministically and 
     1. If the values of both child nodes are 0, the value of the parent node is 0.
     2. Otherwise, the value of the parent node is the hash of the concatenation of the 256-bit left child value and the 256-bit right child value.
 
-The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the peer hashes doesn't require direction, as the sequence of directions is determined by the DID's position.
+The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the hashes doesn't require a path, as the path is the bitwise NOT of the DID's position.
 
 #### Information Leakage
 
@@ -243,7 +225,7 @@ The presentation to the verifier for DID 13 includes the following:
 
 ```json
 {
-  "peers": [
+  "hashes": [
     "0000...0000",
     "0000...0000",
     "<< Hexadecimal of Hash 10 >>",
@@ -342,7 +324,7 @@ Now, the presentation to the verifier for DID 13 includes the following:
 ```json
 {
   "nonce": "<< Hexadecimal of Nonce 1101 >>",
-  "peers": [
+  "hashes": [
     "0000...0000",
     "<< Hexadecimal of Hash 111 >>",
     "<< Hexadecimal of Hash 10 >>",
@@ -406,18 +388,13 @@ Now, the presentation to the verifier for DID 13 includes the following:
 ```json
 {
   "nonce": "<< Hexadecimal of Nonce 1101 >>",
-  "peers": [
-    {
-      "right": "<< Hexadecimal of Hash 1110 >>"
-    },
-    {
-      "left": "<< Hexadecimal of Hash 1001 >>"
-    },
-    {
-      "left": "<< Hexadecimal of Hash 0 >>"
-    }
+  "path": "1",
+  "hashes": [
+      "<< Hexadecimal of Hash 1110 >>",
+      "<< Hexadecimal of Hash 1001 >>",
+      "<< Hexadecimal of Hash 0 >>"
   ]
 }
 ```
 
-The only thing the verifier can infer from any presentation is the depth of the tree and therefore an estimate of the number of DIDs using the Beacon.
+The `hashes` array has three elements, so the binary equivalent of `path` is 001. The only thing the verifier can infer from any presentation is the depth of the tree and therefore an estimate of the number of DIDs using the Beacon.
