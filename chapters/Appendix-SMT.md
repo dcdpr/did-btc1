@@ -8,48 +8,48 @@ From [Wikipedia](https://en.wikipedia.org/wiki/Merkle_tree):
 
 ```mermaid
 flowchart TD
-    classDef topHash color:#000000,fill:#fb8500
-    classDef intermediateHash color:#000000,fill:#219ebc
+    classDef rootHash color:#000000,fill:#fb8500
+    classDef nodeHash color:#000000,fill:#219ebc
     classDef leafHash color:#ffffff,fill:#023047
     classDef dataBlock color:#000000,fill:#ffb703
 
-    TopHash["`Top Hash
-    *hash(Hash 0 + Hash 1)*`"]:::topHash
+    RootHash["`Root Hash
+    *hash(Hash 0 + Hash 1)*`"]:::rootHash
 
-    TopHash --> Hash0["`Hash 0
-    *hash(Hash 00 + Hash 01)*`"]:::intermediateHash
-    TopHash --> Hash1["`Hash 1
-    *hash(Hash 10 + Hash 11)*`"]:::intermediateHash
+    RootHash --> Hash0["`Hash 0
+    *hash(Hash 00 + Hash 01)*`"]:::nodeHash
+    RootHash --> Hash1["`Hash 1
+    *hash(Hash 10 + Hash 11)*`"]:::nodeHash
 
     Hash0 --> Hash00["`Hash 00
-    *hash(Hash 000 + Hash 001)*`"]:::intermediateHash
+    *hash(Hash 000 + Hash 001)*`"]:::nodeHash
     Hash0 --> Hash01["`Hash 01
-    *hash(Hash 010 + Hash 011)*`"]:::intermediateHash
+    *hash(Hash 010 + Hash 011)*`"]:::nodeHash
 
     Hash1 --> Hash10["`Hash 10
-    *hash(Hash 100 + Hash 101)*`"]:::intermediateHash
+    *hash(Hash 100 + Hash 101)*`"]:::nodeHash
     Hash1 --> Hash11["`Hash 11
-    *hash(Hash 110 + Hash 111)*`"]:::intermediateHash
+    *hash(Hash 110 + Hash 111)*`"]:::nodeHash
 
     Hash00 --> Hash000["`Hash 000
-    *hash(Hash 0000 + Hash 0001)*`"]:::intermediateHash
+    *hash(Hash 0000 + Hash 0001)*`"]:::nodeHash
     Hash00 --> Hash001["`Hash 001
-    *hash(Hash 0010 + Hash 0011)*`"]:::intermediateHash
+    *hash(Hash 0010 + Hash 0011)*`"]:::nodeHash
 
     Hash01 --> Hash010["`Hash 010
-    *hash(Hash 0100 + Hash 0101)*`"]:::intermediateHash
+    *hash(Hash 0100 + Hash 0101)*`"]:::nodeHash
     Hash01 --> Hash011["`Hash 011
-    *hash(Hash 0110 + Hash 0111)*`"]:::intermediateHash
+    *hash(Hash 0110 + Hash 0111)*`"]:::nodeHash
 
     Hash10 --> Hash100["`Hash 100
-    *hash(Hash 1000 + Hash 1001)*`"]:::intermediateHash
+    *hash(Hash 1000 + Hash 1001)*`"]:::nodeHash
     Hash10 --> Hash101["`Hash 101
-    *hash(Hash 1010 + Hash 1011)*`"]:::intermediateHash
+    *hash(Hash 1010 + Hash 1011)*`"]:::nodeHash
 
     Hash11 --> Hash110["`Hash 110
-    *hash(Hash 1100 + Hash 1101)*`"]:::intermediateHash
+    *hash(Hash 1100 + Hash 1101)*`"]:::nodeHash
     Hash11 --> Hash111["`Hash 111
-    *hash(Hash 1110 + Hash 1111)*`"]:::intermediateHash
+    *hash(Hash 1110 + Hash 1111)*`"]:::nodeHash
 
     Hash000 --> Hash0000["`Hash 0000
     *hash(Data Block 0000)*`"]:::leafHash
@@ -114,13 +114,13 @@ These are the requirements for using Merkle trees to signal commitments in ::Bea
 * Each data block is either a ::BTC1 Update:: or null.
 * No key may have more than one data block.
 * The hash of a non-leaf node is the hash of the concatenation of its child nodes' hashes.
-* The only thing published to Bitcoin is the top hash (the Merkle root).
+* The only thing published to Bitcoin is the root hash (the Merkle root).
 
-The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from a CAS); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the hashes of each peer in the tree (the Merkle proof) as the verifier walks up it to determine the top hash (which, in turn, must have been provided to the DID controller by the aggregator).
+The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from a CAS); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the hashes of each peer in the tree (the Merkle proof) as the verifier walks up it to determine the root hash (which, in turn, must have been provided to the DID controller by the aggregator).
 
 Let’s assume that a DID has been allocated index 13 (1101) through some unknown mechanism (e.g., randomly generated).
 
-To prove that the DID is included in the signal, the DID controller provides the ::BTC1 Update:: to calculate *Hash 1101* and the values *Hash 1100*, *Hash 111*, *Hash 10*, and *Hash 0*. The verifier then calculates *Hash 110*, *Hash 11*, *Hash 1*, and *Top Hash*. If that last value matches the value in the signal, the verifier knows that the DID is included in the signal.
+To prove that the DID is included in the signal, the DID controller provides the ::BTC1 Update:: to calculate *Hash 1101* and the values *Hash 1100*, *Hash 111*, *Hash 10*, and *Hash 0*. The verifier then calculates *Hash 110*, *Hash 11*, *Hash 1*, and *Root Hash*. If that last value matches the value in the signal, the verifier knows that the DID is included in the signal.
 
 The logic is the same for non-inclusion, except that the DID controller provides the null value instead of the ::BTC1 Update:: to calculate *Hash 1101*.
 
@@ -177,35 +177,35 @@ The hash tree for the signal looks like this:
 
 ```mermaid
 flowchart TD
-    classDef topHash color:#000000,fill:#fb8500
-    classDef intermediateHash color:#000000,fill:#219ebc
+    classDef rootHash color:#000000,fill:#fb8500
+    classDef nodeHash color:#000000,fill:#219ebc
     classDef leafHash color:#ffffff,fill:#023047
     classDef dataBlock color:#000000,fill:#ffb703
 
-    TopHash["`Top Hash
-    *hash(Hash 0 + Hash 1)*`"]:::topHash
+    RootHash["`Root Hash
+    *hash(Hash 0 + Hash 1)*`"]:::rootHash
 
-    TopHash --> Hash0["`Hash 0
-    *hash(Hash 00 + 0)*`"]:::intermediateHash
-    TopHash --> Hash1["`Hash 1
-    *hash(Hash 10 + Hash 11)*`"]:::intermediateHash
+    RootHash --> Hash0["`Hash 0
+    *hash(Hash 00 + 0)*`"]:::nodeHash
+    RootHash --> Hash1["`Hash 1
+    *hash(Hash 10 + Hash 11)*`"]:::nodeHash
 
     Hash0 --> Hash00["`Hash 00
-    *hash(0 + Hash 001)*`"]:::intermediateHash
+    *hash(0 + Hash 001)*`"]:::nodeHash
 
     Hash1 --> Hash10["`Hash 10
-    *hash(Hash 100 + 0)*`"]:::intermediateHash
+    *hash(Hash 100 + 0)*`"]:::nodeHash
     Hash1 --> Hash11["`Hash 11
-    *hash(Hash 110 + 0)*`"]:::intermediateHash
+    *hash(Hash 110 + 0)*`"]:::nodeHash
 
     Hash00 --> Hash001["`Hash 001
-    *hash(Hash 0010 + 0)*`"]:::intermediateHash
+    *hash(Hash 0010 + 0)*`"]:::nodeHash
 
     Hash10 --> Hash100["`Hash 100
-    *hash(0 + Hash 1001)*`"]:::intermediateHash
+    *hash(0 + Hash 1001)*`"]:::nodeHash
 
     Hash11 --> Hash110["`Hash 110
-    *hash(0 + Hash 1101)*`"]:::intermediateHash
+    *hash(0 + Hash 1101)*`"]:::nodeHash
 
     Hash001 --> Hash0010["`Hash 0010
     *hash(Data Block 0010)*`"]:::leafHash
@@ -255,44 +255,44 @@ Using the example above, the hash tree for the signal looks like this:
 
 ```mermaid
 flowchart TD
-    classDef topHash color:#000000,fill:#fb8500
-    classDef intermediateHash color:#000000,fill:#219ebc
+    classDef rootHash color:#000000,fill:#fb8500
+    classDef nodeHash color:#000000,fill:#219ebc
     classDef leafHash color:#ffffff,fill:#023047
     classDef dataBlock color:#000000,fill:#ffb703
 
-    TopHash["`Top Hash
-    *hash(Hash 0 + Hash 1)*`"]:::topHash
+    RootHash["`Root Hash
+    *hash(Hash 0 + Hash 1)*`"]:::rootHash
 
-    TopHash --> Hash0["`Hash 0
-    *hash(Hash 00 + Hash 01)*`"]:::intermediateHash
-    TopHash --> Hash1["`Hash 1
-    *hash(Hash 10 + Hash 11)*`"]:::intermediateHash
+    RootHash --> Hash0["`Hash 0
+    *hash(Hash 00 + Hash 01)*`"]:::nodeHash
+    RootHash --> Hash1["`Hash 1
+    *hash(Hash 10 + Hash 11)*`"]:::nodeHash
 
     Hash0 --> Hash00["`Hash 00
-    *hash(Hash 000 + Hash 001)*`"]:::intermediateHash
+    *hash(Hash 000 + Hash 001)*`"]:::nodeHash
     Hash0 --> Hash01["`Hash 01
-    *hash(Hash 010 + 0)*`"]:::intermediateHash
+    *hash(Hash 010 + 0)*`"]:::nodeHash
 
     Hash1 --> Hash10["`Hash 10
-    *hash(Hash 100 + 0)*`"]:::intermediateHash
+    *hash(Hash 100 + 0)*`"]:::nodeHash
     Hash1 --> Hash11["`Hash 11
-    *hash(Hash 110 + Hash 111)*`"]:::intermediateHash
+    *hash(Hash 110 + Hash 111)*`"]:::nodeHash
 
     Hash00 --> Hash000["`Hash 000
-    *hash(Hash 0000 + 0)*`"]:::intermediateHash
+    *hash(Hash 0000 + 0)*`"]:::nodeHash
     Hash00 --> Hash001["`Hash 001
-    *hash(Hash 0010 + 0)*`"]:::intermediateHash
+    *hash(Hash 0010 + 0)*`"]:::nodeHash
 
     Hash01 --> Hash010["`Hash 010
-    *hash(0 + Hash 0101)*`"]:::intermediateHash
+    *hash(0 + Hash 0101)*`"]:::nodeHash
 
     Hash10 --> Hash100["`Hash 100
-    *hash(0 + Hash 1001)*`"]:::intermediateHash
+    *hash(0 + Hash 1001)*`"]:::nodeHash
 
     Hash11 --> Hash110["`Hash 110
-    *hash(0 + Hash 1101)*`"]:::intermediateHash
+    *hash(0 + Hash 1101)*`"]:::nodeHash
     Hash11 --> Hash111["`Hash 111
-    *hash(Hash 1110 + 0)*`"]:::intermediateHash
+    *hash(Hash 1110 + 0)*`"]:::nodeHash
 
     Hash000 --> Hash0000["`Hash 0000
     *hash(Nonce 0000)*`"]:::leafHash
@@ -345,28 +345,28 @@ Mitigating the deterministic path issue may accomplished by including the origin
 
 ```mermaid
 flowchart TD
-    classDef topHash color:#000000,fill:#fb8500
-    classDef intermediateHash color:#000000,fill:#219ebc
+    classDef rootHash color:#000000,fill:#fb8500
+    classDef nodeHash color:#000000,fill:#219ebc
     classDef leafHash color:#ffffff,fill:#023047
     classDef dataBlock color:#000000,fill:#ffb703
 
-    TopHash["`Top Hash
-    *hash(Hash 0 + Hash 1)*`"]:::topHash
+    RootHash["`Root Hash
+    *hash(Hash 0 + Hash 1)*`"]:::rootHash
 
-    TopHash --> Hash0["`Hash 0
-    *hash(Hash 00 + Hash 0101)*`"]:::intermediateHash
-    TopHash --> Hash1["`Hash 1
-    *hash(Hash 1001 + Hash 11)*`"]:::intermediateHash
+    RootHash --> Hash0["`Hash 0
+    *hash(Hash 00 + Hash 0101)*`"]:::nodeHash
+    RootHash --> Hash1["`Hash 1
+    *hash(Hash 1001 + Hash 11)*`"]:::nodeHash
 
     Hash0 --> Hash00["`Hash 00
-    *hash(Hash 0000 + Hash 0010)*`"]:::intermediateHash
+    *hash(Hash 0000 + Hash 0010)*`"]:::nodeHash
     Hash0 --> Hash0101["`Hash 0101
     *hash(0101 + hash(Nonce 0101))*`"]:::leafHash
 
     Hash1 --> Hash1001["`Hash 1001
     *hash(1001 + hash(Nonce 1001 ^ hash(Data Block 1001)))*`"]:::leafHash
     Hash1 --> Hash11["`Hash 11
-    *hash(Hash 1101 + Hash 1110)*`"]:::intermediateHash
+    *hash(Hash 1101 + Hash 1110)*`"]:::nodeHash
 
     Hash00 --> Hash0000["`Hash 0000
     *hash(0000 + hash(Nonce 0000))*`"]:::leafHash
