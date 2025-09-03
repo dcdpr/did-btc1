@@ -7,7 +7,7 @@ for the **did:btc1** method.
 
 The Create operation consists of two main algorithms for creating identifiers
 and DID documents. A **did:btc1** identifier and DID document can either be created
-from a deterministic key pair or from an external ::intermediate DID document::.
+from a deterministic key pair or from an external ::Intermediate DID Document::.
 In both cases, DID creation can be undertaken in an offline manner, i.e., the DID
 controller does not need to interact with the Bitcoin network to create their DID.
 
@@ -43,10 +43,10 @@ The steps are as follows:
 
 #### From External Intermediate DID Document
 
-The From External ::intermediate DID document:: algorithm enables the ability 
-to create a **did:btc1** from an external ::intermediate DID document::. This allows for a
-more complex ::initial DID document::, including the ability to include
-Service Endpoints and ::BTC1 Beacons:: that support aggregation.
+The From External ::Intermediate DID Document:: algorithm enables the ability 
+to create a **did:btc1** from an external ::Intermediate DID Document::. This allows for a
+more complex ::Initial DID Document::, including the ability to include
+service endpoints and ::BTC1 Beacons:: that support aggregation.
 
 It takes the following inputs:
 
@@ -62,7 +62,7 @@ It takes the following inputs:
 It returns the following outputs:
 
 * `did` - a newly created **did:btc1** identifier; string
-* `initialDocument` - the valid first version of a DID document for a given btc1 identifier.
+* `initialDocument` - the valid first version of a DID document for a given **did:btc1** identifier.
 
 The steps are as follows:
 
@@ -80,7 +80,7 @@ The steps are as follows:
    values in the `initialDocument` with the `did`.
 1. Optionally store `canonicalBytes` on a ::Content Addressable Storage:: (CAS)
    system like the InterPlanetary File System (IPFS). If doing so, implementations
-   MUST use ::Content Identifiers:: (::CIDs::) generated following the IPFS v1 algorithm.
+   MUST use ::Content Identifiers:: (CIDs) generated following the IPFS v1 algorithm.
 1. Return `did` and `initialDocument`.
 
 ### Read
@@ -692,7 +692,7 @@ The steps are as follows:
 
 ### Update
 
-The Update algorithm calls a series of subroutines to construst, invoke and
+The Update algorithm calls a series of subroutines to construct, invoke and
 announce ::BTC1 Updates:: for **did:btc1** identifiers and their
 corresponding DID documents. An update to a **did:btc1** document is an invoked
 capability using the [ZCAP-LD](https://w3c-ccg.github.io/zcap-spec/) data format,
@@ -722,7 +722,7 @@ It returns the following output:
 
 * `signalsMetadata` - A Map from Bitcoin transaction identifiers of ::Beacon Signals:: 
    to a struct containing ::Sidecar Data:: for that signal provided as part of the
-   `resolutionOptions`; Object containing the following properties:
+   `resolutionOptions`; object containing the following properties:
    * `btc1Update` - A ::BTC1 Update:: which SHOULD match the update announced
       by the ::Beacon Signal::. In the case of a ::SMT:: proof of non-inclusion, the
       `btc1Update` will be null; object.
@@ -755,7 +755,7 @@ DID document.
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
 * `sourceDocument` - the DID document being transformed by the `documentPatch`; REQUIRED; object.
 * `sourceVersionId` - the version of the DID and DID document, an incrementing integer
    starting from 1; REQUIRED; integer.
@@ -765,7 +765,7 @@ It takes the following inputs:
 
 It returns the following output:
 
-* `unsecuredBtc1Update` - a newly created ::BTC1 Update::; object
+* `unsecuredBtc1Update` - a newly created ::BTC1 Update::; object.
 
 The steps are as follows:
 
@@ -791,7 +791,7 @@ The steps are as follows:
 
 #### Invoke BTC1 Update
 
-The Invoke BTC1 Update algorithm etrieves the `privateKeyBytes` for the
+The Invoke BTC1 Update algorithm retrieves the `privateKeyBytes` for the
 `verificationMethod` and adds a capability invocation in the form of a Data
 Integrity proof following the [ZCAP-LD](https://w3c-ccg.github.io/zcap-spec/)
 and Verifiable Credentials (VC) Data Integrity specifications.
@@ -834,7 +834,7 @@ The steps are as follows:
 #### Announce DID Update
 
 The Announce DID Update algorithm retrieves `beaconServices` from the `sourceDocument`
-and calls the Broadcast DID Update algorithm corresponding to the type of
+and calls the [Broadcast DID Update] algorithm corresponding to the type of
 the ::BTC1 Beacon::.
 
 It takes the following inputs:
