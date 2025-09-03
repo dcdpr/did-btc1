@@ -116,7 +116,7 @@ These are the requirements for using Merkle trees to signal commitments in ::Bea
 * The hash of a non-leaf node is the hash of the concatenation of its child nodes' hashes.
 * The only thing published to Bitcoin is the root hash (the Merkle root).
 
-The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from a CAS); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the hashes of each peer in the tree (the Merkle proof) as the verifier walks up it to determine the root hash (which, in turn, must have been provided to the DID controller by the aggregator).
+The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from ::CAS::); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the verifier with hashes of each peer in the tree as the verifier walks up it to calculate the root hash against which to compare with the root hash from the ::Beacon Signal::).
 
 Let’s assume that a DID has been allocated index 13 (1101) through some unknown mechanism (e.g., randomly generated).
 
@@ -128,7 +128,7 @@ In either case, the DID presentation must include the following:
 
 ```json
 {
-  "path": "2",
+  "index": "<< Hexadecimal of 1101 >>",
   "hashes": [
     "<< Hexadecimal of Hash 1100 >>",
     "<< Hexadecimal of Hash 111 >>",
@@ -138,15 +138,39 @@ In either case, the DID presentation must include the following:
 }
 ```
 
-The `path` is the hexadecimal string of a bitmap where each bit, from right to left, indicates the direction from which to apply the next hash. The `hashes` array has four elements, so the binary equivalent of `path` is 0010 (bitwise NOT of the index 1101).
+The `index` is the hexadecimal string of the index allocated to the DID. Each bit, working from right to left, indicates the direction from which to apply the candidate hash (the one to be verified) to the next one from the `hashes` array, yielding the next candidate hash. Together, the path up the tree (determined by the index) and the array of hashes are called the Merkle proof.
+
+```javascript
+candidateHash = "Hash 1101"
+
+// First index bit from right is 1.
+// Candidate hash goes to the right against the first listed hash.
+candidateHash = hash("Hash 1100", candidateHash)
+
+// Next index bit from right is 0.
+// Candidate hash goes to the left against the next listed hash.
+candidateHash = hash(candidateHash, "Hash 111")
+
+// Next index bit from right is 1.
+// Candidate hash goes to the right against the next listed hash.
+candidateHash = hash("Hash 10", candidateHash)
+
+// Next index bit from right is 1.
+// Candidate hash goes to the right against the next listed hash.
+candidateHash = hash("Hash 0", candidateHash)
+
+// Hashes exhausted.
+// Candidate hash must equal root hash.
+assert(candidateHash === "Root Hash")
+```
 
 ### Attacks
 
 #### Misrepresented Proof of Inclusion/Non-Inclusion
 
-Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated index 6 (0110). At some point in time, NA gains access to the cryptographic material and the entire DID history for the DID at index 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the n-of-n P2TR Bitcoin address, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
+Let’s assume that a nefarious actor (NA) joined the cohort in the beginning and was allocated index 6 (0110). Later, NA gains access to the cryptographic material and the entire DID history for the DID at index 13 (1101) belonging to a legitimate actor (LA). NA does not gain access to the cryptographic material LA uses to sign their part of the n-of-n P2TR Bitcoin address, which is unrelated to the DID. LA discovers the breach immediately and posts an update, rotating their keys or deactivating the DID.
 
-NA makes a presentation with LA’s DID and, using the ::Sidecar:: method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for index 6 (0110), for which NA posted an update (for inclusion) or nothing (for non-inclusion). Assuming that, once allocated, the DID's index is fixed, comparison across presentations could detect a breach by a change in `path`, if both LA and NA post updates.
+NA makes a presentation with LA’s DID and, using the ::Sidecar:: method, provides all the legitimate DID updates except the most recent one. In its place, NA provides proof of inclusion (to change the DID document) or non-inclusion (to retain the prior version of the DID document), using the material provided by the aggregator for index 6 (0110), for which NA posted an update (for inclusion) or nothing (for non-inclusion). Assuming that, once allocated, the DID's index is fixed, comparison across presentations could detect a breach by a change in `index`, but only if both LA and NA post updates.
 
 To mitigate this attack, a DID’s index must be fixed deterministically and the hashing operation most not be commutative, i.e., *hash(X + Y)* ≠ *hash(Y + X)*. The following algorithm meets these requirements:
 
@@ -156,7 +180,7 @@ To mitigate this attack, a DID’s index must be fixed deterministically and the
     1. If the values of both child nodes are 0, the value of the parent node is 0.
     2. Otherwise, the value of the parent node is the hash of the concatenation of the 256-bit left child value and the 256-bit right child value.
 
-The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the hashes doesn't require a path, as the path is the bitwise NOT of the DID's index, i.e., `path = not(hash(did))`.
+The consequence of step 1 is that the Merkle tree has up to 2<sup>256</sup> leaves, 2<sup>256</sup>-1 nodes, and a depth of 256+1=257. This is mitigated by step 3i, which limits the tree size to only those branches where at least one leaf has a non-null data block. The presentation of the hashes doesn't require `index`, as it is simply the hash of the DID, i.e., `index = hash(did)`.
 
 #### Information Leakage
 
@@ -221,7 +245,7 @@ flowchart TD
     Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
 ```
 
-The presentation to the verifier for DID 13 now includes the following (note the removal of `path`, which is implied by the index):
+The presentation to the verifier for DID 13 now includes the following (note the removal of `index`, which is calculated by the verifier):
 
 ```json
 {
@@ -341,7 +365,17 @@ The tree can be further optimized as outlined in [The Libra Blockchain](https://
 
 Doing this violates the requirement that the path be trivially deterministic; the verifier would have to know every occupied index to infer the path to the root for the DID of interest. It also requires that non-updates be included, as it would otherwise be impossible to prove non-inclusion (there would be no path at all), and the nonce is still required so that updates are indistinguishable from non-updates.
 
-Mitigating the deterministic path issue may accomplished by including the original index (the hash of the DID) in the determination of the value of the node, i.e., `hash(index + hash(nonce ^ hash(btc1Update)))` or `hash(index + hash(nonce))`. The end result is this (note that the positions of nodes Hash1001 and Hash11 are reversed due to the Mermaid layout algorithm):
+Algorithmically, this is equivalent to the following:
+
+* A DID’s index is the SHA256 hash of the DID.
+* A signal- and DID-specific 256-bit nonce shall be generated by the DID controller, regardless of update or non-update status.
+* The value at the DID’s index for the signal is the nonce xored with the hash of the ::BTC1 Update:: for that signal (0 if null).
+* The value of a parent node is:
+    * If either the left branch or the right branch is empty, the value of the non-empty branch.
+    * Otherwise, the hash of the concatenation of the 256-bit left child value and the 256-bit right child value.
+    * One or both of the left and right branches is non-empty.
+
+To solve this, the aggregator provides the DID controller with the list of collapsed nodes, which the DID controller in turn supplies to the verifier. The verifier uses the list, implemented as a bitmap, to identify only those bits that are relevant to calculation. The end result is this (note that the positions of nodes Hash1001 and Hash11 are reversed due to the Mermaid layout algorithm):
 
 ```mermaid
 flowchart TD
@@ -361,36 +395,34 @@ flowchart TD
     Hash0 --> Hash00["`Hash 00
     *hash(Hash 0000 + Hash 0010)*`"]:::nodeHash
     Hash0 --> Hash0101["`Hash 0101
-    *hash(0101 + hash(Nonce 0101))*`"]:::leafHash
+    *hash(Nonce 0101)*`"]:::leafHash
 
     Hash1 --> Hash1001["`Hash 1001
-    *hash(1001 + hash(Nonce 1001 ^ hash(Data Block 1001)))*`"]:::leafHash
+    *hash(Nonce 1001 ^ hash(Data Block 1001))*`"]:::leafHash
     Hash1 --> Hash11["`Hash 11
     *hash(Hash 1101 + Hash 1110)*`"]:::nodeHash
 
     Hash00 --> Hash0000["`Hash 0000
-    *hash(0000 + hash(Nonce 0000))*`"]:::leafHash
+    *hash(Nonce 0000)*`"]:::leafHash
     Hash00 --> Hash0010["`Hash 0010
-    *hash(0010 + hash(Nonce 0010 ^ hash(Data Block 0010)))*`"]:::leafHash
+    *hash(Nonce 0010 ^ hash(Data Block 0010))*`"]:::leafHash
 
     Hash11 --> Hash1101["`Hash 1101
-    *hash(1101 + hash(Nonce 1101 ^ hash(Data Block 1101)))*`"]:::leafHash
+    *hash(Nonce 1101 ^ hash(Data Block 1101))*`"]:::leafHash
     Hash11 --> Hash1110["`Hash 1110
-    *hash(1110 + hash(Nonce 1110))*`"]:::leafHash
+    *hash(Nonce 1110)*`"]:::leafHash
 
     Hash0010 --> DataBlock0010[("Data Block 0010")]:::dataBlock
     Hash1001 --> DataBlock1001[("Data Block 1001")]:::dataBlock
     Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
 ```
 
-To prevent a Nefarious Actor (NA) from creating a false update for a DID outside of their control, DID controllers would be responsible for providing the first part of the hash calculation (`hash(nonce ^ hash(btc1Update))` or `hash(nonce)`) and the aggregator would be responsible for the final hash with the index.
-
-Now, the presentation to the verifier for DID 13 includes the following (note the addition of `path`, which is the result of the optimization):
+Now, the presentation to the verifier for DID 13 includes the following (note the addition of `compressed`, which is the result of the optimization):
 
 ```json
 {
   "nonce": "<< Hexadecimal of Nonce 1101 >>",
-  "path": "1",
+  "compressed": "<< Hexadecimal of 0001 >>",
   "hashes": [
       "<< Hexadecimal of Hash 1110 >>",
       "<< Hexadecimal of Hash 1001 >>",
@@ -399,4 +431,32 @@ Now, the presentation to the verifier for DID 13 includes the following (note th
 }
 ```
 
-The `hashes` array has three elements, so the binary equivalent of `path` is 001. The only thing the verifier can infer from any presentation is the depth of the tree and therefore an estimate of the number of DIDs using the Beacon.
+The verifier then applies the hashes to the using only those bits in `index` where the equivalent bit in `compressed` is zero:
+
+```javascript
+candidateHash = "Hash 1101"
+
+// First compressed bit from right is 1, so index bit doesn't apply.
+// Skip first index bit.
+
+// Next compressed bit from right is 0, so index bit applies.
+// Next index bit from right is 0.
+// Candidate hash goes to the left against the next listed hash.
+candidateHash = hash(candidateHash, "Hash 1110")
+
+// Next compressed bit from right is 0, so index bit applies.
+// Next index bit from right is 1.
+// Candidate hash goes to the right against the next listed hash.
+candidateHash = hash("Hash 1001", candidateHash)
+
+// Next compressed bit from right is 0, so index bit applies.
+// Next index bit from right is 1.
+// Candidate hash goes to the right against the next listed hash.
+candidateHash = hash("Hash 0", candidateHash)
+
+// Hashes exhausted.
+// Candidate hash must equal root hash.
+assert(candidateHash === "Root Hash")
+```
+
+The `hashes` array has three elements. The only thing the verifier can infer from any presentation is the depth of the tree and therefore an estimate of the number of DIDs using the Beacon.
