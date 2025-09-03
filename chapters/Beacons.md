@@ -492,78 +492,38 @@ Spend the transaction:
 
 ### Processing Signals
 
+#### Process Singleton Beacon Signal
+
 Given:
 
-* `did` - required, the **did:btc1** identifier whose signals are to be processed
-* `sidecarDocuments` - required, array of documents required for resolution not stored on a ::CAS::,including:
-  * Initial DID document, if `did` was constructed with `idType` of "external" (`did` has the form "did:btc1:x1...")
-  * Map documents for ::BTC1 Beacons:: with services of `beaconType` "MapBeacon".
-  * ::BTC1 Updates:: for each ::BTC1 Update Announcement::
-* `smtProofs` - required for services of `beaconType` "SMTBeacon", array of SMT proofs of inclusion or non-inclusion
+* `hashBytes` - required, the hash bytes retrieved from the transaction
+* `sidecarDocumentsMap` - required, map to resolve documents not stored on a ::CAS::, keyed on document hash, including:
+    * ::BTC1 Updates:: for each ::BTC1 Update Announcement::
 * `cas` - optional, one of:
     * "ipfs"
-* `targetVersionId` - optional, DID document version ID required
-* `targetVersionTime` - optional, DID document version time required
 
-Process the ::Beacon Signals:: to reconstruct the DID document:
-
-1. If `cas` is defined and is not a valid value per above, raise InvalidParameter error.
-1. Set `sidecarDocumentsMap` to empty map.
-1. For each `sidecarDocument` in `sidecarDocuments`:
-   1. Set `hashBytes` to the result of passing `sidecarDocument` to the [JSON Canonicalization and Hash] algorithm.
-   1. Set `id` to the hexadecimal string representation of `hashBytes`.
-   1. Add `id` and `sidecarDocument` to `sidecarDocumentsMap`.
-1. Set `smtProofsMap` to empty map.
-1. For each `smtProof` in `smtProofs`:
-    1. Add `smtProof.id` and `smtProof` to `smtProofsMap`.
-1. If `did` was constructed with `idType` "key", set `didDocument` to the deterministically generated initial document.
-1. If `did` was constructed with `idType` "external":
-   1. Extract `genesisBytes` from `did`.
-   1. Set `id` to the hexadecimal string representation of `genesisBytes`.
-   1. Get `didDocument` from `sidecarDocumentsMap` by its `id` if available, or from ::CAS:: by its `id` if not and `cas` is defined.
-   1. Update placeholder values in `didDocument` with `did` as required.
-   1. If `didDocument` is not a valid DID document, raise InvalidDidUpdate error.
-1. Until terminated:
-   1. Set `btc1Update` to null.
-   1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
-      1. Get the next transaction from the Bitcoin address at `service.serviceEndpoint`.
-      1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
-      1. If the last output transaction is not of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, skip to next `service`.
-      1. Extract `hashBytes` from the last output transaction.
-      1. If `service.beaconType` is not "SingletonBeacon", "MapBeacon", or "SMTBeacon", raise InvalidParameter error.
-      1. If `service.beaconType` is "SingletonBeacon", set `tempBtc1Update` to the result of [Process Singleton Beacon Signal].
-      1. If `service.beaconType` is "MapBeacon", set `tempBtc1Update` to the result of [Process Map Beacon Signal].
-      1. If `service.beaconType` is "SMTBeacon", set `tempBtc1Update` to the result of [Process SMT Beacon Signal].
-      1. If `tempBtc1Update` is null, skip to next `service`.
-      1. Set `tempDidDocument` to transformation of `didDocument` with `tempBtc1Update`.
-      1. If `tempDidDocument.versionId` ≠ `didDocument.versionId + 1`, skip to next `service`.
-      1. If `btc1Update` is not null and `tempBtc1Update` ≠ `btc1Update`, raise InvalidDidUpdate error.
-      1. Set `btc1Update` to `tempBtc1Update`. 
-   1. If `btc1Update` is null, terminate.
-   1. Set `didDocument` to transformation of `didDocument` with `btc1Update`.
-   1. If `didDocument` is not a valid DID document, raise InvalidDidUpdate error.
-   1. If `didDocument.id` is not the same as the **did:btc1** identifier, raise InvalidDidUpdate error.
-   1. If `didDocument` has no BTC1 Beacon service types (i.e., no services where `service.type` is "BTC1Beacon"), raise InvalidDidUpdate error.
-   1. If `targetVersionId` is defined and `didDocument.versionId` = `targetVersionId`, terminate.
-1. If `targetVersionId` is defined and `didDocument.versionId` ≠ `targetVersionId`, raise InvalidDidUpdate error.
-1. If `targetVersionId` is not defined:
-       1. For each `service` in `didDocument.service` where `service.type` is "BTC1Beacon":
-      1. Get the next transaction from the Bitcoin address at `service.serviceEndpoint`.
-      1. If `targetVersionTime` is defined and is less than the transaction time, skip to next `service`.
-      1. If the last output transaction is of the form `[OP_RETURN, OP_PUSHBYTES32, <hashBytes>]`, raise InvalidDidUpdate error.
-1. Return `didDocument`.
-
-#### Process Singleton Beacon Signal
+Process the ::Beacon Signal:: to retrieve the ::BTC1 Update:::
 
 1. Set `id` to the hexadecimal string representation of `hashBytes`.
 1. Get `btc1Update` from `sidecarDocumentsMap` by its `id` if available, or from ::CAS:: by its `id` if not and `cas` is defined.
 1. If `btc1Update` is undefined, raise InvalidDidUpdate error.
-1. Set `btc1Update`
 1. Return `btc1Update`.
 
 > **NOTE**: The act of retrieving from `sidecarDocumentsMap` or ::CAS:: validates the document hash.
 
 #### Process Map Beacon Signal
+
+Given:
+
+* `did` - required, the **did:btc1** identifier whose signal is being processed
+* `hashBytes` - required, the hash bytes retrieved from the transaction
+* `sidecarDocumentsMap` - required, map to resolve documents not stored on a ::CAS::, keyed on document hash, including:
+    * Map documents for ::BTC1 Beacons:: with services of `beaconType` "MapBeacon".
+    * ::BTC1 Updates:: for each ::BTC1 Update Announcement::
+* `cas` - optional, one of:
+    * "ipfs"
+
+Process the ::Beacon Signal:: to retrieve the ::BTC1 Update:::
 
 1. Set `id` to the hexadecimal string representation of `hashBytes`.
 1. Get `map` from `sidecarDocumentsMap` by its `id` if available, or from ::CAS:: by its `id` if not and `cas` is defined.
@@ -577,6 +537,18 @@ Process the ::Beacon Signals:: to reconstruct the DID document:
 > **NOTE**: The act of retrieving from `sidecarDocumentsMap` or ::CAS:: validates the document hash.
 
 #### Process SMT Beacon Signal
+
+Given:
+
+* `did` - required, the **did:btc1** identifier whose signal is being processed
+* `hashBytes` - required, the hash bytes retrieved from the transaction
+* `sidecarDocumentsMap` - required, map to resolve documents not stored on a ::CAS::, keyed on document hash, including:
+    * ::BTC1 Updates:: for each ::BTC1 Update Announcement::
+* `smtProofsMap` - map of SMT proofs of inclusion or non-inclusion, keyed on the SMT proof ID
+* `cas` - optional, one of:
+    * "ipfs"
+
+Process the ::Beacon Signal:: to retrieve the ::BTC1 Update:::
 
 1. Set `id` to the hexadecimal string representation of `hashBytes`.
 1. Get `smtProof` from `smtProofsMap` by its `id`.
