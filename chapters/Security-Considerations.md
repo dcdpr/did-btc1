@@ -12,7 +12,7 @@ process all relevant ::Beacon Signals:: and enforce strict ordering.
 
 Additionally, when resolvers are passed resolution options specifying a versionId 
 they MUST process the full history of the signals up to the current time in order 
-to check for late publishing. Any update that specifies the same versionId but 
+to check for ::Late Publishing::. Any update that specifies the same versionId but 
 contains different update operations MUST trigger a ::Late Publishing:: error. This 
 is not the case for versionTime. When a resolver is passed a versionTime option
 then the state of the DID document can be returned once the all the signals in 
@@ -88,7 +88,7 @@ The security of **did:btc1** identifiers depends on the security of the Bitcoin
 blockchain. Should the Bitcoin blockchain become compromised such that its history
 could be rewritten, for example through a 51% attack, then ::Beacon Signals:: that
 were once part of the blockchain could be removed or replaced--although the longer
-these Signals have been included in the blockchain the more difficult this becomes.
+these ::Beacon Signals:: have been included in the blockchain the more difficult this becomes.
 A 51% attack could prevent future ::Beacon Signals:: from being included within the
 network, however this would require the 51% attack to remain indefinitely enforced.
 Furthermore, without Key Compromise related to a specific DID, the compromise
