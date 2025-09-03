@@ -166,7 +166,7 @@ Decode the **did:btc1** identifier as follows:
 1. Set `encodedString` to `components[2]`.
 1. Pass `encodedString` to the [Bech32m Decoding] algorithm, retrieving `hrp`
    and `dataBytes`.
-1. If the Bech32m decoding algorithm fails, raise `invalidDid` error.
+1. If the [Bech32m Decoding] algorithm fails, raise `invalidDid` error.
 1. Map `hrp` to `idType` from the following:
    1. "k" - "key"
    1. "x" - "external"
@@ -213,7 +213,7 @@ characters. How that manifests depends on the HRP.
 
 With HRP `k`, there is the additional advantage that the first nibble of the
 public key is always zero (because the first byte is either 02 or 03, indicating
-the sign). That means that, for version 1 on bitcoin network, the first three
+the sign). That means that, for version 1 on Bitcoin network, the first three
 nibbles (12 bits) are zero, which translates to "qq" (five bits zero followed by
 five bits zero), with two bits (also zero) left over. Any `did:btc1:k1qq...`
 pattern is therefore version 1 on Bitcoin.
