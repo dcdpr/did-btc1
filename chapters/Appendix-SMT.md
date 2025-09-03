@@ -109,7 +109,7 @@ flowchart TD
     Hash1111 --> DataBlock1111[("Data Block 1111")]:::dataBlock
 ```
 
-These are the requirements for using ::Merkle Trees:: to signal commitments in ::Beacons:::
+These are the requirements for using ::Merkle Trees:: to signal commitments in ::BTC1 Beacons:::
 
 * Each data block is either a ::BTC1 Update:: or null.
 * No key may have more than one data block.
