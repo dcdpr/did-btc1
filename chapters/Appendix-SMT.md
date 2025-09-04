@@ -116,7 +116,7 @@ These are the requirements for using Merkle trees to signal commitments in ::Bea
 * The hash of a non-leaf node is the hash of the concatenation of its child nodes' hashes.
 * The only thing published to Bitcoin is the root hash (the Merkle root).
 
-The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from ::CAS::); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the verifier with hashes of each peer in the tree as the verifier walks up it to calculate the root hash against which to compare with the root hash from the ::Beacon Signal::).
+The DID controller has to prove either inclusion or non-inclusion in the ::Beacon Signal::. To prove inclusion, the DID controller provides either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from ::CAS::); to prove non-inclusion, the DID controller provides the null value (from which the verifier must calculate the hash). In addition, the DID controller must provide the verifier with hashes of each peer in the tree as the verifier walks up it to calculate the root hash against which to compare with the root hash from the ::Beacon Signal::.
 
 Let’s assume that a DID has been allocated index 13 (1101) through some unknown mechanism (e.g., randomly generated).
 
