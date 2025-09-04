@@ -541,7 +541,7 @@ Process the ::Beacon Signal:: to retrieve the ::BTC1 Update:::
 Given:
 
 * `did` - required, the **did:btc1** identifier whose signal is being processed
-* `hashBytes` - required, the hash bytes retrieved from the transaction
+* `signalBytes` - required, the bytes retrieved from the last ::UTXO:: of the ::Beacon Signal::
 * `sidecarDocumentsMap` - required, map to resolve documents not stored on a ::CAS::, keyed on document hash, including:
     * ::BTC1 Updates:: for each ::BTC1 Update Announcement::
 * `smtProofsMap` - map of SMT proofs of inclusion or non-inclusion, keyed on the SMT proof ID
