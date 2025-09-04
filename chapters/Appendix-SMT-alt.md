@@ -171,11 +171,11 @@ flowchart TD
     Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
 ```
 
-The DID controller has to prove that there is either an update or a non-update in the ::Beacon Signal::. To prove an update, the DID controller provides the nonce and either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from ::Sidecar Data:: or ::CAS::); to prove a non-update, the DID controller provides only the nonce. In addition, the DID controller must provide the verifier with hashes of each peer in the tree as the verifier walks up it to calculate the root hash against which to compare with the root hash in the ::Beacon Signal::.
+The DID controller has to prove that there is either an update or a non-update in the ::Beacon Signal::. To prove an update, the DID controller provides the nonce and either the ::BTC1 Update:: (from which the verifier must calculate the hash) or the hash (which the verifier can use to retrieve the ::BTC1 Update:: from ::Sidecar Data:: or ::CAS::); to prove a non-update, the DID controller provides only the nonce. In addition, the DID controller must provide the verifier with the list of collapsed parents and hashes of each peer in the tree as the verifier walks up it to calculate the root hash against which to compare with the root hash in the ::Beacon Signal::.
 
 Assuming that the DID of interest is at index 13 (`int(hash(did)) == int(1101) == 13`), the aggregator (the party responsible for constructing the sparse Merkle tree) must provide the DID controller with:
 
-* a list of collapsed (trimmed and removed) parents above leaf node 13; and
+* a list of collapsed parents above leaf node 13; and
 * a list of hashes of the peers at the parents that have not been collapsed.
 
 With the additional information from the aggregator, the DID controller can now provide a verifier with the following proof:
