@@ -496,7 +496,7 @@ Spend the transaction:
 
 Given:
 
-* `hashBytes` - required, the hash bytes retrieved from the transaction
+* `signalBytes` - required, the bytes retrieved from the last ::UTXO:: of the ::Beacon Signal::
 * `sidecarDocumentsMap` - required, map to resolve documents not stored on a ::CAS::, keyed on document hash, including:
     * ::BTC1 Updates:: for each ::BTC1 Update Announcement::
 * `cas` - optional, one of:
