@@ -98,22 +98,22 @@ DID document of the `identifier` at a specific ::Target Time::. The
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
 * `resolutionOptions` - an object that extends the default options per
    the [DID Resolution specification](https://w3c.github.io/did-resolution/#did-resolution-options);
-   the below list is not intended to be exhaustive; OPTIONAL; object
+   the below list is not intended to be exhaustive; OPTIONAL; object.
    * `versionId` - the version of the DID and DID document, an incrementing integer starting
-      from 1; OPTIONAL; integer
+      from 1; OPTIONAL; integer.
    * `versionTime` - a timestamp used during resolution as a bound for when to
-      stop resolving; OPTIONAL; integer
+      stop resolving; OPTIONAL; integer.
    * `sidecarData` - data necessary for resolving a DID such as ::BTC1 Updates:: and
       ::SMT proofs::; OPTIONAL; object.
-   * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`
+   * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`.
 
 It returns the following output:
 
 * `targetDocument` - a DID Core conformant DID document after all updates have
-   been found, validated and applied; object
+   been found, validated and applied; object.
 
 The steps are as follows:
 
@@ -129,30 +129,30 @@ The steps are as follows:
 
 #### Resolve Initial DID Document
 
-This algorithm specifies how to resolve an ::initial DID document:: and validate
+This algorithm specifies how to resolve an ::Initial DID document:: and validate
 it against the `identifier` for a specific **did:btc1**.
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
-* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object
-  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string
-  * `version` - the identifier version; REQUIRED; integer
-  * `network` - the Bitcoin network used for the identifier; REQUIRED; string
-  * `genesisBytes` - the originating public key; REQUIRED; bytes
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
+* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object.
+  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string.
+  * `version` - the identifier version; REQUIRED; integer.
+  * `network` - the Bitcoin network used for the identifier; REQUIRED; string.
+  * `genesisBytes` - the originating public key; REQUIRED; bytes.
 * `resolutionOptions` - options that extends the default options per
-   the [DID Resolution specification](https://w3c.github.io/did-resolution/#did-resolution-options); OPTIONAL; object
+   the [DID Resolution specification](https://w3c.github.io/did-resolution/#did-resolution-options); OPTIONAL; object.
   * `versionId` - the version of the DID and DID document, an incrementing integer starting
-    from 1; the below list is not intended to be exhaustive; OPTIONAL; integer
+    from 1; the below list is not intended to be exhaustive; OPTIONAL; integer.
   * `versionTime` - a timestamp used during resolution as a bound for when to
-      stop resolving; OPTIONAL; integer
+      stop resolving; OPTIONAL; integer.
   * `sidecarData` - data necessary for resolving a DID such as ::BTC1 Updates:: and
-    ::SMT proofs::.; OPTIONAL; object
-  * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`
+    ::SMT:: proofs; OPTIONAL; object.
+  * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`.
 
 It returns the following output:
 
-* `initialDocument` - the valid first version of a DID document for a given btc1 identifier.
+* `initialDocument` - the valid first version of a DID document for a given **did:btc1** identifier.
 
 The steps are as follows:
 
@@ -168,21 +168,21 @@ The steps are as follows:
 
 ##### Deterministically Generate Initial DID Document
 
-The Deterministically Generate ::initial DID document:: algorithm generates an
-::initial DID document:: from a secp256k1 public key.
+The Deterministically Generate ::Initial DID Document:: algorithm generates an
+::Initial DID Document:: from a secp256k1 public key.
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
-* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object
-  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string
-  * `version` - the identifier version; REQUIRED; integer
-  * `network` - the Bitcoin network used for the identifier; REQUIRED; string
-  * `genesisBytes` - the originating public key; REQUIRED; bytes
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
+* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object.
+  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string.
+  * `version` - the identifier version; REQUIRED; integer.
+  * `network` - the Bitcoin network used for the identifier; REQUIRED; string.
+  * `genesisBytes` - the originating public key; REQUIRED; bytes.
 
 It returns the following output:
 
-* `initialDocument` - the valid first version of a DID document for a given *did:btc1*** identifier.
+* `initialDocument` - the valid first version of a DID document for a given **did:btc1** identifier.
 
 The steps are as follows:
 
@@ -222,7 +222,7 @@ The Deterministically Generate Beacon Services algorithm generates three
 **did:btc1**, one for each of the following three Bitcoin address types for the
 Bitcoin `network` specified by the DID:
 
-* Pay-to-Public-Key-Hash (P2PKH)
+* Pay-to-Public-Key-Hash (P2PKH);
 * Pay-to-Witness-Public-Key-Hash (P2WPKH); and
 * Pay-to-Taproot (P2TR).
 
@@ -231,18 +231,18 @@ private key associated with the `keyBytes`. Each ::BTC1 Beacon:: is a ::Singleto
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
-* `keyBytes` - a compressed SEC encoded secp256k1 public key; REQUIRED; bytes
-* `network` - the Bitcoin network used for the identifier; REQUIRED; string; default=`"bitcoin"`
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
+* `keyBytes` - a compressed SEC encoded secp256k1 public key; REQUIRED; bytes.
+* `network` - the Bitcoin network used for the identifier; REQUIRED; string; default=`"bitcoin"`.
 
 It returns the following output:
 
-* `services` - an array of ::BTC1 Beacon:: service objects containing the following properties
+* `services` - an array of ::BTC1 Beacon:: service objects containing the following properties.
    * `type` - described the kind of service being defined used to determine how to produce updates; 
-      REQUIRED; string; default=`"SingletonBeacon"`
+      REQUIRED; string; default=`"SingletonBeacon"`.
    * `id` - the **did:btc1** identifier controlling the beacon including the DID fragment pointing
-      to the location of a key in the DID document; REQUIRED; string
-   * `serviceEndpoint` - a P2PKH, P2WPKH or P2TR bitcoin address where beacon signals can be broadcast; REQUIRED; string
+      to the location of a key in the DID document; REQUIRED; string.
+   * `serviceEndpoint` - a P2PKH, P2WPKH or P2TR bitcoin address where beacon signals can be broadcast; REQUIRED; string.
 
 Below is an example of a returning object:
 
@@ -253,19 +253,19 @@ The steps are as follows:
 
 1. Initialize a `services` variable to an empty array.
 1. Set `serviceId` to `{identifier}#initialP2PKH`.
-1. Set `beaconAddress` to the result of generating a Pay-to-Public-Key-Hash Bitcoin
+1. Set `beaconAddress` to the result of generating a Pay-to-Public-Key-Hash (P2PKH) Bitcoin
    address from the `keyBytes` for the appropriate `network`.
 1. Set `p2pkhBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2pkhBeacon` to `services`.
 1. Set `serviceId` to `{identifier}#initialP2WPKH`.
-1. Set `beaconAddress` to the result of generating a Pay-to-Witness-Public-Key-Hash
+1. Set `beaconAddress` to the result of generating a Pay-to-Witness-Public-Key-Hash (P2WPKH)
    Bitcoin address from the `keyBytes` for the appropriate `network`.
 1. Set `p2wpkhBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
 1. Push `p2wpkhBeacon` to `services`.
 1. Set `serviceId` to `{identifier}#initialP2TR`.
-1. Set `beaconAddress` to the result of generating a Pay-to-Taproot Bitcoin address
+1. Set `beaconAddress` to the result of generating a Pay-to-Taproot (P2TR) Bitcoin address
    from the `keyBytes` for the appropriate `network`.
 1. Set `p2trBeacon` to the result of passing `serviceId`, and
    `beaconAddress` to [Establish Singleton Beacon].
@@ -274,33 +274,33 @@ The steps are as follows:
 
 ##### External Resolution
 
-The External Resolution algorithm externally retrieves an ::intermediate DID document::
+The External Resolution algorithm externally retrieves an ::Intermediate DID Document::
 as an `intermediateDocumentRepresentation`, either by retrieving it from
 ::Content Addressable Storage:: (CAS) or from the ::Sidecar Data:: provided as
 part of the resolution request.
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
-* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object
-  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string
-  * `version` - the identifier version; REQUIRED; integer
-  * `network` - the Bitcoin network used for the identifier; REQUIRED; string
-  * `genesisBytes` - the originating ::intermediate DID document::; REQUIRED; bytes
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
+* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object.
+  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string.
+  * `version` - the identifier version; REQUIRED; integer.
+  * `network` - the Bitcoin network used for the identifier; REQUIRED; string.
+  * `genesisBytes` - the originating ::Intermediate DID Document::; REQUIRED; bytes.
 * `resolutionOptions` - options that extends the default options per
    the [DID Resolution specification](https://w3c.github.io/did-resolution/#did-resolution-options);
-   the below list is not intended to be exhaustive; OPTIONAL; object
+   the below list is not intended to be exhaustive; OPTIONAL; object.
   * `versionId` - the version of the DID and DID document, an incrementing integer starting
-    from 1; OPTIONAL; integer
+    from 1; OPTIONAL; integer.
   * `versionTime` - a timestamp used during resolution as a bound for when to
-      stop resolving; OPTIONAL; integer
+      stop resolving; OPTIONAL; integer.
   * `sidecarData` - data necessary for resolving a DID such as ::BTC1 Updates:: and
-    ::SMT proofs::.; OPTIONAL; object
-  * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`
+    ::SMT:: proofs.; OPTIONAL; object.
+  * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`.
 
 It returns the following output:
 
-* `initialDocument` - a valid ::initial DID document::: for the given identifier; object
+* `initialDocument` - a valid ::Initial DID Document::: for the given identifier; object.
 
 The steps are as follows:
 
@@ -316,24 +316,24 @@ The steps are as follows:
 
 ###### Sidecar Initial DID Document Validation
 
-The Sidecar ::Initial DID Document:: Validation algorithm validates an
+The ::Sidecar:: ::Initial DID Document:: Validation algorithm validates an
 `initialDocument` against its `identifier`, by first constructing the
-::intermediate DID document:: representation and verifying that the hash of the
+::Intermediate DID Document:: representation and verifying that the hash of the
 `intermediateDocumentRepresentation` matches the bytes encoded within the `identifier`.
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
-* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object
-  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string
-  * `version` - the identifier version; REQUIRED; integer
-  * `network` - the Bitcoin network used for the identifier; REQUIRED; string
-  * `genesisBytes` - the originating ::intermediate DID document::; REQUIRED; bytes
-* `initialDocument` - the ::initial DID document:: for the given identifier.
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
+* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object.
+  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string.
+  * `version` - the identifier version; REQUIRED; integer.
+  * `network` - the Bitcoin network used for the identifier; REQUIRED; string.
+  * `genesisBytes` - the originating ::Intermediate DID Document::; REQUIRED; bytes.
+* `initialDocument` - the ::Initial DID Document:: for the given identifier.
 
 It returns the following outputs or throws an error:
 
-* `initialDocument` - a valid ::initial DID document:: for the given identifier.
+* `initialDocument` - a valid ::Initial DID Document:: for the given identifier.
 
 The steps are as follows:
 
@@ -347,22 +347,22 @@ The steps are as follows:
 
 ###### CAS Retrieval
 
-The CAS Retrieval algorithm attempts to retrieve an ::initial DID document::
+The ::CAS:: Retrieval algorithm attempts to retrieve an ::Initial DID Document::
 from a ::Content Addressable Storage:: (CAS) system by converting the bytes in
 the `identifier` into a ::Content Identifier:: (CID).
 
 It takes the following inputs:
 
-* `identifier` - a valid **did:btc1** identifier; REQUIRED; string
-* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object
-  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string
-  * `version` - the identifier version; REQUIRED; integer
-  * `network` - the Bitcoin network used for the identifier; REQUIRED; string
-  * `genesisBytes` - the originating ::intermediate DID document::; REQUIRED; bytes
+* `identifier` - a valid **did:btc1** identifier; REQUIRED; string.
+* `identifierComponents` - The decoded parts of a **did:btc1** identifier; REQUIRED; object.
+  * `idType` - the type of identifier (`KEY` or `EXTERNAL`); REQUIRED; string.
+  * `version` - the identifier version; REQUIRED; integer.
+  * `network` - the Bitcoin network used for the identifier; REQUIRED; string.
+  * `genesisBytes` - the originating ::Intermediate DID Document::; REQUIRED; bytes.
 
 It returns the following output:
 
-* `initialDocument` - a valid ::initial DID document:: for the given identifier.
+* `initialDocument` - a valid ::Initial DID Document:: for the given identifier.
 
 The steps are as follows:
 
@@ -385,24 +385,24 @@ resolved.
 
 It takes the following inputs:
 
-* `initialDocument` - the ::initial DID document:: that was used to initiate the **did:btc1**
+* `initialDocument` - the ::Initial DID Document:: that was used to initiate the **did:btc1**
    identifier being resolved as verified by the [Resolve Initial DID Document] algorithm.
-   A DID Core conformant DID document; REQUIRED; object
+   A DID Core conformant DID document; REQUIRED; object.
 * `resolutionOptions` - options that extends the default options per
    the [DID Resolution specification](https://w3c.github.io/did-resolution/#did-resolution-options);
-   the below list is not intended to be exhaustive; OPTIONAL; object
+   the below list is not intended to be exhaustive; OPTIONAL; object.
   * `versionId` - the version of the DID and DID document, an incrementing integer starting
-    from 1; OPTIONAL; integer
+    from 1; OPTIONAL; integer.
   * `versionTime` - a timestamp used during resolution as a bound for when to
-      stop resolving; OPTIONAL; integer
+      stop resolving; OPTIONAL; integer.
   * `sidecarData` - data necessary for resolving a DID such as ::BTC1 Updates:: and
-    ::SMT proofs::.; OPTIONAL; object
-  * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`
+    ::SMT:: proofs; OPTIONAL; object.
+  * `network` - the Bitcoin network used for resolution; OPTIONAL; string; default=`"bitcoin"`.
 
 It returns the following output or throws an error:
 
 * `targetDocument` - a DID Core conformant DID document after all updates have
-   been found, validated and applied; object
+   been found, validated and applied; object.
 
 The steps are as follows:
 
@@ -461,16 +461,16 @@ It takes the following inputs:
    `resolutionOptions`; REQUIRED; Map containing the following properties:
    * `btc1Update` - a ::BTC1 Update:: which SHOULD match the update announced
       by the ::Beacon Signal::. In the case of a ::SMT:: proof of non-inclusion, no
-      BTC1 Update MAY be provided; OPTIONAL; object
+      ::BTC1 Update:: MAY be provided; OPTIONAL; object.
    * `proofs` - a ::Sparse Merkle Tree:: proof that the provided `btc1Update` value is
       the value at the leaf indexed by the **did:btc1** being resolved. REQUIRED; TODO: What exactly this
       structure is needs to be defined.
 * `network` -  a string identifying the Bitcoin network of the **did:btc1** identifier.
-   The algorithm MUST query the Bitcoin blockchain identified by the `network`; REQUIRED; string
+   The algorithm MUST query the Bitcoin blockchain identified by the `network`; REQUIRED; string.
 
 It returns the following output once either `targetTime` or `targetVersionId` have been reached:
 
-* `contemporaryDIDDocument` - A ::contemporary DID document:: conformant to DID Core resolved using updates found
+* `contemporaryDIDDocument` - A ::Contemporary DID Document:: conformant to DID Core resolved using updates found
    on-chain from genesis to `contemporaryBlockheight`.
 
 The steps are as follows:
@@ -536,8 +536,8 @@ It takes the following inputs:
    ::Beacon Signals:: in; REQUIRED; integer greater or equal to 0.
 * `beacons` - An array of ::BTC1 Beacon:: services in the ::Contemporary DID document::; REQUIRED; array;
    Each Beacon is a structure with the following properties:
-    * `id` - The id of the Beacon service in the DID document; REQUIRED; string.
-    * `type` - The type of the Beacon service in the DID document; REQUIRED; string; MUST
+    * `id` - The id of the ::Beacon Service:: in the DID document; REQUIRED; string.
+    * `type` - The type of the ::Beacon Service:: in the DID document; REQUIRED; string; MUST
       be either `SingletonBeacon`, `CIDAggregateBeacon`, or `SMTAggregateBeacon`.
     * `serviceEndpoint` - A BIP21 URI representing a Bitcoin address; REQUIRED; string.
     * `address` - The Bitcoin address decoded from the `serviceEndpoint value; REQUIRED; string.
@@ -627,7 +627,7 @@ duplicate against the hash history of previously applied updates.
 
 It takes the following inputs:
 
-* `btc1Update` - the ::unsecured BTC1 Update:: to confirm as a duplicate or not; REQUIRED; object.
+* `btc1Update` - the ::Unsecured BTC1 Update:: to confirm as a duplicate or not; REQUIRED; object.
 * `btc1UpdateHashHistory` - an array of hashes corresponding to each ::BTC1 Update::; REQUIRED; array.
 
 It returns successfully if the `update` is a duplicate else it throws an error.
@@ -645,7 +645,7 @@ The steps are as follows:
 
 ##### Apply DID Update
 
-The Apply DID Update algorithm attempts to apply a DID Update to a DID document, it first
+The Apply DID Update algorithm attempts to apply a DID update to a DID document, it first
 verifies the proof on the update is a valid capabilityInvocation of the root
 authority over the DID being resolved. Then it applies the JSON patch
 transformation to the DID document, checks the transformed DID document
@@ -661,7 +661,7 @@ It takes the following inputs:
 
 It returns the following output:
 
-* `targetDIDDocument` - The ::contemporary DID document:: with all updates applied to it; object.
+* `targetDIDDocument` - The ::Contemporary DID Document:: with all updates applied to it; object.
 
 The steps are as follows:
 
