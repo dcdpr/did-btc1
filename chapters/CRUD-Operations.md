@@ -861,7 +861,7 @@ It returns the following output:
 The steps are as follows:
 
 1. Set `beaconServices` to an empty array.
-1. Set `signalMetadata` to an empty array.
+1. Set `signalsMetadata` to an empty array.
 1. For `beaconId` in `beaconIds`:
    1. Find `beaconService` in `sourceDocument.service` with an `id` property
     equal to `beaconId`.
