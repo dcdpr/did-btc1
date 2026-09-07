@@ -61,6 +61,6 @@ The `type` of a `service` defining a [CAS Beacon] in a DID document is `"CASBeac
 
 An [SMT Beacon] creates a [Beacon Signal] that commits to multiple [BTCR2 Update Announcements][BTCR2 Update Announcement], each identified by a **did:btcr2** identifier. To do so, it constructs an optimized [Sparse Merkle Tree] as defined in [Appendix: Optimized Sparse Merkle Tree Implementation] and publishes the Merkle root.
 
-An [SMT Beacon] provides maximum privacy for the DID controller, as the DID controller never has to reveal their DIDs or [BTCR2 Updates][BTCR2 Update] to the aggregator.
+An [SMT Beacon] provides maximum privacy for the DID controller, as the DID controller never has to reveal their DIDs to the aggregator. With a `nonce` in the leaf value, the DID controller also does not show if there is a [BTCR2 Update], or its contents. Without a `nonce`, all parties know if there is an update, and all parties can retrieve its contents if the update is on [CAS].
 
 The `type` of a `service` defining an [SMT Beacon] in a DID document is `"SMTBeacon"`.

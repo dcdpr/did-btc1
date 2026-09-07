@@ -142,16 +142,16 @@ Example output:
 
 To verify the inclusion or non-inclusion of a DID in the [SMT Proof], perform the following steps:
 
-Throughout this section, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte array, and `concat()` (equivalently, the `+` operator) concatenates byte arrays, not strings. The `base64url` {{#cite RFC4648}} encoded fields of an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) MUST be decoded to their raw bytes before being used in any of these operations.
+Throughout this section, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte array, and `concat()` (equivalently, the `+` operator) concatenates byte arrays, not strings. `0` denotes 32 zero bytes. The `base64url` {{#cite RFC4648}} encoded fields of an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) MUST be decoded to their raw bytes before being used in any of these operations.
 
-Construct a hashed-zero cache. Two zero leaves are hashed together by concatenating the value `0` with itself for the bottom level, and then hashed again with its next sibling, also itself, at each level up the tree. Each computed hash value can be cached in an array.
+Construct a hashed-zero cache. `cachedZero[0]` is the value of an empty leaf and is equal to `hash(0 + 0)`. `cachedZero[n]` is the value of an empty subtree at height `n` and is equal to `hash(cachedZero[n-1] + cachedZero[n-1])`.
 
 {% set hide_text = `` %}
 {% set pseudocode_construct_hashed_zero_cache =
 `
 ~~~rust
 let cachedZero = [];
-let z = 0;
+let z = 0;  // 32 zero bytes
 
 for n in 0..=255 {
   z = hash(concat(z, z));
@@ -170,7 +170,19 @@ hide_label="Hide"
 ) }}
 
 
-The [SMT Proof (data structure)] is verified by walking the tree starting from the leaf node value --- given by `hash(hash(proof.nonce) + proof.updateId)` for update inclusion or `hash(hash(proof.nonce))` for non-inclusion --- to the root `proof.id`. Walking the tree means hashing sibling hashes from `proof.hashes` concatenated with a candidate hash to construct each node value. Each bit within the leaf node index (given by `hash(did)`) informs the algorithm which side of the concatenation operation the sibling hash belongs on: 0 for left, 1 for right.
+The result of the algorithm MUST be `false` if any of the following conditions are true:
+
+* The proof has a `nonce`, and the decoded `nonce` is not 32 bytes.
+* The proof has an `updateId`, and the decoded `updateId` is not 32 bytes.
+
+The OPTIONAL fields `nonce` and `updateId` of the [SMT Proof (data structure)] select the leaf value of the index of `did`. The DID controller selects the fields for each index and each [Beacon Signal]:
+
+* `nonce` and `updateId`: `hash(hash(nonce) + updateId)`. The [Beacon Signal] announces the update.
+* `nonce` only: `hash(hash(nonce))`. The [Beacon Signal] announces no update.
+* `updateId` only: `updateId`. The [Beacon Signal] announces the update.
+* No `nonce` and no `updateId`: `cachedZero[0]`, the value of an empty leaf. The [Beacon Signal] announces no update, and the index is empty.
+
+The [SMT Proof (data structure)] is verified by walking the tree starting from the leaf value to the root `proof.id`. Walking the tree means hashing sibling hashes from `proof.hashes` concatenated with a candidate hash to construct each node value. Each bit within the leaf node index (given by `hash(did)`) informs the algorithm which side of the concatenation operation the sibling hash belongs on: 0 for left, 1 for right.
 
 The tree is "optimized" by collapsing empty nodes. (See [Appendix: Optimized Sparse Merkle Tree Implementation] for definition of "optimized".) Each bit within `proof.collapsed` informs the algorithm whether to take the next sibling hash from `proof.hashes` (0) or use a hashed zero from the current height of the tree (1).
 
@@ -180,10 +192,18 @@ The last step is asserting that the computed candidate hash is equivalent to `pr
 {% set pseudocode_smt_proof_verification =
 `
 ~~~rust
-let candidateHash = if let Some(updateId) = proof.updateId {
-  hash(concat(hash(proof.nonce), updateId))
-} else {
-  hash(hash(proof.nonce))
+if let Some(nonce) = proof.nonce {
+  if nonce.len() != 32 { return false; }
+}
+if let Some(updateId) = proof.updateId {
+  if updateId.len() != 32 { return false; }
+}
+
+let candidateHash = match (proof.nonce, proof.updateId) {
+  (Some(nonce), Some(updateId)) => hash(concat(hash(nonce), updateId)),  // update, private
+  (Some(nonce), None)           => hash(hash(nonce)),                    // no update, private
+  (None,        Some(updateId)) => updateId,                             // update, public
+  (None,        None)           => cachedZero[0],                        // empty index
 };
 
 let index = hash(did);
