@@ -114,7 +114,7 @@ flowchart TD
 
 To use Merkle trees to signal commitments in [BTCR2 Beacons][BTCR2 Beacon]:
 
-* The index (the identification of the leaf node) is the hash of the DID with the hash byte stream converted to an integer using big-endian conversion, i.e., `index = int(hash(did))`.
+* The index (the identification of the leaf node) is the hash of the DID with the hash byte stream converted to an integer using big-endian conversion, i.e., `index = int(hash(did))`. The most significant bit selects the child of the root.
     * Each DID is therefore associated with one and only one leaf node.
     * Binding the index to the DID ensures that no other index can be used by a nefarious actor to post an update to the DID.
     * This produces a data structure with lots of unused leaves, making it a [Sparse Merkle Tree].
@@ -196,7 +196,7 @@ The DID controller has to prove that there is either an update or a non-update i
 
 Assuming that the DID of interest is at index 13 (`int(hash(did)) == int(1101) == 13`), the [Aggregation Service] (the party responsible for constructing the [Sparse Merkle Tree]) must provide the DID controller with the `collapsed` bitmap for the path above leaf node 13 and the hashes of the non-empty peers along that path (the empty peers are recovered from the cached zeros).
 
-The [Aggregation Service] has the full [Sparse Merkle Tree] and can construct [SMT Proofs][SMT Proof]. DID controllers request the [SMT Proofs][SMT Proof] from the [Aggregation Service] and give them to verifiers. An example proof may be:
+The [Aggregation Service] has the full [Sparse Merkle Tree] and can construct [SMT Proofs][SMT Proof]. DID controllers request the [SMT Proofs][SMT Proof] from the [Aggregation Service] and give them to verifiers. This is an example proof for the four-level tree above. Its values are labels, not bytes. [SMT Proof (data structure)] shows proofs of the 256-level tree with correct byte values.
 
 
 ```json

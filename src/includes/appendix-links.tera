@@ -1,4 +1,4 @@
 [Appendix: Aggregation]: {{ root }}appendix.md#aggregation
 [Appendix: Privacy Considerations]: {{ root }}appendix.md#privacy-considerations
 [Appendix: Security Considerations]: {{ root }}appendix.md#security-considerations
-[Appendix: Optimized Sparse Merkle Tree Implementation]: {{ root }}appendix.md#smt-implementation
+[Appendix: Optimized Sparse Merkle Tree Implementation]: {{ root }}appendix/optimized-smt.md#smt-implementation

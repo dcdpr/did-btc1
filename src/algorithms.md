@@ -142,7 +142,7 @@ Example output:
 
 To verify the inclusion or non-inclusion of a DID in the [SMT Proof], perform the following steps:
 
-Throughout this section, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte array, and `concat()` (equivalently, the `+` operator) concatenates byte arrays, not strings. `0` denotes 32 zero bytes. The `base64url` {{#cite RFC4648}} encoded fields of an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) MUST be decoded to their raw bytes before being used in any of these operations.
+Throughout this section, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte array, and `concat()` (equivalently, the `+` operator) concatenates byte arrays. `0` denotes 32 zero bytes. `bitAt(i)` of a 32-byte value counts from left to right. `bitAt(0)` is the most significant bit of the first byte. `bitAt(255)` is the least significant bit of the last byte. The `base64url` {{#cite RFC4648}} encoded fields of an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) MUST be decoded to their raw bytes before being used in any of these operations.
 
 Construct a hashed-zero cache. `cachedZero[0]` is the value of an empty leaf and is equal to `hash(0 + 0)`. `cachedZero[n]` is the value of an empty subtree at height `n` and is equal to `hash(cachedZero[n-1] + cachedZero[n-1])`.
 
@@ -174,6 +174,8 @@ The result of the algorithm MUST be `false` if any of the following conditions a
 
 * The proof has a `nonce`, and the decoded `nonce` is not 32 bytes.
 * The proof has an `updateId`, and the decoded `updateId` is not 32 bytes.
+* The decoded `collapsed` is not 32 bytes.
+* The number of entries in `hashes` plus the number of `1` bits in `collapsed` is not `256`.
 
 The OPTIONAL fields `nonce` and `updateId` of the [SMT Proof (data structure)] select the leaf value of the index of `did`. The DID controller selects the fields for each index and each [Beacon Signal]:
 
@@ -182,7 +184,7 @@ The OPTIONAL fields `nonce` and `updateId` of the [SMT Proof (data structure)] s
 * `updateId` only: `updateId`. The [Beacon Signal] announces the update.
 * No `nonce` and no `updateId`: `cachedZero[0]`, the value of an empty leaf. The [Beacon Signal] announces no update, and the index is empty.
 
-The [SMT Proof (data structure)] is verified by walking the tree starting from the leaf value to the root `proof.id`. Walking the tree means hashing sibling hashes from `proof.hashes` concatenated with a candidate hash to construct each node value. Each bit within the leaf node index (given by `hash(did)`) informs the algorithm which side of the concatenation operation the sibling hash belongs on: 0 for left, 1 for right.
+The [SMT Proof (data structure)] is verified by walking the tree starting from the leaf value to the root `proof.id`. Walking the tree means hashing sibling hashes from `proof.hashes` concatenated with a candidate hash to construct each node value. Each bit within the leaf node index (given by `hash(did)`) selects the side of the candidate hash: `0` for left, `1` for right. The sibling hash is on the other side. The walk starts at the leaf with `bitAt(255)` and stops at the root with `bitAt(0)`.
 
 The tree is "optimized" by collapsing empty nodes. (See [Appendix: Optimized Sparse Merkle Tree Implementation] for definition of "optimized".) Each bit within `proof.collapsed` informs the algorithm whether to take the next sibling hash from `proof.hashes` (0) or use a hashed zero from the current height of the tree (1).
 
@@ -198,6 +200,10 @@ if let Some(nonce) = proof.nonce {
 if let Some(updateId) = proof.updateId {
   if updateId.len() != 32 { return false; }
 }
+if proof.collapsed.len() != 32 { return false; }
+if proof.hashes.len() + proof.collapsed.count_ones() != 256 {
+  return false;
+}
 
 let candidateHash = match (proof.nonce, proof.updateId) {
   (Some(nonce), Some(updateId)) => hash(concat(hash(nonce), updateId)),  // update, private
@@ -208,6 +214,8 @@ let candidateHash = match (proof.nonce, proof.updateId) {
 
 let index = hash(did);
 
+// bitAt(i): bit i, counted from left to right over the 32 bytes.
+// n = 0 is the leaf level (i = 255), n = 255 is the root level (i = 0).
 for n in 0..=255 {
   let i = 255 - n;
 
