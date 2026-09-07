@@ -57,6 +57,8 @@ The resolver returns:
 
 [^2]: The number of confirmations for the Bitcoin block that contains the most recently applied unique update that yielded the resolved DID document. "Unique" refers to handling duplicated updates. When deduplicating, use the lowest block height to determine confirmations.
 
+If `resolutionOptions` has no `versionId` and no `versionTime`, [Sidecar Data] that the resolver did not use has no effect on the result. It can show that the resolver and the DID controller do not read the same Bitcoin blocks. Examples: a [Beacon Signal] has less than `minConf` confirmations, or the resolver reads a different chain. It can also show a problem with the [Sidecar Data], for example [Sidecar Data] that is not for `did`. Implementations MAY tell the caller which [Sidecar Data] they did not use.
+
 
 ## Decode the DID { #decode-the-did }
 
