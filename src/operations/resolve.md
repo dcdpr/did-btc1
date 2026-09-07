@@ -36,6 +36,7 @@ Resolution maintains the following state while building the DID document:
 * `current_version_id`: the version number being processed (starts at `1`).
 * `update_hash_history`: a list of [BTCR2 Unsigned Update] hashes used to detect duplicates.
 * `block_confirmations`: confirmations for the Bitcoin block that contains the most recently applied unique update (starts at `0`).
+* `current_block_height`: the height of the Bitcoin block that contains the most recently applied update (starts at `0`).
 
 The resolver:
 
@@ -125,7 +126,10 @@ Scan the `service` entries in `current_document` ([DID Document (data structure)
 
 For each [Beacon Address] that is not in `scanned_beacons`:
 
-* Find the Bitcoin transactions that spend from the [Beacon Address] and whose last output script contains [Signal Bytes].
+* Find the Bitcoin transactions for which all of the following conditions are true:
+    * The transaction spends from the [Beacon Address].
+    * The last output script of the transaction contains [Signal Bytes].
+    * The block height of the transaction is equal to or more than `current_block_height`.
 * Add the [Beacon Address] to `scanned_beacons`.
 
 Implementations are RECOMMENDED to query an indexed Bitcoin blockchain Remote Procedure Call (RPC) service such as [electrs](https://github.com/romanz/electrs) or [Esplora](https://github.com/Blockstream/esplora). Implementations MAY instead traverse blocks from the genesis block.
@@ -140,6 +144,7 @@ For each transaction found:
   * [Singleton Beacon]: `update_hash` is the [Signal Bytes].
   * [CAS Beacon]: use [Process CAS Beacon](#process-cas-beacon).
   * [SMT Beacon]: use [Process SMT Beacon](#process-smt-beacon).
+* If the [Beacon Signal] announces no update for `did`, do not build a tuple. Continue with the next transaction.
 * Build a tuple with:
   * The transaction's block metadata (height, mediantime, and confirmations).
   * The [BTCR2 Signed Update (data structure)] retrieved from `update_lookup_table[update_hash]`.
@@ -150,12 +155,16 @@ For each transaction found:
 
 ### Process CAS Beacon { #process-cas-beacon }
 
-Treat [Signal Bytes] as `map_update_hash`. Look up `map_update_hash` in `cas_lookup_table` to retrieve a [CAS Announcement (data structure)] and read `update_hash` from the announcement entry keyed by `did`. If the [CAS Announcement (data structure)] is not in `cas_lookup_table`, retrieve it from [CAS] using `map_update_hash` as described in [BTCR2 Update Data Distribution].
+Treat [Signal Bytes] as `map_update_hash`. Look up `map_update_hash` in `cas_lookup_table` to retrieve a [CAS Announcement (data structure)]. If the [CAS Announcement (data structure)] is not in `cas_lookup_table`, retrieve it from [CAS] using `map_update_hash` as described in [BTCR2 Update Data Distribution]. Raise a [`MISSING_UPDATE_DATA`] error if the announcement is not in `cas_lookup_table` and not available from [CAS]. The announcement is not available from [CAS] if the hash of the retrieved content is not equal to `map_update_hash` ([BTCR2 Update Data Distribution]).
+
+Read `update_hash` from the announcement entry keyed by `did`. If the announcement has no entry for `did`, the [Beacon Signal] announces no update for `did`.
 
 
 ### Process SMT Beacon { #process-smt-beacon }
 
-Treat [Signal Bytes] as `smt_root`. Look up `smt_root` in `smt_lookup_table` to retrieve an [SMT Proof (data structure)]. Validate the proof with the [SMT Proof Verification] algorithm. Use `smt_proof.updateId` as `update_hash`.
+Treat [Signal Bytes] as `smt_root`. Look up `smt_root` in `smt_lookup_table` to retrieve an [SMT Proof (data structure)] as `smt_proof`. Raise a [`MISSING_UPDATE_DATA`] error if `smt_lookup_table` has no entry for `smt_root`. Raise an [`INVALID_SIGNAL_DATA`] error if the `id` of `smt_proof` is not equal to `smt_root`.
+
+Verify `smt_proof` with the [SMT Proof Verification] algorithm. Raise an [`INVALID_SIGNAL_DATA`] error if the result of the algorithm is `false`. If `smt_proof` has an `updateId`, use it as `update_hash`. If `smt_proof` has no `updateId`, the [Beacon Signal] announces no update for `did`.
 
 
 ## Process Next Update { #process-next-update }
@@ -169,7 +178,7 @@ Treat [Signal Bytes] as `smt_root`. Look up `smt_root` in `smt_lookup_table` to 
     * The tuple's `targetVersionId` is more than `current_version_id`. [^4]
     * `resolutionOptions.versionTime` is provided.
     * The tuple's block `mediantime` {{#cite Bitcoin-Core}} is after `resolutionOptions.versionTime`. [^5]
-5. Set `block_confirmations` to the tuple's block confirmations.
+5. Set `block_confirmations` to the tuple's block confirmations. Set `current_block_height` to the tuple's block height.
 6. Set `update` to the tuple's [BTCR2 Signed Update (data structure)] and [check `update.targetVersionId`](#check-update-version).
 
 [^4]: This condition is necessary because the resolver accepts a duplicate update ([Confirm Duplicate Update](#confirm-duplicate-update)). The block of a duplicate can be after `versionTime` while the block of a subsequent version is before `versionTime`. Without this condition, the resolver stops at the duplicate and does not apply the subsequent version.

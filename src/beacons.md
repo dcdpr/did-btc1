@@ -7,7 +7,7 @@
 
 A [BTCR2 Beacon] is a service listed in a BTCR2 DID document that informs resolvers how to find authentic updates to the DID. The service properties define a Bitcoin address to watch for [Beacon Signals][Beacon Signal].
 
-All [Beacon Signals][Beacon Signal] broadcast from a [BTCR2 Beacon] in the [Current DID Document] MUST be processed as part of DID document resolution. The [Beacon Type] in the service defines how [Beacon Signals][Beacon Signal] MUST be processed.
+The resolver MUST process each [Beacon Signal] that [Find Beacon Signals](operations/resolve.md#find-beacon-signals) finds for the [Current DID Document]. The [Beacon Type] in the service defines how [Beacon Signals][Beacon Signal] MUST be processed.
 
 Any on-chain [Beacon Signal] that cannot be processed renders the related DID invalid. For this reason, all DID controllers SHOULD ensure the [Beacon Addresses][Beacon Address] they include in their DID document require appropriate approval to spend [UTXOs][UTXO] controlled by the address, so that only approved [Beacon Signals][Beacon Signal] can be posted to Bitcoin. For resilience, BTCR2 DIDs can specify any number of [Beacons][BTCR2 Beacon] and SHOULD include at least one [Singleton Beacon] as a fallback in case all [Aggregate Beacons][Aggregate Beacon] fail.
 

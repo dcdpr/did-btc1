@@ -235,7 +235,7 @@ The [Sidecar Data] contains optional properties:
 - `casUpdates`: OPTIONAL array of [CAS Announcements][CAS Announcement (data structure)]. It is REQUIRED
   if the DID being resolved has used a [CAS Beacon] to publish a [BTCR2 Update].
 - `smtProofs`: OPTIONAL array of [SMT Proofs][SMT Proof (data structure)]. It is REQUIRED
-  if the DID being resolved has used a [SMT Beacon] to publish a [BTCR2 Update].
+  if any version of the DID document being resolved includes an [SMT Beacon]. It MUST contain one [SMT Proof (data structure)] for each [Beacon Signal] of an [SMT Beacon] that [Find Beacon Signals](operations/resolve.md#find-beacon-signals) finds.
 
 {% set hide_text = `` %}
 {% set ex_sidecar_data =
