@@ -166,13 +166,15 @@ Treat [Signal Bytes] as `smt_root`. Look up `smt_root` in `smt_lookup_table` to 
     * Otherwise, resolve `current_document` as `didDocument`.
 3. Sort `updates` by [BTCR2 Signed Update (data structure)] `targetVersionId` (ascending) with the tuple's block height as a tiebreaker. Remove the first tuple from `updates`.
 4. Resolve `current_document` as `didDocument` if all of the following conditions are true:
-    * The tuple's `targetVersionId` is more than `current_version_id`.
+    * The tuple's `targetVersionId` is more than `current_version_id`. [^4]
     * `resolutionOptions.versionTime` is provided.
-    * The tuple's block `mediantime` {{#cite Bitcoin-Core}} is after `resolutionOptions.versionTime`. [^4]
+    * The tuple's block `mediantime` {{#cite Bitcoin-Core}} is after `resolutionOptions.versionTime`. [^5]
 5. Set `block_confirmations` to the tuple's block confirmations.
 6. Set `update` to the tuple's [BTCR2 Signed Update (data structure)] and [check `update.targetVersionId`](#check-update-version).
 
-[^4]: The resolver applies an update whose block `mediantime` is equal to `versionTime`. The comparison has no tolerance. `mediantime` does not decrease from one block to the next. Each resolver reads the same value from the block chain, so each resolver selects the same version.
+[^4]: This condition is necessary because the resolver accepts a duplicate update ([Confirm Duplicate Update](#confirm-duplicate-update)). The block of a duplicate can be after `versionTime` while the block of a subsequent version is before `versionTime`. Without this condition, the resolver stops at the duplicate and does not apply the subsequent version.
+
+[^5]: The resolver applies an update whose block `mediantime` is equal to `versionTime`. The comparison has no tolerance. `mediantime` does not decrease from one block to the next. Each resolver reads the same value from the block chain, so each resolver selects the same version.
 
 
 ### Check `update.targetVersionId` { #check-update-version }
@@ -229,13 +231,13 @@ The resolver MUST find the entry of `current_document.capabilityInvocation` that
 
 Read `publicKeyMultibase` from that entry. When the entry is an embedded verification method object, read `publicKeyMultibase` from the object. When the entry is a reference, find the verification method in `current_document.verificationMethod` with an `id` that is equal to the reference. Read `publicKeyMultibase` from that verification method. Raise an [`INVALID_DID_UPDATE`] error if there is no verification method with that `id`.
 
-If `update.proof.created` or `update.proof.expires` is present, check each value against the Bitcoin block that contains the [Beacon Signal] that announced `update`. [^5] Raise an [`INVALID_DID_UPDATE`] error if any of the following conditions are true:
+If `update.proof.created` or `update.proof.expires` is present, check each value against the Bitcoin block that contains the [Beacon Signal] that announced `update`. [^6] Raise an [`INVALID_DID_UPDATE`] error if any of the following conditions are true:
 
 * `update.proof.created` is after the timestamp in the block header.
 * `update.proof.expires` is before the block `mediantime` {{#cite Bitcoin-Core}}.
 * `update.proof.expires` is before `update.proof.created`, when both values are present.
 
-[^5]: In Data Integrity {{#cite VC-DATA-INTEGRITY}}, each method selects the time of interest for `created` and `expires`. On mainnet, the timestamp in the block header is approximately one hour later than `mediantime`. A controller signs a proof a short time before the block that contains it, so a check of `created` against `mediantime` rejects valid updates. For this reason, `created` uses the timestamp in the block header. A miner sets the timestamp in the header of its own block and can increase that value, but a single miner cannot change `mediantime`. The `expires` value limits the time between the signature and a replay of the update, so `expires` uses `mediantime`.
+[^6]: In Data Integrity {{#cite VC-DATA-INTEGRITY}}, each method selects the time of interest for `created` and `expires`. On mainnet, the timestamp in the block header is approximately one hour later than `mediantime`. A controller signs a proof a short time before the block that contains it, so a check of `created` against `mediantime` rejects valid updates. For this reason, `created` uses the timestamp in the block header. A miner sets the timestamp in the header of its own block and can increase that value, but a single miner cannot change `mediantime`. The `expires` value limits the time between the signature and a replay of the update, so `expires` uses `mediantime`.
 
 Use a BIP340 Cryptosuite {{#cite BIP340-Cryptosuite}} instance with `publicKeyMultibase` and the `"bip340-jcs-2025"` cryptosuite to verify `update`. Raise [`INVALID_DID_UPDATE`] if verification fails.
 
