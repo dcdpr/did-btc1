@@ -30,7 +30,7 @@ When provided, `resolutionOptions.versionId` MUST be parsed as an integer and `r
 
 Resolution maintains the following state while building the DID document:
 
-* `updates`: a list of tuples, each containing Bitcoin block metadata (height, mediantime, confirmations) and a [BTCR2 Signed Update (data structure)].
+* `updates`: a list of tuples, each containing Bitcoin block metadata (height, mediantime, confirmations), a [Beacon Address], and a [BTCR2 Signed Update (data structure)].
 * `scanned_beacons`: a list of [Beacon Addresses][Beacon Address] that [Find Beacon Signals](#find-beacon-signals) scanned (starts empty).
 * `current_document`: the DID document being assembled.
 * `current_version_id`: the version number being processed (starts at `1`).
@@ -142,6 +142,7 @@ For each transaction found:
   * [SMT Beacon]: use [Process SMT Beacon](#process-smt-beacon).
 * Build a tuple with:
   * The transaction's block metadata (height, mediantime, and confirmations).
+  * The [Beacon Address] of the transaction.
   * The [BTCR2 Signed Update (data structure)] retrieved from `update_lookup_table[update_hash]`.
     * If the update is not in `update_lookup_table`, retrieve it from [CAS] using `update_hash` as described in [BTCR2 Update Data Distribution].
     * Raise a [`MISSING_UPDATE_DATA`] error if the update is not available from either source.
@@ -165,12 +166,13 @@ Treat [Signal Bytes] as `smt_root`. Look up `smt_root` in `smt_lookup_table` to 
     * Raise a [`NOT_FOUND`] error if `resolutionOptions.versionId` is provided.
     * Otherwise, resolve `current_document` as `didDocument`.
 3. Sort `updates` by [BTCR2 Signed Update (data structure)] `targetVersionId` (ascending) with the tuple's block height as a tiebreaker. Remove the first tuple from `updates`.
-4. Resolve `current_document` as `didDocument` if all of the following conditions are true:
+4. If `current_document` has no [BTCR2 Beacon] with the tuple's [Beacon Address], ignore the tuple. Continue with the next tuple.
+5. Resolve `current_document` as `didDocument` if all of the following conditions are true:
     * The tuple's `targetVersionId` is more than `current_version_id`. [^4]
     * `resolutionOptions.versionTime` is provided.
     * The tuple's block `mediantime` {{#cite Bitcoin-Core}} is after `resolutionOptions.versionTime`. [^5]
-5. Set `block_confirmations` to the tuple's block confirmations.
-6. Set `update` to the tuple's [BTCR2 Signed Update (data structure)] and [check `update.targetVersionId`](#check-update-version).
+6. Set `block_confirmations` to the tuple's block confirmations.
+7. Set `update` to the tuple's [BTCR2 Signed Update (data structure)] and [check `update.targetVersionId`](#check-update-version).
 
 [^4]: This condition is necessary because the resolver accepts a duplicate update ([Confirm Duplicate Update](#confirm-duplicate-update)). The block of a duplicate can be after `versionTime` while the block of a subsequent version is before `versionTime`. Without this condition, the resolver stops at the duplicate and does not apply the subsequent version.
 
