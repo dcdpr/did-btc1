@@ -77,11 +77,11 @@ All [Aggregation Participants][Aggregation Participant] must be made aware of ea
     * `didIndex`: The SHA-256 hash of the DID to be updated;
     * `updateHash`:
         * If there is an update:
-            * If a `nonce` is used: `hash(hash(nonce) + json_document_hash(update))`
-            * If a `nonce` is not used: `json_document_hash(update)`
+            * If a `nonce` is used: `hash(hash(nonce) + updateId)`
+            * If a `nonce` is not used: `updateId`
         * If there is not an update:
             * If a `nonce` is used: `hash(hash(nonce))`
-            * If a `nonce` is not used: `0`
+            * If a `nonce` is not used: no value, the index stays empty and its leaf value is `cachedZero[0]`
     * Participants MUST persist their `nonce` values.
     * MuSig2 Nonce: A MuSig2 nonce constructed according to the nonce generation algorithm specified in {{#cite BIP327}}.
 

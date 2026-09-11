@@ -1,6 +1,7 @@
 [`INVALID_DID`]: https://www.w3.org/TR/did-resolution-1.0/#errors
 [`INVALID_DID_UPDATE`]: {{ root }}errors.md#invalid_did_update
 [`INVALID_OPTIONS`]: https://www.w3.org/TR/did-resolution-1.0/#errors
+[`INVALID_SIGNAL_DATA`]: {{ root }}errors.md#invalid_signal_data
 [`LATE_PUBLISHING`]: {{ root }}errors.md#late_publishing
 [`MISSING_UPDATE_DATA`]: {{ root }}errors.md#missing_update_data
 [`NOT_FOUND`]: https://www.w3.org/TR/did-resolution-1.0/#errors

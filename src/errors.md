@@ -14,10 +14,14 @@ These errors are assumed to be fatal and all **did:btcr2** operations must abort
 
 An error was found when creating or applying a [BTCR2 Update].
 
+## `INVALID_SIGNAL_DATA` { #invalid_signal_data }
+
+The data for a [Beacon Signal] does not agree with its [Signal Bytes]. Example: an [SMT Proof] that does not verify against the [SMT] root in the [Beacon Signal].
+
 ## `LATE_PUBLISHING` { #late_publishing }
 
 An error was found when processing the full history of [BTCR2 Updates][BTCR2 Update] announced by all relevant [Beacon Signals][Beacon Signal]. See [Late Publishing].
 
 ## `MISSING_UPDATE_DATA` { #missing_update_data }
 
-[BTCR2 Update] data can not be found in either the provided [Sidecar Data] nor in [CAS].
+Data that is necessary to find what a [Beacon Signal] announces for the DID is not in the [Sidecar Data] and not in [CAS]. This data includes [BTCR2 Updates][BTCR2 Update], [CAS Announcements][CAS Announcement (data structure)], and [SMT Proofs][SMT Proof].

@@ -14,10 +14,13 @@
  * before anything is written, so a run that succeeds has verified the corpus
  * rather than just serialized it. Where the implementation has not caught up to
  * the specification, the specification wins and the difference is marked GAP.
- * There are four. GAP 3 is one theme, the order of JSON properties, and it
- * appears at three sites. JCS sorts member names, so property order never
+ * There are five. GAP 3 is one theme, the order of JSON properties, and it
+ * appears at two sites. JCS sorts member names, so property order never
  * changes a hash; the reorder only makes the committed files read in the order
- * the specification lists.
+ * the specification lists. GAP 5 is the Sparse Merkle Tree: the package has two
+ * leaf arms, a required `nonce`, and the other bit order, so this script builds
+ * the tree, the proofs, and the verifier itself from the package's hashed-zero
+ * cache and helpers.
  *
  * Runs are reproducible: secret keys are SHA-256 of their seed string and BIP340
  * aux_rand is SHA-256 of a per-signature label. Changing either changes every
@@ -41,11 +44,13 @@ import type { Signer, SchnorrKeyPair, SigningScheme } from '@did-btcr2/keypair';
 import type { BeaconService } from '@did-btcr2/method';
 import { Appendix, BeaconUtils, Updater } from '@did-btcr2/method';
 import {
-  BTCR2MerkleTree,
+  base64UrlToHash,
+  bigIntToHash,
+  blockHash,
+  CACHED_ZERO,
   didToIndex,
   hashToBase64Url,
-  inclusionLeafHash,
-  verifySerializedProof,
+  hashToBigInt,
 } from '@did-btcr2/smt';
 import { schnorr } from '@noble/curves/secp256k1';
 import { sha256 } from '@noble/hashes/sha2';
@@ -83,6 +88,7 @@ const NONCE_SEEDS = {
   primary: 'did:btcr2 example corpus / SMT nonce / controller',
   cohortA: 'did:btcr2 example corpus / SMT nonce / cohort member A',
   cohortB: 'did:btcr2 example corpus / SMT nonce / cohort member B',
+  cohortBSignalB: 'did:btcr2 example corpus / SMT nonce / cohort member B / signal B',
 } as const;
 
 /**
@@ -99,9 +105,6 @@ const CONFIRMATIONS = 12;
 type Json = any;
 
 const seedKey = (seed: string) => api.crypto.keypair.fromSecret(sha256(utf8ToBytes(seed)));
-
-/** The bytes an operation hashes and signs over: the JCS form of a document. */
-const canonicalBytes = (document: Json) => utf8ToBytes(canonicalize(document));
 
 /**
  * Fails unless two objects are the same JSON document. JCS sorts keys, so this
@@ -454,56 +457,118 @@ const nonces = Object.fromEntries(
 ) as Record<keyof typeof NONCE_SEEDS, Uint8Array>;
 
 /**
- * This signal carries update 4 for the primary identifier and non-updates for the
- * rest. An entry without a `signedUpdate` becomes a non-inclusion leaf.
+ * GAP 5 (SMT). SMT Proof Verification is the authority. `@did-btcr2/smt@0.3.0`
+ * has two leaf arms, a required `nonce`, and `bitAt` counted from the least
+ * significant bit, so this script builds the tree itself. `bitAt(i)` is bit `i`
+ * counted from left to right over the 32 bytes: `bitAt(0)` is the most
+ * significant bit of the first byte, and the walk starts at the leaf with
+ * `bitAt(255)`. The package supplies the hashed-zero cache and the helpers.
  */
-const signal = [
-  { did, nonce: nonces.primary, signedUpdate: canonicalBytes(update4.signed) },
+type Leaf = { index: bigint; value: Uint8Array };
+type SmtProofDocument = { id: string; nonce?: string; updateId?: string; collapsed: string; hashes: string[] };
+type Submission = { did: string; nonce?: Uint8Array; updateId?: Uint8Array };
+
+const bitAt = (value: bigint, i: number): number => Number((value >> BigInt(255 - i)) & 1n);
+
+/** The four leaf arms of SMT Proof Verification. */
+function leafValue(nonce?: Uint8Array, updateId?: Uint8Array): Uint8Array {
+  if (nonce && updateId) return blockHash(blockHash(nonce), updateId);
+  if (nonce) return blockHash(blockHash(nonce));
+  if (updateId) return updateId;
+  return CACHED_ZERO[0]!;
+}
+
+/** Root of the subtree that spans `height` levels; the whole tree is 256. */
+function subtreeHash(leaves: Leaf[], height: number): Uint8Array {
+  if (leaves.length === 0) return CACHED_ZERO[height]!;
+  if (height === 0) return leaves[0]!.value;
+  const i = 256 - height;
+  const left = leaves.filter((leaf) => bitAt(leaf.index, i) === 0);
+  const right = leaves.filter((leaf) => bitAt(leaf.index, i) === 1);
+  return blockHash(subtreeHash(left, height - 1), subtreeHash(right, height - 1));
+}
+
+/** Proof for `target`, a member or not: the sibling at each level from the leaf up. */
+function generateProof(leaves: Leaf[], target: bigint): { collapsed: bigint; hashes: Uint8Array[] } {
+  let collapsed = 0n;
+  const hashes: Uint8Array[] = [];
+  for (let height = 1; height <= 256; height++) {
+    const i = 256 - height;
+    const siblings = leaves.filter((leaf) => {
+      for (let above = 0; above < i; above++) {
+        if (bitAt(leaf.index, above) !== bitAt(target, above)) return false;
+      }
+      return bitAt(leaf.index, i) !== bitAt(target, i);
+    });
+    if (siblings.length === 0) collapsed |= 1n << BigInt(255 - i);
+    else hashes.push(subtreeHash(siblings, height - 1));
+  }
+  return { collapsed, hashes };
+}
+
+/** SMT Proof Verification, per the pseudocode in the specification. */
+function verifyProof(proof: SmtProofDocument, did: string): boolean {
+  const nonce = proof.nonce === undefined ? undefined : base64UrlToHash(proof.nonce);
+  const updateId = proof.updateId === undefined ? undefined : base64UrlToHash(proof.updateId);
+  const collapsed = hashToBigInt(base64UrlToHash(proof.collapsed));
+  const hashes = proof.hashes.map(base64UrlToHash);
+  let ones = 0;
+  for (let i = 0; i < 256; i++) ones += bitAt(collapsed, i);
+  if (hashes.length + ones !== 256) return false;
+  let candidate = leafValue(nonce, updateId);
+  const index = didToIndex(did);
+  let next = 0;
+  for (let n = 0; n <= 255; n++) {
+    const i = 255 - n;
+    const sibling = bitAt(collapsed, i) === 1 ? CACHED_ZERO[n]! : hashes[next++]!;
+    candidate = bitAt(index, i) === 1 ? blockHash(sibling, candidate) : blockHash(candidate, sibling);
+  }
+  return hashToBase64Url(candidate) === proof.id;
+}
+
+/** Builds the tree for one signal and serializes the proof of `did` in the spec property order. */
+function smtProof(signal: Submission[], did: string): SmtProofDocument {
+  const leaves = signal
+    .filter((s) => s.nonce || s.updateId)
+    .map((s) => ({ index: didToIndex(s.did), value: leafValue(s.nonce, s.updateId) }));
+  const root = subtreeHash(leaves, 256);
+  const { collapsed, hashes } = generateProof(leaves, didToIndex(did));
+  const own = signal.find((s) => s.did === did);
+  const proof: SmtProofDocument = { id: hashToBase64Url(root) };
+  if (own?.nonce) proof.nonce = hashToBase64Url(own.nonce);
+  if (own?.updateId) proof.updateId = hashToBase64Url(own.updateId);
+  proof.collapsed = hashToBase64Url(bigIntToHash(collapsed));
+  proof.hashes = hashes.map(hashToBase64Url);
+  if (!verifyProof(proof, did)) throw new Error(`generated SMT proof for ${did} failed verification`);
+  return proof;
+}
+
+/** Signal A: update 4 for the primary identifier in nonce mode, nonce non-updates for the rest. */
+const signalA: Submission[] = [
+  { did, nonce: nonces.primary, updateId: base64UrlToHash(update4.hash) },
   { did: cohortA.did, nonce: nonces.cohortA },
   { did: cohortB.did, nonce: nonces.cohortB },
 ];
 
 /**
- * The implementation builds the tree and serializes the inclusion proof.
- *
- * SMT Proof Verification is the authority here, and `BTCR2MerkleTree` implements
- * it: `bitAt(i)` is bit `i` of a 256-bit value counted from the least significant
- * bit, so `i = 255` is the leaf level of the walk and `i = 0` is the root level.
- * Two things follow. The algorithm does not state that reading, and `index` and
- * `collapsed` are byte arrays by the time it uses them, so the text is worth
- * pinning. And the worked example in Appendix: Optimized Sparse Merkle Tree
- * Implementation counts the other way, which makes its `1101` proof unverifiable
- * under this algorithm; the appendix is colloquial, so the example is what needs
- * correcting.
+ * Signal B, in a later block: the primary identifier submits nothing in no-nonce
+ * mode, so its index is empty and its proof carries neither `nonce` nor `updateId`.
+ * Cohort member A announces an update in no-nonce mode, and cohort member B keeps a
+ * nonce non-update. Together the two signals exercise all four leaf arms.
  */
-const tree = new BTCR2MerkleTree();
-tree.addEntries(signal);
-tree.finalize();
-const serializedProof = tree.proof(did);
+const signalB: Submission[] = [
+  { did: cohortA.did, updateId: base64UrlToHash(cohortAUpdate.hash) },
+  { did: cohortB.did, nonce: nonces.cohortBSignalB },
+];
 
-/** GAP 3 (property order). `serializeProof` appends `nonce` and `updateId`; the specification lists them second and third. */
-const smtProofDocument = {
-  id: serializedProof.id,
-  nonce: serializedProof.nonce,
-  updateId: serializedProof.updateId,
-  collapsed: serializedProof.collapsed,
-  hashes: serializedProof.hashes,
-};
-agree('SMT Proof', serializedProof, smtProofDocument);
+const smtProofA = smtProof(signalA, did);
+const smtProofB = smtProof(signalB, did);
 
-if (smtProofDocument.updateId !== update4.hash) {
+if (smtProofA.updateId !== update4.hash) {
   throw new Error('the SMT leaf does not commit to the hash of update 4');
 }
-
-// SMT Proof Verification, run against the proof this script emits rather than
-// against the tree that produced it.
-const verified = verifySerializedProof(
-  smtProofDocument,
-  didToIndex(did),
-  inclusionLeafHash(nonces.primary, canonicalBytes(update4.signed)),
-);
-if (!verified) {
-  throw new Error('generated SMT proof failed verification');
+if (smtProofB.nonce !== undefined || smtProofB.updateId !== undefined) {
+  throw new Error('the empty-index proof must carry neither nonce nor updateId');
 }
 
 // ---------------------------------------------------------------------------
@@ -515,7 +580,7 @@ const sidecarData = {
   genesisDocument,
   updates: [update2.signed, update3.signed, update4.signed],
   casUpdates: [casAnnouncement],
-  smtProofs: [smtProofDocument],
+  smtProofs: [smtProofA, smtProofB],
 };
 
 const resolutionOptions = {
@@ -547,7 +612,8 @@ const corpus: Record<string, Json> = {
   'cas-announcement.json': casAnnouncement,
   'root-capability.json': rootCapability,
   'sidecar-data.json': sidecarData,
-  'sidecar-smt-proof.json': smtProofDocument,
+  'sidecar-smt-proof.json': smtProofA,
+  'sidecar-smt-proof-empty.json': smtProofB,
   'resolution-options.json': resolutionOptions,
   'did-document-metadata.json': didDocumentMetadata,
   'did-resolution-metadata.json': didResolutionMetadata,

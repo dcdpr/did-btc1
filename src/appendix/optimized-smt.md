@@ -114,19 +114,21 @@ flowchart TD
 
 To use Merkle trees to signal commitments in [BTCR2 Beacons][BTCR2 Beacon]:
 
-* The index (the identification of the leaf node) is the hash of the DID with the hash byte stream converted to an integer using big-endian conversion, i.e., `index = int(hash(did))`.
+* The index (the identification of the leaf node) is the hash of the DID with the hash byte stream converted to an integer using big-endian conversion, i.e., `index = int(hash(did))`. The most significant bit selects the child of the root.
     * Each DID is therefore associated with one and only one leaf node.
     * Binding the index to the DID ensures that no other index can be used by a nefarious actor to post an update to the DID.
     * This produces a data structure with lots of unused leaves, making it a [Sparse Merkle Tree].
-* The value stored at a leaf node is the hash of a 256-bit nonce, concatenated with the hash of the [BTCR2 Update] (the [BTCR2 Update Announcement]) if available, then the resulting stream is hashed again. I.e., `value = hash(hash(nonce) + hash(btcr2Update))` if there is a [BTCR2 Update] or `value = hash(hash(nonce))` if there is not.
-    * Provided that it is unique per DID and per signal, the use of a nonce ensures that updates and non-updates are indistinguishable to outside parties (aggregators, other DID controllers, verifiers) unless explicitly informed by the DID controller.
-    * The hashing of the nonce ensures that verifiers with limited input validation deal only with a 256-bit result.
-* An unused (empty) leaf takes a fixed *zero identity* value, defined as `hash(0 + 0)` (the zero identity hashed with itself). An empty subtree therefore has a fixed, precomputable value at each height of the tree — its *cached zero* — obtained by hashing the previous height's cached zero with itself, i.e., `cachedZero[0] = hash(0 + 0)` and `cachedZero[n] = hash(cachedZero[n-1] + cachedZero[n-1])`.
+* The value at a leaf node is one of four values that the [SMT Proof Verification] algorithm specifies. The DID controller selects the value for that index in that signal: a `nonce` or no `nonce`, and an update or no update. The `nonce` is an OPTIONAL 256-bit value that is unique for each DID and each signal.
+    * With a `nonce`, other parties (aggregators, other DID controllers, verifiers) cannot know if there is an update, or its contents. Only the DID controller can tell them. The DID controller keeps one `nonce` for each index and each signal for the life of the DID. If the DID controller does not have the `nonce`, the [SMT Proof] of that signal cannot be verified.
+    * Without a `nonce`, all parties know if there is an update. If the update is on [CAS], all parties can also retrieve its contents, because the leaf value is the retrieval key.
+    * The inner hash `hash(nonce)` is 32 bytes for a `nonce` of any length. Thus [SMT Proof Verification] accepts a `nonce` of any length.
+    * [SMT Proof Verification] rejects an `updateId` that is not 32 bytes.
+* An unused (empty) leaf takes a fixed *zero identity* value, defined as `hash(0 + 0)`, where `0` is 32 zero bytes. An empty subtree therefore has a fixed, precomputable value at each height of the tree — its *cached zero* — obtained by hashing the previous height's cached zero with itself, i.e., `cachedZero[0] = hash(0 + 0)` and `cachedZero[n] = hash(cachedZero[n-1] + cachedZero[n-1])`.
 * The value of every node is the hash of the concatenation of its left value (bit 0) and its right value (bit 1), i.e., `node_value = hash(left_value + right_value)`. This holds even when a child is empty: the empty child contributes its cached zero value, so a hash is performed at every level all the way down the tree and no level is skipped.
     * Because the cached zero values are known to every verifier, the empty siblings along a path need not be transmitted in an [SMT Proof]; only the non-empty sibling hashes are sent, and the `collapsed` bitmap marks the positions where a cached zero is substituted. Accounting for every hash operation in this way is what makes the tree "optimized" while ensuring a single set of values cannot produce more than one valid path to the root.
 * The only thing published in the [Beacon Signal] is the root hash (the Merkle root).
 
-Throughout this appendix, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte array, and the `+` operator concatenates byte arrays, not strings. The values carried in an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) are `base64url` {{#cite RFC4648}} encoded without padding and MUST be decoded to their raw bytes before being used in these operations; the quoted `Hash …` and `Nonce …` labels in the example below stand in for those decoded byte values.
+Throughout this appendix, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte sequence. The byte sequence has no length limit. The `+` operator concatenates two 32-byte values into one 64-byte value. The values carried in an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) are `base64url` {{#cite RFC4648}} encoded without padding and MUST be decoded to their raw bytes before being used in these operations; the quoted `Hash …` and `Nonce …` labels in the example below stand in for those decoded byte values.
 
 Let's assume that indexes 0 (`0000`), 2 (`0010`), 5 (`0101`), 9 (`1001`), 13 (`1101`), and 14 (`1110`) have DIDs associated with them; and a signal includes updates for DIDs 2, 9, and 13 and non-updates for all others.
 
@@ -191,11 +193,11 @@ flowchart TD
     Hash1101 --> DataBlock1101[("Data Block 1101")]:::dataBlock
 ```
 
-The DID controller has to prove that there is either an update or a non-update in the [Beacon Signal]. To prove an update, the DID controller provides the nonce and either the [BTCR2 Update] or the hash; to prove a non-update, the DID controller provides the nonce. In addition, the DID controller provides the `collapsed` bitmap (marking which sibling positions are empty subtrees, recoverable from the cached zeros) and the hashes of the non-empty peers in the tree necessary to recompute the root hash to compare against the value in the [Beacon Signal].
+The DID controller has to prove that there is either an update or a non-update in the [Beacon Signal]. The DID controller gives an [SMT Proof (data structure)], and its `nonce` and `updateId` fields select the leaf value that [SMT Proof Verification] specifies. In addition, the DID controller provides the `collapsed` bitmap (marking which sibling positions are empty subtrees, recoverable from the cached zeros) and the hashes of the non-empty peers in the tree necessary to recompute the root hash to compare against the value in the [Beacon Signal].
 
 Assuming that the DID of interest is at index 13 (`int(hash(did)) == int(1101) == 13`), the [Aggregation Service] (the party responsible for constructing the [Sparse Merkle Tree]) must provide the DID controller with the `collapsed` bitmap for the path above leaf node 13 and the hashes of the non-empty peers along that path (the empty peers are recovered from the cached zeros).
 
-The [Aggregation Service] has the full [Sparse Merkle Tree] and can construct [SMT Proofs][SMT Proof]. DID controllers request the [SMT Proofs][SMT Proof] from the [Aggregation Service] and give them to verifiers. An example proof may be:
+The [Aggregation Service] has the full [Sparse Merkle Tree] and can construct [SMT Proofs][SMT Proof]. DID controllers request the [SMT Proofs][SMT Proof] from the [Aggregation Service] and give them to verifiers. This is an example proof for the four-level tree above. Its values are labels, not bytes. [SMT Proof (data structure)] shows proofs of the 256-level tree with correct byte values.
 
 
 ```json

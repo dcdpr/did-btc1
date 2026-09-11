@@ -235,7 +235,7 @@ The [Sidecar Data] contains optional properties:
 - `casUpdates`: OPTIONAL array of [CAS Announcements][CAS Announcement (data structure)]. It is REQUIRED
   if the DID being resolved has used a [CAS Beacon] to publish a [BTCR2 Update].
 - `smtProofs`: OPTIONAL array of [SMT Proofs][SMT Proof (data structure)]. It is REQUIRED
-  if the DID being resolved has used a [SMT Beacon] to publish a [BTCR2 Update].
+  if any version of the DID document being resolved includes an [SMT Beacon]. It MUST contain one [SMT Proof (data structure)] for each [Beacon Signal] of an [SMT Beacon] that [Find Beacon Signals](operations/resolve.md#find-beacon-signals) finds.
 
 {% set hide_text = `` %}
 {% set ex_sidecar_data =
@@ -262,19 +262,27 @@ An [SMT Proof] data structure contains the following properties:
 SHA-256 hashes {{#cite SHA256}} (`id`, `updateId`, `hashes`) MUST be `"base64url"` {{#cite RFC4648}} encoded without padding.
 
 - `id`: SHA-256 hash of the root node.
-- `nonce`: OPTIONAL 256-bit nonce generated for each update. MUST be encoded as a string using `"base64url"` {{#cite RFC4648}} encoding without padding.
+- `nonce`: OPTIONAL 256-bit nonce, one for each index in each [Beacon Signal]. MUST be encoded as a string using `"base64url"` {{#cite RFC4648}} encoding without padding. The DID controller keeps each `nonce` for the life of the DID. If the DID controller does not have the `nonce`, the [SMT Proof] of that [Beacon Signal] cannot be verified.
 - `updateId`: The OPTIONAL [BTCR2 Signed Update (data structure)] hashed with the [JSON Document Hashing] algorithm.
-- `collapsed`: Bitmap of zero nodes within the path (see: [collapsed leaves](https://github.com/hoytech/quadrable#collapsed-leaves)). MUST be `"base64url"` {{#cite RFC4648}} encoded without padding.
-- `hashes`: Array of SHA-256 hashes representing the sibling [SMT] nodes from the leaf, containing the SHA-256 hash of the [BTCR2 Signed Update] or the "zero identity", to the root. Each hash MUST be `"base64url"` {{#cite RFC4648}} encoded without padding.
+- `collapsed`: 256-bit bitmap with one bit for each level of the path from the leaf to the root. A `1` bit identifies a level at which the sibling is an empty subtree. [Appendix: Optimized Sparse Merkle Tree Implementation] gives the value of an empty subtree. Bit `255` is the leaf level and bit `0` is the root level, in the bit sequence that [SMT Proof Verification] specifies. MUST be 32 bytes `"base64url"` {{#cite RFC4648}} encoded without padding. The number of entries in `hashes` plus the number of `1` bits in `collapsed` MUST be `256`.
+- `hashes`: Array of the SHA-256 hashes of the non-empty sibling nodes on the path from the leaf to the root. Each hash MUST be `"base64url"` {{#cite RFC4648}} encoded without padding.
 
 
 {% set hide_text = `` %}
 {% set ex_sidecar_smt_proof =
-`
+'
+An update in nonce mode (`nonce` and `updateId`):
+
 ~~~json
 {{#include example-data/sidecar-smt-proof.json}}
 ~~~
-` %}
+
+No update in no-nonce mode (no `nonce` and no `updateId`, the index is empty):
+
+~~~json
+{{#include example-data/sidecar-smt-proof-empty.json}}
+~~~
+' %}
 
 {{ ui::show_example_tabs(
   group_id="sidecar-smt-proof-example",
