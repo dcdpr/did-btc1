@@ -142,7 +142,7 @@ Example output:
 
 To verify the inclusion or non-inclusion of a DID in the [SMT Proof], perform the following steps:
 
-Throughout this section, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte array, and `concat()` (equivalently, the `+` operator) concatenates byte arrays. `0` denotes 32 zero bytes. `bitAt(i)` of a 32-byte value counts from left to right. `bitAt(0)` is the most significant bit of the first byte. `bitAt(255)` is the least significant bit of the last byte. The `base64url` {{#cite RFC4648}} encoded fields of an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) MUST be decoded to their raw bytes before being used in any of these operations.
+Throughout this section, `hash()` denotes SHA-256 {{#cite SHA256}} over a byte sequence. The byte sequence has no length limit. `concat()` (equivalently, the `+` operator) concatenates two 32-byte values into one 64-byte value. `0` denotes 32 zero bytes. `bitAt(i)` of a 32-byte value counts from left to right. `bitAt(0)` is the most significant bit of the first byte. `bitAt(255)` is the least significant bit of the last byte. The `base64url` {{#cite RFC4648}} encoded fields of an [SMT Proof (data structure)] (`id`, `nonce`, `updateId`, `collapsed`, and the entries of `hashes`) MUST be decoded to their raw bytes before being used in any of these operations.
 
 Construct a hashed-zero cache. `cachedZero[0]` is the value of an empty leaf and is equal to `hash(0 + 0)`. `cachedZero[n]` is the value of an empty subtree at height `n` and is equal to `hash(cachedZero[n-1] + cachedZero[n-1])`.
 
@@ -172,9 +172,9 @@ hide_label="Hide"
 
 The result of the algorithm MUST be `false` if any of the following conditions are true:
 
-* The proof has a `nonce`, and the decoded `nonce` is not 32 bytes.
 * The proof has an `updateId`, and the decoded `updateId` is not 32 bytes.
 * The decoded `collapsed` is not 32 bytes.
+* A decoded entry of `hashes` is not 32 bytes.
 * The number of entries in `hashes` plus the number of `1` bits in `collapsed` is not `256`.
 
 The OPTIONAL fields `nonce` and `updateId` of the [SMT Proof (data structure)] select the leaf value of the index of `did`. The DID controller selects the fields for each index and each [Beacon Signal]:
@@ -194,13 +194,13 @@ The last step is asserting that the computed candidate hash is equivalent to `pr
 {% set pseudocode_smt_proof_verification =
 `
 ~~~rust
-if let Some(nonce) = proof.nonce {
-  if nonce.len() != 32 { return false; }
-}
 if let Some(updateId) = proof.updateId {
   if updateId.len() != 32 { return false; }
 }
 if proof.collapsed.len() != 32 { return false; }
+for siblingHash in &proof.hashes {
+  if siblingHash.len() != 32 { return false; }
+}
 if proof.hashes.len() + proof.collapsed.count_ones() != 256 {
   return false;
 }

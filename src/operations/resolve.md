@@ -152,6 +152,7 @@ For each transaction found:
   * The [BTCR2 Signed Update (data structure)] retrieved from `update_lookup_table[update_hash]`.
     * If the update is not in `update_lookup_table`, retrieve it from [CAS] using `update_hash` as described in [BTCR2 Update Data Distribution].
     * Raise a [`MISSING_UPDATE_DATA`] error if the update is not available from either source.
+    * The resolver MUST hash the update with the [JSON Document Hashing] algorithm. The resolver MUST compare the hash to `update_hash`. Raise an [`INVALID_SIGNAL_DATA`] error if the two hashes are not equal.
 * Append the tuple to `updates`.
 
 
