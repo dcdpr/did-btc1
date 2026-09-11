@@ -374,7 +374,13 @@ Show Template
 </ul>
 </li>
 <li>Sort <code>updates</code> by <a href="../data-structures.html#btcr2-signed-update">BTCR2 Signed Update (data structure)</a> <code>targetVersionId</code> (ascending) with the tuple’s block height as a tiebreaker. Remove the first tuple from <code>updates</code>.</li>
-<li>If <code>resolutionOptions.versionTime</code> is provided and the tuple’s block <code>mediantime</code> [<a href="../bibliography.html#Bitcoin-Core">Bitcoin-Core</a>] is after <code>resolutionOptions.versionTime</code>, resolve <code>current_document</code> as <code>didDocument</code>. <sup class="footnote-reference" id="fr-4-1"><a href="#footnote-4">4</a></sup></li>
+<li>Resolve <code>current_document</code> as <code>didDocument</code> if all of the following conditions are true:
+<ul>
+<li>The tuple’s <code>targetVersionId</code> is more than <code>current_version_id</code>. <sup class="footnote-reference" id="fr-4-1"><a href="#footnote-4">4</a></sup></li>
+<li><code>resolutionOptions.versionTime</code> is provided.</li>
+<li>The tuple’s block <code>mediantime</code> [<a href="../bibliography.html#Bitcoin-Core">Bitcoin-Core</a>] is after <code>resolutionOptions.versionTime</code>. <sup class="footnote-reference" id="fr-5-1"><a href="#footnote-5">5</a></sup></li>
+</ul>
+</li>
 <li>Set <code>block_confirmations</code> to the tuple’s block confirmations.</li>
 <li>Set <code>update</code> to the tuple’s <a href="../data-structures.html#btcr2-signed-update">BTCR2 Signed Update (data structure)</a> and <a href="#check-update-version">check <code>update.targetVersionId</code></a>.</li>
 </ol>
@@ -420,7 +426,7 @@ Show Template
 <p>Implementations MAY derive a <a href="../data-structures.html#root-capability">Root Capability (data structure)</a> from <code>update.proof</code> and invoke it according to Authorization Capabilities for Linked Data v0.3 [<a href="../bibliography.html#ZCAP-LD">ZCAP-LD</a>].</p>
 <p>The resolver MUST find the entry of <code>current_document.capabilityInvocation</code> that identifies <code>update.proof.verificationMethod</code>. A reference entry identifies it when the two values are equal. An embedded verification method object identifies it when the <code>id</code> of the object is equal. Raise an <a href="../errors.html#invalid_did_update"><code>INVALID_DID_UPDATE</code></a> error if no entry identifies it.</p>
 <p>Read <code>publicKeyMultibase</code> from that entry. When the entry is an embedded verification method object, read <code>publicKeyMultibase</code> from the object. When the entry is a reference, find the verification method in <code>current_document.verificationMethod</code> with an <code>id</code> that is equal to the reference. Read <code>publicKeyMultibase</code> from that verification method. Raise an <a href="../errors.html#invalid_did_update"><code>INVALID_DID_UPDATE</code></a> error if there is no verification method with that <code>id</code>.</p>
-<p>If <code>update.proof.created</code> or <code>update.proof.expires</code> is present, check each value against the Bitcoin block that contains the <a href="../terminology.html#beacon-signal">Beacon Signal</a> that announced <code>update</code>. <sup class="footnote-reference" id="fr-5-1"><a href="#footnote-5">5</a></sup> Raise an <a href="../errors.html#invalid_did_update"><code>INVALID_DID_UPDATE</code></a> error if any of the following conditions are true:</p>
+<p>If <code>update.proof.created</code> or <code>update.proof.expires</code> is present, check each value against the Bitcoin block that contains the <a href="../terminology.html#beacon-signal">Beacon Signal</a> that announced <code>update</code>. <sup class="footnote-reference" id="fr-6-1"><a href="#footnote-6">6</a></sup> Raise an <a href="../errors.html#invalid_did_update"><code>INVALID_DID_UPDATE</code></a> error if any of the following conditions are true:</p>
 <ul>
 <li><code>update.proof.created</code> is after the timestamp in the block header.</li>
 <li><code>update.proof.expires</code> is before the block <code>mediantime</code> [<a href="../bibliography.html#Bitcoin-Core">Bitcoin-Core</a>].</li>
@@ -441,10 +447,13 @@ Show Template
 <p>Six confirmations is the widely accepted industry standard for treating a Bitcoin transaction as settled. Resolution requests can raise or lower <code>minConf</code> to match their own threat and security model; lowering it increases exposure to Bitcoin block reorganizations, which consumers can evaluate from the returned <code>confirmations</code> metadata. <a href="#fr-3-1">↩</a></p>
 </li>
 <li id="footnote-4">
-<p>The resolver applies an update whose block <code>mediantime</code> is equal to <code>versionTime</code>. The comparison has no tolerance. <code>mediantime</code> does not decrease from one block to the next. Each resolver reads the same value from the block chain, so each resolver selects the same version. <a href="#fr-4-1">↩</a></p>
+<p>This condition is necessary because the resolver accepts a duplicate update (<a href="#confirm-duplicate-update">Confirm Duplicate Update</a>). The block of a duplicate can be after <code>versionTime</code> while the block of a subsequent version is before <code>versionTime</code>. Without this condition, the resolver stops at the duplicate and does not apply the subsequent version. <a href="#fr-4-1">↩</a></p>
 </li>
 <li id="footnote-5">
-<p>In Data Integrity [<a href="../bibliography.html#VC-DATA-INTEGRITY">VC-DATA-INTEGRITY</a>], each method selects the time of interest for <code>created</code> and <code>expires</code>. On mainnet, the timestamp in the block header is approximately one hour later than <code>mediantime</code>. A controller signs a proof a short time before the block that contains it, so a check of <code>created</code> against <code>mediantime</code> rejects valid updates. For this reason, <code>created</code> uses the timestamp in the block header. A miner sets the timestamp in the header of its own block and can increase that value, but a single miner cannot change <code>mediantime</code>. The <code>expires</code> value limits the time between the signature and a replay of the update, so <code>expires</code> uses <code>mediantime</code>. <a href="#fr-5-1">↩</a></p>
+<p>The resolver applies an update whose block <code>mediantime</code> is equal to <code>versionTime</code>. The comparison has no tolerance. <code>mediantime</code> does not decrease from one block to the next. Each resolver reads the same value from the block chain, so each resolver selects the same version. <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="footnote-6">
+<p>In Data Integrity [<a href="../bibliography.html#VC-DATA-INTEGRITY">VC-DATA-INTEGRITY</a>], each method selects the time of interest for <code>created</code> and <code>expires</code>. On mainnet, the timestamp in the block header is approximately one hour later than <code>mediantime</code>. A controller signs a proof a short time before the block that contains it, so a check of <code>created</code> against <code>mediantime</code> rejects valid updates. For this reason, <code>created</code> uses the timestamp in the block header. A miner sets the timestamp in the header of its own block and can increase that value, but a single miner cannot change <code>mediantime</code>. The <code>expires</code> value limits the time between the signature and a replay of the update, so <code>expires</code> uses <code>mediantime</code>. <a href="#fr-6-1">↩</a></p>
 </li>
 </ol>
                     </main>
